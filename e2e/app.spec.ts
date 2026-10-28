@@ -1,9 +1,44 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("landing page", () => {
+  test("hero actions, search and image work", async ({ page }) => {
+    await page.goto("/");
+    const hero = page.locator("section").filter({ has: page.getByRole("heading", { level: 1 }) });
+    const image = hero.getByRole("img", { name: /^Illustration:/ });
+    await expect(image).toBeVisible();
+    expect(await image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+
+    const search = hero.getByLabel("Search by printer model, manufacturer, symptom, or error code");
+    await search.fill("mk4s");
+    await expect(hero.getByRole("option", { name: /Printer.*MK4S/ })).toBeVisible();
+    await search.fill("mintemp");
+    await expect(hero.getByRole("option", { name: /Error message.*MINTEMP/ })).toBeVisible();
+    await search.fill("stringing");
+    await search.press("Enter");
+    await expect(page).toHaveURL(/\/search\?q=stringing/);
+
+    await page.goto("/");
+    await page.getByRole("link", { name: "Find my printer" }).click();
+    await expect(page).toHaveURL(/#find-printer$/);
+    await expect(page.locator("#find-printer").getByLabel("Search by manufacturer or model")).toBeInViewport();
+    await page.getByRole("link", { name: "Diagnose a problem" }).first().click();
+    await expect(page).toHaveURL(/\/diagnose$/);
+  });
+
+  test("puts the main actions before the image on phones", async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile");
+    await page.goto("/");
+    const top = async (l: ReturnType<typeof page.locator>) => (await l.boundingBox())!.y;
+    const cta = await top(page.getByRole("link", { name: "Diagnose a problem" }).first());
+    const search = await top(page.getByLabel("Search by printer model, manufacturer, symptom, or error code"));
+    const image = await top(page.getByRole("img", { name: /^Illustration:/ }));
+    expect(cta).toBeLessThan(image);
+    expect(search).toBeLessThan(image);
+  });
+
   test("starts a diagnosis from a selected printer", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Let's get your printer working again.");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Let’s get your printer working again.");
     const finder = page.locator("#find-printer");
     await finder.getByLabel("Search by manufacturer or model").fill("ender3 v2");
     await finder.getByRole("button", { name: /^Creality Ender-3 V2 Bed-slinger/ }).click();

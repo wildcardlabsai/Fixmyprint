@@ -1,16 +1,26 @@
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronRight, Database, Factory, ListChecks, Printer, SlidersHorizontal } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CategoryList } from "@/components/diagnose/category-list";
 import { GuideMeta } from "@/components/guides/guide-meta";
 import { HomePrinterFinder } from "@/components/home/home-printer-finder";
+import { SiteSearch } from "@/components/layout/site-search";
 import { LinkButton } from "@/components/ui/button";
 import { Container, SectionHeading } from "@/components/ui/layout";
 import { getContent } from "@/lib/data/repository";
 import { guidesFor, manufacturersWithCounts } from "@/lib/data/selectors";
 import { manufacturerOptions, printerOptions } from "@/lib/data/view-models";
+import { benefits, heroEyebrow, type Benefit } from "@/lib/home-copy";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+const BENEFIT_ICONS: Record<Benefit["icon"], typeof Printer> = {
+  brands: Factory,
+  steps: ListChecks,
+  data: Database,
+  slicer: SlidersHorizontal,
+  "printer-types": Printer,
+};
 
 const FEATURED_GUIDES = ["level-the-bed", "clear-a-blocked-nozzle", "clean-the-build-plate", "tune-retraction", "check-heater-and-thermistor-wiring", "check-belt-tension"];
 
@@ -22,66 +32,113 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="border-b border-line bg-surface">
-        <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:items-center lg:gap-12 lg:py-14">
-          <div className="max-w-xl">
-            <h1 className="text-[34px] leading-[1.15] font-semibold sm:text-[44px]">Let&apos;s get your printer working again.</h1>
-            <p className="mt-4 text-[17px] leading-relaxed text-muted sm:text-lg">
-              Find the cause of a printing problem and follow the steps to fix it. Choose your printer, describe what is happening, and we&apos;ll help you work through it.
+      <section aria-labelledby="hero-heading" className="border-b border-line bg-surface">
+        <Container className="grid gap-8 py-8 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-12 lg:py-12">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold tracking-[0.08em] text-primary-dark">{heroEyebrow(c)}</p>
+            <h1 id="hero-heading" className="mt-3 text-[34px] leading-[1.12] font-semibold tracking-tight sm:text-[44px] lg:text-[46px]">
+              Let’s get your printer working again.
+            </h1>
+            <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-ink/75 sm:text-lg">
+              Find the cause of a printing problem and follow clear, step-by-step instructions to fix it.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-3">
               <LinkButton href="/diagnose" size="lg">
                 Diagnose a problem
                 <ArrowRight aria-hidden />
               </LinkButton>
-              <LinkButton href="#symptoms" variant="secondary" size="lg">
-                Start from a symptom
+              <LinkButton href="#find-printer" variant="secondary" size="lg">
+                Find my printer
               </LinkButton>
             </div>
-            <p className="mt-5 text-sm text-muted">Free to use, with no account needed. Your answers stay on your device.</p>
+            <p className="mt-4 text-sm text-ink/70">Start immediately without creating an account · Model-specific guidance</p>
+            <SiteSearch
+              className="mt-6 max-w-xl"
+              large
+              showLabel
+              label="Search by printer model, manufacturer, symptom, or error code"
+              placeholder="e.g. Bambu Lab A1, Ender 3, Prusa MK4S, Adventurer 5M"
+            />
           </div>
-          <div id="find-printer" className="min-w-0 scroll-mt-24 rounded-lg border border-line bg-surface p-4 shadow-sm sm:p-5">
-            <h2 className="text-lg font-semibold">Find your printer</h2>
-            <p className="mt-1 mb-4 text-sm text-muted">Advice is tailored to your printer&apos;s levelling system, extruder and enclosure.</p>
-            <HomePrinterFinder printers={printerOptions(c)} manufacturers={manufacturerOptions(c)} />
+          <div className="min-w-0">
+            {/* Pre-sized WebP files in public/images/home; next/image would only resize them again. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/home/hero-1280.webp"
+              srcSet="/images/home/hero-640.webp 640w, /images/home/hero-960.webp 960w, /images/home/hero-1280.webp 1280w, /images/home/hero-1536.webp 1536w"
+              sizes="(min-width: 1152px) 580px, (min-width: 1024px) 52vw, calc(100vw - 32px)"
+              width={1536}
+              height={1024}
+              fetchPriority="high"
+              decoding="async"
+              alt="Illustration: a laptop showing a printer troubleshooting screen, beside a 3D printer, filament spools and printed test parts"
+              className="aspect-[3/2] h-auto w-full rounded-xl border border-line object-cover shadow-sm"
+            />
           </div>
         </Container>
       </section>
 
-      <section id="symptoms" aria-labelledby="symptoms-heading" className="scroll-mt-20 py-10 sm:py-12">
+      <section aria-labelledby="benefits-heading" className="border-b border-line bg-page">
+        <Container className="py-6">
+          <h2 id="benefits-heading" className="sr-only">
+            What FixMyPrint offers
+          </h2>
+          <ul className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {benefits(c).map((b) => {
+              const Icon = BENEFIT_ICONS[b.icon];
+              return (
+                <li key={b.icon} className="flex gap-3">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary-50 text-primary-dark">
+                    <Icon className="size-[18px]" aria-hidden />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[15px] font-semibold">{b.title}</span>
+                    <span className="mt-0.5 block text-sm leading-snug text-ink/70">{b.text}</span>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </Container>
+      </section>
+
+      <section aria-labelledby="start-heading" className="py-10 sm:py-12">
         <Container className="grid gap-6 lg:grid-cols-2">
-          <div className="min-w-0">
-            <h2 id="symptoms-heading" className="text-xl font-semibold sm:text-[22px]">
-              What is going wrong?
-            </h2>
-            <p className="mt-1 mb-4 text-sm text-muted">Not sure of your model? Start here. We&apos;ll ask about your hardware only when it changes the answer.</p>
+          <h2 id="start-heading" className="sr-only">
+            Start troubleshooting
+          </h2>
+          <div id="find-printer" className="min-w-0 scroll-mt-24 rounded-lg border border-line bg-surface p-4 shadow-sm sm:p-5">
+            <h3 className="text-lg font-semibold">Find your printer</h3>
+            <p className="mt-1 mb-4 text-sm text-ink/70">Advice is tailored to your printer&apos;s levelling system, extruder and enclosure.</p>
+            <HomePrinterFinder printers={printerOptions(c)} manufacturers={manufacturerOptions(c)} />
+          </div>
+          <div id="symptoms" className="min-w-0 scroll-mt-24">
+            <h3 className="text-lg font-semibold">What is going wrong?</h3>
+            <p className="mt-1 mb-4 text-sm text-ink/70">Not sure of your model? Start here. We&apos;ll ask about your hardware only when it changes the answer.</p>
             <CategoryList categories={c.categories} />
           </div>
-          <div className="min-w-0">
-            <div className="flex items-baseline justify-between gap-3">
-              <h2 className="text-xl font-semibold sm:text-[22px]">Common problems</h2>
-              <Link href="/diagnose" className="text-sm font-medium whitespace-nowrap">
-                All problems
-              </Link>
-            </div>
-            <p className="mt-1 mb-4 text-sm text-muted">Go straight to the questions for the problems people run into most.</p>
-            <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
-              {common.map((s) => (
-                <li key={s.slug}>
-                  <Link
-                    href={s.flowId ? `/diagnose/${s.flowId}` : `/problems/${s.category}`}
-                    className="group flex items-center gap-3 px-3.5 py-3 text-ink no-underline transition-colors hover:bg-page"
-                  >
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] font-medium">{s.title}</span>
-                      <span className="block truncate text-sm text-muted">{s.description}</span>
-                    </span>
-                    <ChevronRight className="size-4 shrink-0 text-muted group-hover:text-ink" aria-hidden />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+        </Container>
+      </section>
+
+      <section aria-labelledby="common-heading" className="pb-10">
+        <Container>
+          <SectionHeading id="common-heading" title="Common problems" description="Go straight to the questions for the problems people run into most." action={{ href: "/diagnose", label: "All problems" }} />
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {common.map((s) => (
+              <li key={s.slug}>
+                <Link
+                  href={s.flowId ? `/diagnose/${s.flowId}` : `/problems/${s.category}`}
+                  className="group flex h-full items-start gap-3 rounded-lg border border-line bg-surface p-4 text-ink no-underline transition-colors hover:border-line-strong"
+                >
+                  <span className="flex-1">
+                    <span className="block font-medium">{s.title}</span>
+                    <span className="mt-1 block text-sm text-ink/70">{s.description}</span>
+                  </span>
+                  <ChevronRight className="mt-0.5 size-4 shrink-0 text-muted group-hover:text-ink" aria-hidden />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 

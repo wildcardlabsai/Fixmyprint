@@ -18,7 +18,24 @@ interface Hit {
  * Global search box with suggestions. Works as a plain GET form to /search when
  * JavaScript is unavailable; with JavaScript it shows live suggestions.
  */
-export function SiteSearch({ className, autoFocus, onNavigate }: { className?: string; autoFocus?: boolean; onNavigate?: () => void }) {
+export function SiteSearch({
+  className,
+  autoFocus,
+  onNavigate,
+  label = "Search printers, problems, error messages and guides",
+  showLabel = false,
+  placeholder = "Search printers, problems, errors",
+  large = false,
+}: {
+  className?: string;
+  autoFocus?: boolean;
+  onNavigate?: () => void;
+  label?: string;
+  showLabel?: boolean;
+  placeholder?: string;
+  /** A taller input for use as a page's main search. */
+  large?: boolean;
+}) {
   const router = useRouter();
   const listId = useId();
   const [query, setQuery] = useState("");
@@ -80,42 +97,47 @@ export function SiteSearch({ className, autoFocus, onNavigate }: { className?: s
         else if (query.trim()) go(`/search?q=${encodeURIComponent(query.trim())}`);
       }}
     >
-      <label htmlFor={`${listId}-input`} className="sr-only">
-        Search printers, problems, error messages and guides
+      <label htmlFor={`${listId}-input`} className={showLabel ? "mb-1.5 block text-sm font-medium" : "sr-only"}>
+        {label}
       </label>
-      <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" aria-hidden />
-      <input
-        id={`${listId}-input`}
-        name="q"
-        type="search"
-        autoComplete="off"
-        autoFocus={autoFocus}
-        placeholder="Search printers, problems, errors"
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setOpen(true);
-        }}
-        onFocus={() => setOpen(true)}
-        onKeyDown={(e) => {
-          if (!showList) return;
-          if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setActive((i) => Math.min(i + 1, hits.length - 1));
-          } else if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setActive((i) => Math.max(i - 1, -1));
-          } else if (e.key === "Escape") {
-            setOpen(false);
-          }
-        }}
-        role="combobox"
-        aria-expanded={showList}
-        aria-controls={listId}
-        aria-autocomplete="list"
-        aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
-        className="h-10 w-full rounded-md border border-line-strong bg-surface pr-3 pl-9 text-[15px] placeholder:text-muted focus:border-primary focus:outline-none focus-visible:outline-2"
-      />
+      <div className="relative">
+        <Search className={cn("pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted", large ? "size-5" : "size-4")} aria-hidden />
+        <input
+          id={`${listId}-input`}
+          name="q"
+          type="search"
+          autoComplete="off"
+          autoFocus={autoFocus}
+          placeholder={placeholder}
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={(e) => {
+            if (!showList) return;
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              setActive((i) => Math.min(i + 1, hits.length - 1));
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setActive((i) => Math.max(i - 1, -1));
+            } else if (e.key === "Escape") {
+              setOpen(false);
+            }
+          }}
+          role="combobox"
+          aria-expanded={showList}
+          aria-controls={listId}
+          aria-autocomplete="list"
+          aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
+          className={cn(
+            "w-full rounded-md border border-line-strong bg-surface pr-3 placeholder:text-muted focus:border-primary focus:outline-none focus-visible:outline-2",
+            large ? "h-12 pl-10 text-base shadow-sm" : "h-10 pl-9 text-[15px]",
+          )}
+        />
+      </div>
       {showList && (
         <ul id={listId} role="listbox" className="absolute top-full right-0 left-0 z-50 mt-1 max-h-[70vh] overflow-auto rounded-lg border border-line bg-surface py-1 shadow-md">
           {hits.map((h, i) => (
