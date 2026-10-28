@@ -14,6 +14,7 @@ export const NAV_ITEMS = [
   { href: "/printers", label: "Printer library" },
   { href: "/guides", label: "Repair guides" },
   { href: "/filament", label: "Filament settings" },
+  { href: "/slicers", label: "Slicers" },
   { href: "/maintenance", label: "Maintenance" },
 ];
 

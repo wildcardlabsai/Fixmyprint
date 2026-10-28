@@ -139,6 +139,7 @@ export const stringingAndSurface: DiagnosticFlowInput = {
     },
     {
       id: "retraction",
+      slicerSettings: ["retraction", "wipe"],
       title: "Retraction is not set right for this printer",
       summary: "Too little retraction leaves pressure in the nozzle during travel moves.",
       explanation: "Retraction pulls filament back slightly before a travel move to relieve pressure in the nozzle. Too little leaves plastic oozing out. Too much can cause jams. Direct-drive printers usually need much shorter retraction than Bowden printers, so settings copied from one type rarely suit the other.",
@@ -151,6 +152,7 @@ export const stringingAndSurface: DiagnosticFlowInput = {
     },
     {
       id: "travel",
+      slicerSettings: ["avoid-crossing"],
       title: "Travel moves cross open space",
       summary: "The nozzle crosses gaps where it could stay inside the part.",
       explanation: "Even with good retraction, a little plastic can leave the nozzle when it crosses open space. Slicer options that keep travel moves inside the part, faster travel and wiping before travel all reduce it.",
@@ -163,6 +165,7 @@ export const stringingAndSurface: DiagnosticFlowInput = {
     },
     {
       id: "seam",
+      slicerSettings: ["seam", "wipe"],
       title: "Zits are forming at the layer seam",
       summary: "Each layer starts and ends in the same place, leaving a small bump.",
       explanation: "Every perimeter has a start and end point. A small excess of plastic is left there, and when the points line up they form a visible seam of zits.",
@@ -174,6 +177,7 @@ export const stringingAndSurface: DiagnosticFlowInput = {
     },
     {
       id: "pressure-control",
+      slicerSettings: ["pressure-advance"],
       title: "Nozzle pressure is not managed at corners",
       summary: "Pressure builds at corners and edges where the print head slows down.",
       explanation: "When the print head slows for a corner, pressure left in the nozzle pushes out extra plastic. Firmware features such as Klipper's pressure advance and Marlin's linear advance compensate for this once they are calibrated.",
@@ -184,6 +188,7 @@ export const stringingAndSurface: DiagnosticFlowInput = {
     },
     {
       id: "over-extrusion",
+      slicerSettings: ["flow"],
       title: "Too much plastic is being extruded",
       summary: "Excess plastic makes blobs and rough, ridged walls.",
       explanation: "A flow rate set too high, a filament thicker than its nominal diameter, or a profile meant for a different filament puts out slightly more plastic than the part needs. The excess shows as blobs, rough top surfaces and walls that are too thick.",

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { slicerSettingKeySchema } from "./slicer";
 import { conditionSchema, factKeySchema } from "./condition";
 import { safetyIdSchema, slugSchema, verificationSchema } from "./common";
 
@@ -64,6 +65,8 @@ export const outcomeSchema = z.object({
   explanation: z.string().min(1),
   checks: z.array(checkSchema).min(1),
   guideSlugs: z.array(slugSchema).default([]),
+  /** Slicer settings to adjust for this cause. Each slicer supplies its own name for them. */
+  slicerSettings: z.array(slicerSettingKeySchema).default([]),
   safety: z.array(safetyIdSchema).default([]),
   escalation: z.string().optional(),
   /** Excluded from the ranking when this is definitely true (unknown facts never exclude). */

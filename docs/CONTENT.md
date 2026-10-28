@@ -66,6 +66,15 @@ Add a record to `src/content/guides.ts`. Steps that only apply to some hardware 
 
 Only use diagrams that are schematic and labelled as such. Do not present a photograph of one printer's part as another model's part.
 
+## Slicers
+
+Slicers live in `src/content/slicers.ts`.
+
+- `settings` maps a setting key to the name exactly as it appears in the slicer, its menu location if documented, and the developer's page that gives it. Only add names from the developer's own documentation. Leave a key out rather than guess; the interface then shows the parent project's name (marked as not confirmed) or "Not documented".
+- `basedOn` is the slicer it was forked from, only when its developer says so.
+- `usedBy` links the slicer to printers. Use `official` for the manufacturer's own slicer and `supported` when the manufacturer names it or publishes profiles for it. Leave `printerSlugs` empty only if the statement covers every model from that manufacturer, and always give the manufacturer's page as `sourceUrl`.
+- To point a diagnostic cause or guide at slicer settings, add the keys to its `slicerSettings`. To add a new key, extend `slicerSettingKeySchema` and `SLICER_SETTING_LABELS` in `src/lib/schema/slicer.ts`.
+
 ## Filament, maintenance and parts
 
 - Filament ranges are general starting points. Add manufacturer data sheets under `manufacturerProfiles` with their source URL; do not merge them into the general range.

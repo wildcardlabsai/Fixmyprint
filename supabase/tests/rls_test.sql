@@ -8,6 +8,7 @@ grant select, insert, update, delete on all tables in schema public to anon, aut
 insert into auth.users values ('00000000-0000-0000-0000-000000000001'), ('00000000-0000-0000-0000-000000000002');
 update profiles set role = 'editor' where id = '00000000-0000-0000-0000-000000000002';
 update printer_models set review_status = 'draft' where slug = 'flashforge-adventurer-5m';
+update slicers set review_status = 'draft' where slug = 'flashprint';
 insert into feedback (kind, message) values ('contact', 'hello');
 
 create function pg_temp.expect(ok boolean, label text) returns void language plpgsql as $$
@@ -29,6 +30,9 @@ set role anon;
 select pg_temp.expect((select count(*) from printer_models) = (select count(*) from printer_models where review_status <> 'draft'), 'anon sees only published printers');
 select pg_temp.expect(not exists (select 1 from printer_models where slug = 'flashforge-adventurer-5m'), 'anon cannot see drafts');
 select pg_temp.expect((select count(*) from feedback) = 0, 'anon cannot read feedback');
+select pg_temp.expect(exists (select 1 from slicers where slug = 'orcaslicer') and not exists (select 1 from slicers where slug = 'flashprint'), 'anon sees published slicers but not drafts');
+select pg_temp.expect(exists (select 1 from slicer_links), 'anon can read slicer links');
+select pg_temp.expect(pg_temp.fails($$insert into slicer_links (slicer_slug, position, manufacturer_slug, relation, source_url) values ('orcaslicer', 99, 'creality', 'official', 'https://example.com')$$), 'anon cannot add slicer links');
 select pg_temp.expect(pg_temp.fails($$insert into printer_models (slug, manufacturer_slug, name, summary, confidence_notes, author) values ('x','creality','X','x','x','x')$$), 'anon cannot insert content');
 update printer_models set name = 'changed' where slug = 'creality-k1';
 reset role;

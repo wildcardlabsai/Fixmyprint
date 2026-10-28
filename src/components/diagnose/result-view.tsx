@@ -5,11 +5,12 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
 import { SafetyNotices } from "@/components/safety/safety-notices";
+import { SlicerSettingsPanel } from "@/components/slicers/slicer-settings-panel";
 import { Button, LinkButton } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { applicableChecks, evaluateCondition } from "@/lib/engine/conditions";
 import type { Contribution, Evaluation, RankedOutcome } from "@/lib/engine/engine";
-import type { Condition, DiagnosticFlow, SafetyNotice } from "@/lib/schema";
+import type { Condition, DiagnosticFlow, PrinterModel, SafetyNotice, Slicer } from "@/lib/schema";
 import { CONFIDENCE, ConfidenceBadge } from "./confidence";
 
 export interface GuideSummary {
@@ -24,6 +25,8 @@ interface Props {
   evaluation: Evaluation;
   guides: GuideSummary[];
   safetyNotices: SafetyNotice[];
+  slicers: Slicer[];
+  printers: Pick<PrinterModel, "slug" | "manufacturer">[];
   printerSlug: string | null;
   fixed: boolean;
   onFixed: () => void;
@@ -155,6 +158,7 @@ export function ResultView(p: Props) {
               ))}
             </ol>
           </div>
+          <SlicerSettingsPanel settingKeys={top.outcome.slicerSettings} slicers={p.slicers} printers={p.printers} printerSlug={p.printerSlug} />
           {top.outcome.escalation && <Notice title="If this does not solve it">{top.outcome.escalation}</Notice>}
         </div>
 
@@ -228,6 +232,7 @@ export function ResultView(p: Props) {
                         ))}
                       </ol>
                     </div>
+                    <SlicerSettingsPanel settingKeys={r.outcome.slicerSettings} slicers={p.slicers} printers={p.printers} printerSlug={p.printerSlug} compact />
                     {r.outcome.escalation && <p className="text-sm text-muted">{r.outcome.escalation}</p>}
                     <SafetyNotices ids={r.outcome.safety} notices={p.safetyNotices} />
                     {guidesFor(r).length > 0 && (

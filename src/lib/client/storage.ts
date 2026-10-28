@@ -41,6 +41,7 @@ export type HistoryEntry = z.infer<typeof historyEntrySchema>;
 
 export const keys = {
   printer: `${PREFIX}printer`,
+  slicer: `${PREFIX}slicer`,
   session: (flowId: string) => `${PREFIX}session:${flowId}`,
   guide: (slug: string) => `${PREFIX}guide:${slug}`,
   history: `${PREFIX}history`,
@@ -106,25 +107,35 @@ function subscribe(callback: () => void) {
   };
 }
 
-const getSavedPrinter = () => {
+const getString = (key: string) => () => {
   try {
-    return window.localStorage.getItem(keys.printer);
+    return window.localStorage.getItem(key);
   } catch {
     return null;
   }
 };
+const getSavedPrinter = getString(keys.printer);
+const getSavedSlicer = getString(keys.slicer);
 
-/** The printer the user saved as "my printer" on this device. */
-export function useSavedPrinter(): [string | null, (slug: string | null) => void] {
-  const value = useSyncExternalStore(subscribe, getSavedPrinter, () => null);
-  const set = useCallback((slug: string | null) => {
-    try {
-      if (slug) window.localStorage.setItem(keys.printer, slug);
-      else window.localStorage.removeItem(keys.printer);
-      window.dispatchEvent(new CustomEvent(EVENT, { detail: keys.printer }));
-    } catch {
-      // Ignore.
-    }
-  }, []);
+function useStoredString(key: string, get: () => string | null): [string | null, (value: string | null) => void] {
+  const value = useSyncExternalStore(subscribe, get, () => null);
+  const set = useCallback(
+    (next: string | null) => {
+      try {
+        if (next) window.localStorage.setItem(key, next);
+        else window.localStorage.removeItem(key);
+        window.dispatchEvent(new CustomEvent(EVENT, { detail: key }));
+      } catch {
+        // Ignore.
+      }
+    },
+    [key],
+  );
   return [value, set];
 }
+
+/** The printer the user saved as "my printer" on this device. */
+export const useSavedPrinter = () => useStoredString(keys.printer, getSavedPrinter);
+
+/** The slicer the user chose on this device, used to show setting names in their slicer. */
+export const useSavedSlicer = () => useStoredString(keys.slicer, getSavedSlicer);

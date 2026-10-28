@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-const ORDER: SearchType[] = ["error", "symptom", "printer", "guide", "filament", "maintenance", "part"];
+const ORDER: SearchType[] = ["error", "symptom", "printer", "guide", "filament", "maintenance", "part", "slicer"];
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
   const raw = (await searchParams).q;

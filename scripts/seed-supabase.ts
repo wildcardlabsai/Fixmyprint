@@ -41,6 +41,8 @@ const PRIMARY_KEYS: Record<(typeof TABLE_ORDER)[number], string> = {
   part_compatibility: "part_slug,printer_slug",
   guide_parts: "guide_slug,position",
   error_codes: "slug",
+  slicers: "slug",
+  slicer_links: "slicer_slug,position",
   content_sources: "entity_type,entity_key,source_id",
 };
 

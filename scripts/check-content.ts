@@ -20,5 +20,6 @@ count("Repair guides", seed.guides.length);
 count("Filaments", seed.filaments.length);
 count("Maintenance tasks", seed.maintenance.length);
 count("Parts", seed.parts.length);
+count("Slicers", seed.slicers.length);
 count("Error messages", seed.errorCodes.length);
 console.log("Content is valid.");

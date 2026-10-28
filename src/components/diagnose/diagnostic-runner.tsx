@@ -11,7 +11,7 @@ import { addHistory, keys, read, remove, sessionSchema, useSavedPrinter, write }
 import type { ManufacturerOption, PrinterOption } from "@/lib/data/view-models";
 import { factsFromPrinter } from "@/lib/engine/conditions";
 import { answerQuestion, emptyState, evaluate, goBack, markTried, type DiagnosticState } from "@/lib/engine/engine";
-import type { DiagnosticFlow, PrinterModel, SafetyNotice } from "@/lib/schema";
+import type { DiagnosticFlow, PrinterModel, SafetyNotice, Slicer } from "@/lib/schema";
 import { AnswersSummary } from "./answers-summary";
 import { QuestionView } from "./question-view";
 import { ResultView, type GuideSummary } from "./result-view";
@@ -23,6 +23,7 @@ export interface DiagnosticRunnerProps {
   manufacturerOptions: ManufacturerOption[];
   guides: GuideSummary[];
   safetyNotices: SafetyNotice[];
+  slicers: Slicer[];
 }
 
 export function DiagnosticRunner(props: DiagnosticRunnerProps) {
@@ -231,6 +232,8 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
                 evaluation={ev}
                 guides={props.guides}
                 safetyNotices={props.safetyNotices}
+                slicers={props.slicers}
+                printers={props.printers}
                 printerSlug={printerSlug}
                 fixed={fixed}
                 onFixed={onFixed}

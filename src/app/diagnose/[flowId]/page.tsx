@@ -51,6 +51,7 @@ export default async function DiagnoseFlowPage({ params }: { params: Promise<Par
           manufacturerOptions={manufacturerOptions(c)}
           guides={guides}
           safetyNotices={c.safetyNotices}
+          slicers={c.slicers}
         />
       </Suspense>
     </Container>

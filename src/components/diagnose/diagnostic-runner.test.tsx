@@ -18,6 +18,7 @@ function renderRunner() {
       manufacturerOptions={manufacturerOptions(seed)}
       guides={seed.guides.map((g) => ({ slug: g.slug, title: g.title, summary: g.summary }))}
       safetyNotices={seed.safetyNotices}
+      slicers={seed.slicers}
     />,
   );
 }

@@ -11,6 +11,7 @@ import { getContent } from "@/lib/data/repository";
 import { errorCodesForFirmware, findManufacturer, findPrinter, guidesForPrinter, guidesFor, printerDisplayName } from "@/lib/data/selectors";
 import { evaluateCondition, factsFromPrinter } from "@/lib/engine/conditions";
 import { specRows, UNKNOWN } from "@/lib/printer-labels";
+import { slicersForPrinter } from "@/lib/slicers";
 
 type Params = { slug: string };
 
@@ -46,6 +47,7 @@ export default async function PrinterPage({ params }: { params: Promise<Params> 
   const errors = errorCodesForFirmware(c, p.specs.firmwareFamily);
   const parts = c.parts.filter((x) => x.compatibility.some((cp) => cp.printerSlug === p.slug));
   const sources = c.sources.filter((s) => p.sourceIds.includes(s.id));
+  const slicers = slicersForPrinter(c, p);
 
   return (
     <Container className="py-8">
@@ -201,6 +203,35 @@ export default async function PrinterPage({ params }: { params: Promise<Params> 
               ))}
             </ul>
             <p className="mt-3 text-xs text-muted">FixMyPrint is independent and not affiliated with {maker?.name ?? "the manufacturer"}.</p>
+          </section>
+
+          <section aria-labelledby="slicer-heading" className="rounded-lg border border-line bg-surface p-4">
+            <h2 id="slicer-heading" className="font-semibold">
+              Slicer software
+            </h2>
+            {slicers.length > 0 ? (
+              <ul className="mt-2 space-y-2.5 text-sm">
+                {slicers.map(({ slicer, link }) => (
+                  <li key={slicer.slug}>
+                    <Link href={`/slicers/${slicer.slug}`} className="font-medium">
+                      {slicer.name}
+                    </Link>
+                    <span className="text-muted"> · {link.relation === "official" ? `${maker?.name ?? "Manufacturer"}'s own slicer` : `named by ${maker?.name ?? "the manufacturer"}`}</span>
+                    {link.note && <p className="text-xs text-muted">{link.note}</p>}
+                    <a href={link.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs">
+                      Manufacturer source
+                      <ExternalLink className="size-3" aria-hidden />
+                      <span className="sr-only">(opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-1 text-sm text-muted">{maker?.name ?? "The manufacturer"} does not name a slicer for this model in the sources we have checked.</p>
+            )}
+            <Link href="/slicers" className="mt-3 inline-block text-sm">
+              Compare slicers
+            </Link>
           </section>
 
           <section aria-labelledby="maint-heading" className="rounded-lg border border-line bg-surface p-4">

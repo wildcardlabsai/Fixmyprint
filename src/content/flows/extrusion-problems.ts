@@ -214,6 +214,7 @@ export const extrusionProblems: DiagnosticFlowInput = {
     },
     {
       id: "flow-calibration",
+      slicerSettings: ["flow"],
       title: "The extrusion amount is set incorrectly",
       summary: "The printer or slicer is asking for less filament than the part needs.",
       explanation: "If the flow rate, filament diameter, extruder steps or rotation distance is wrong, every line is consistently too thin. A slicer set for 2.85 mm filament when you use 1.75 mm will under-extrude severely. This usually appears after a firmware, extruder or profile change.",

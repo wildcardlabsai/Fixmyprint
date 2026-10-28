@@ -271,6 +271,7 @@ export const firstLayerAdhesion: DiagnosticFlowInput = {
     },
     {
       id: "thermal-contraction",
+      slicerSettings: ["brim"],
       title: "The part is shrinking as it cools",
       summary: "Plastic contracts as it cools, pulling corners and edges up off the bed.",
       explanation: "Every layer shrinks slightly as it cools, and the stress adds up as the part gets taller. Corners and long straight edges are where it pulls hardest. ABS, ASA, nylon and PC shrink far more than PLA, which is why they usually need an enclosure.",

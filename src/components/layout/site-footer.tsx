@@ -16,6 +16,7 @@ const COLUMNS = [
     links: [
       { href: "/printers", label: "Printer library" },
       { href: "/filament", label: "Filament settings" },
+      { href: "/slicers", label: "Slicer software" },
       { href: "/maintenance", label: "Maintenance" },
       { href: "/parts", label: "Parts" },
     ],

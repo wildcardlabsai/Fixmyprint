@@ -49,7 +49,7 @@ Copy `.env.example` to `.env.local`. Everything is optional.
 
 What is stored where:
 
-- **Content** (printers, flows, guides, filament, maintenance, parts, error messages, sources) can be read by anyone when not in `draft`. Only `editor` and `admin` profiles can write it.
+- **Content** (printers, flows, guides, filament, maintenance, parts, error messages, slicers, sources) can be read by anyone when not in `draft`. Only `editor` and `admin` profiles can write it.
 - **Feedback** is inserted by the server with the service role. Only editors and admins can read it.
 - **Saved printers, diagnostic sessions and repair history** tables exist for signed-in users, scoped to their own rows. The current release has no sign-in, so the app keeps these on the device only (see below).
 
@@ -102,9 +102,13 @@ Without accounts, the browser's local storage holds the saved printer, in-progre
 - Row level security is enabled on every table and tested by `npm run test:db`. A trigger stops anyone but an admin changing roles.
 - Security headers are set in `next.config.ts`.
 
+### Slicers
+
+Each slicer record (`src/content/slicers.ts`) lists the setting names its developer documents, the project it is built on, and the printers whose manufacturer makes it or names it, each with the manufacturer page that says so. Diagnostic causes and guides list the settings they involve as keys (`retraction`, `flow`, `seam`, ...). The "In your slicer" panel turns those keys into the name and menu location in the person's slicer: by default the printer manufacturer's own slicer, or the one they chose (saved on the device). If a slicer's developer does not document a setting, the name from the project it is built on is shown and marked as not confirmed; otherwise it says "Not documented". Names are never guessed.
+
 ### Search
 
-`src/lib/search/search.ts` builds an in-memory index of printers, symptoms, error messages, guides, filament, maintenance and parts. It matches model names however they are typed (`ender3v2`, `Ender-3 V2`), aliases, UK and US spellings, prefixes and small typos, and requires every query word to match something.
+`src/lib/search/search.ts` builds an in-memory index of printers, symptoms, error messages, guides, filament, maintenance, parts and slicers. It matches model names however they are typed (`ender3v2`, `Ender-3 V2`), aliases, UK and US spellings, prefixes and small typos, and requires every query word to match something.
 
 ## Content
 
@@ -114,6 +118,7 @@ See [docs/CONTENT.md](docs/CONTENT.md) for how to add printers, flows and guides
 
 - 58 printer models from 11 manufacturers: Bambu Lab, Prusa Research, Creality, Anycubic, Elegoo, QIDI Tech, Sovol, Flashforge, Artillery, Raise3D and UltiMaker. Each record lists the manufacturer pages its specifications came from and the date they were read. Values the manufacturer does not publish, or publishes inconsistently, are left blank with the reason given (for example, Creality's own pages give three different hotend maximums for the Ender-3 V2).
 - Levelling is recorded as manual, separate probe, nozzle-sensing, or automatic where the manufacturer does not say which sensor it uses. Advice, guide steps and guide recommendations are filtered by it, and a test walks every diagnostic path for every printer to make sure manual-levelling advice never reaches a self-levelling printer and vice versa.
+- 11 slicers: OrcaSlicer, Bambu Studio, PrusaSlicer, UltiMaker Cura, Creality Print, Anycubic Slicer Next, ElegooSlicer, QIDI Studio, Flash Studio Desktop (formerly Orca-Flashforge), FlashPrint 5 and ideaMaker. Each has its lineage, links to the printers whose manufacturer names it, and the setting names its developer documents. Setting names Creality, Anycubic, Elegoo, QIDI and Flashforge do not publish for their slicers are shown as inherited from the project they are built on, or as not documented.
 - 10 diagnostic flows covering every symptom category (77 questions, 100 possible causes).
 - 11 repair guides, 8 filament profiles, 12 maintenance tasks, 12 manufacturer-sold spare parts with links to the manufacturers' stores, and 13 firmware error messages.
 

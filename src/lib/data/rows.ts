@@ -40,6 +40,8 @@ export const TABLE_ORDER = [
   "part_compatibility",
   "guide_parts",
   "error_codes",
+  "slicers",
+  "slicer_links",
   "content_sources",
 ] as const;
 
@@ -152,7 +154,7 @@ export function contentToRows(c: SeedContent): TableRows {
       });
     });
     f.outcomes.forEach((o, position) => {
-      rows.diagnostic_outcomes.push({ ...k, key: o.id, position, title: o.title, summary: o.summary, explanation: o.explanation, checks: o.checks, safety: o.safety, escalation: n(o.escalation), not_applicable_when: n(o.notApplicableWhen) });
+      rows.diagnostic_outcomes.push({ ...k, key: o.id, position, title: o.title, summary: o.summary, explanation: o.explanation, checks: o.checks, slicer_settings: o.slicerSettings, safety: o.safety, escalation: n(o.escalation), not_applicable_when: n(o.notApplicableWhen) });
       o.guideSlugs.forEach((guide_slug, i) => rows.diagnostic_outcome_guides.push({ ...k, outcome_key: o.id, guide_slug, position: i }));
     });
     f.rules.forEach((r, position) => {
@@ -178,6 +180,7 @@ export function contentToRows(c: SeedContent): TableRows {
       safety: g.safety,
       hardware_selector: n(g.hardwareSelector),
       settings: g.settings,
+      slicer_settings: g.slicerSettings,
       expected_result: g.expectedResult,
       verification_steps: g.verificationSteps,
       if_fails: g.ifFails,
@@ -262,6 +265,38 @@ export function contentToRows(c: SeedContent): TableRows {
       ...toV(e.verification),
     });
     sourceLink("error-code", e.slug, e.sourceIds);
+  }
+
+  // Parents before the slicers built on them, so the based_on reference exists on insert.
+  const depth = (slug: string | null, seen = new Set<string>()): number => {
+    const s = slug ? c.slicers.find((x) => x.slug === slug) : undefined;
+    if (!s || seen.has(s.slug)) return 0;
+    seen.add(s.slug);
+    return 1 + depth(s.basedOn, seen);
+  };
+  for (const s of [...c.slicers].sort((a, b) => depth(a.slug) - depth(b.slug))) {
+    rows.slicers.push({
+      slug: s.slug,
+      name: s.name,
+      developer: s.developer,
+      aliases: s.aliases,
+      former_names: s.formerNames,
+      based_on: s.basedOn,
+      lineage: n(s.lineage),
+      open_source: s.openSource,
+      licence: s.licence,
+      platforms: s.platforms,
+      url: s.url,
+      summary: s.summary,
+      settings: s.settings,
+      calibration_tools: s.calibrationTools,
+      notes: s.notes,
+      sources: s.sources,
+      ...toV(s.verification),
+    });
+    s.usedBy.forEach((l, position) =>
+      rows.slicer_links.push({ slicer_slug: s.slug, position, manufacturer_slug: l.manufacturer, printer_slugs: l.printerSlugs, relation: l.relation, note: n(l.note), source_url: l.sourceUrl }),
+    );
   }
 
   return rows;
@@ -391,6 +426,7 @@ export function rowsToContent(r: TableRows): RawContent {
           summary: o.summary,
           explanation: o.explanation,
           checks: o.checks,
+          slicerSettings: o.slicer_settings ?? [],
           guideSlugs: (ogByOutcome.get(`${key}/${o.key}`) ?? []).map((g) => g.guide_slug),
           safety: o.safety,
           escalation: u(o.escalation),
@@ -436,11 +472,40 @@ export function rowsToContent(r: TableRows): RawContent {
       diagram: u(s.diagram),
     })),
     settings: g.settings,
+    slicerSettings: g.slicer_settings ?? [],
     expectedResult: g.expected_result,
     verificationSteps: g.verification_steps,
     ifFails: g.if_fails,
     sourceIds: sourceIds("guide", g.slug as string),
     verification: fromV(g),
+  }));
+
+  const linksBySlicer = groupBy(r.slicer_links, (x) => x.slicer_slug as string);
+  const slicers = bySlug(r.slicers).map((s) => ({
+    slug: s.slug,
+    name: s.name,
+    developer: s.developer,
+    aliases: s.aliases,
+    formerNames: s.former_names,
+    basedOn: s.based_on ?? null,
+    lineage: u(s.lineage),
+    openSource: s.open_source ?? null,
+    licence: s.licence ?? null,
+    platforms: s.platforms,
+    url: s.url,
+    summary: s.summary,
+    settings: s.settings,
+    calibrationTools: s.calibration_tools,
+    notes: s.notes,
+    usedBy: (linksBySlicer.get(s.slug as string) ?? []).map((l) => ({
+      manufacturer: l.manufacturer_slug,
+      printerSlugs: l.printer_slugs,
+      relation: l.relation,
+      note: u(l.note),
+      sourceUrl: l.source_url,
+    })),
+    sources: s.sources,
+    verification: fromV(s),
   }));
 
   const symptomGuides = groupBy(r.symptom_guides, (x) => x.symptom_slug as string);
@@ -531,5 +596,6 @@ export function rowsToContent(r: TableRows): RawContent {
       sourceIds: sourceIds("error-code", e.slug as string),
       verification: fromV(e),
     })),
+    slicers,
   };
 }

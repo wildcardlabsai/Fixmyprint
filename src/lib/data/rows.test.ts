@@ -16,6 +16,7 @@ function normalise(c: SeedContent) {
     maintenance: bySlug(c.maintenance),
     parts: bySlug(c.parts),
     errorCodes: bySlug(c.errorCodes),
+    slicers: bySlug(c.slicers),
   };
 }
 

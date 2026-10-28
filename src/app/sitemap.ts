@@ -6,7 +6,7 @@ import { publicEnv } from "@/lib/env";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const c = await getContent();
   const url = (path: string) => `${publicEnv.siteUrl}${path}`;
-  const staticPaths = ["/", "/diagnose", "/printers", "/guides", "/filament", "/maintenance", "/parts", "/error-codes", "/about", "/safety", "/contact", "/privacy", "/terms"];
+  const staticPaths = ["/", "/diagnose", "/printers", "/guides", "/filament", "/maintenance", "/parts", "/error-codes", "/slicers", "/about", "/safety", "/contact", "/privacy", "/terms"];
   return [
     ...staticPaths.map((p) => ({ url: url(p) })),
     ...c.flows.map((f) => ({ url: url(`/diagnose/${f.id}`) })),
@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...c.printers.map((p) => ({ url: url(`/printers/${p.slug}`), lastModified: p.lastVerified ?? undefined })),
     ...c.guides.map((g) => ({ url: url(`/guides/${g.slug}`), lastModified: g.verification.lastReviewed ?? undefined })),
     ...c.filaments.map((f) => ({ url: url(`/filament/${f.slug}`) })),
+    ...c.slicers.map((s) => ({ url: url(`/slicers/${s.slug}`) })),
     ...c.errorCodes.map((e) => ({ url: url(`/error-codes/${e.slug}`) })),
   ];
 }

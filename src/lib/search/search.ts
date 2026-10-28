@@ -1,7 +1,7 @@
 import type { SeedContent } from "@/content";
 import { printerDisplayName } from "@/lib/data/selectors";
 
-export type SearchType = "printer" | "symptom" | "error" | "guide" | "filament" | "maintenance" | "part";
+export type SearchType = "printer" | "symptom" | "error" | "guide" | "filament" | "maintenance" | "part" | "slicer";
 
 export interface SearchDoc {
   type: SearchType;
@@ -28,6 +28,7 @@ export const TYPE_LABELS: Record<SearchType, string> = {
   filament: "Filament",
   maintenance: "Maintenance",
   part: "Part",
+  slicer: "Slicer",
 };
 
 /** UK/US spellings and common shorthand mapped to one form. */
@@ -75,6 +76,8 @@ const VARIANTS: Record<string, string> = {
   adhesive: "adhesion",
   polycarbonate: "pc",
   flexible: "tpu",
+  slicers: "slicer",
+  slicing: "slicer",
 };
 
 const STOP_WORDS = new Set(["the", "a", "an", "my", "is", "are", "of", "on", "to", "and", "or", "it", "its", "with", "how", "why", "do", "i", "me", "for", "in", "not"]);
@@ -178,6 +181,17 @@ export function buildIndex(c: SeedContent): SearchIndex {
   }
   for (const p of c.parts) {
     docs.push({ type: "part", id: p.slug, title: p.name, subtitle: p.description, href: `/parts#${p.slug}`, names: [p.name], keywords: [p.description, p.category, "part", "replacement"] });
+  }
+  for (const s of c.slicers) {
+    docs.push({
+      type: "slicer",
+      id: s.slug,
+      title: s.name,
+      subtitle: s.summary,
+      href: `/slicers/${s.slug}`,
+      names: [s.name, ...s.aliases, ...s.formerNames],
+      keywords: [s.developer, "slicer", "software", s.summary, ...Object.values(s.settings).map((x) => x.name)],
+    });
   }
 
   return {

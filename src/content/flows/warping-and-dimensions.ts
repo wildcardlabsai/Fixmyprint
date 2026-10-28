@@ -124,6 +124,7 @@ export const warpingAndDimensions: DiagnosticFlowInput = {
   outcomes: [
     {
       id: "contraction",
+      slicerSettings: ["brim"],
       title: "The part is shrinking as it cools",
       summary: "Cooling plastic contracts and pulls corners and edges up.",
       explanation: "Each layer shrinks a little as it cools. The stress builds as the part gets taller and is strongest at corners and along long straight edges. ABS, ASA, nylon and PC shrink much more than PLA or PETG.",
@@ -145,6 +146,7 @@ export const warpingAndDimensions: DiagnosticFlowInput = {
     },
     {
       id: "adhesion",
+      slicerSettings: ["brim", "first-layer-speed"],
       title: "The first layer is not bonding well enough",
       summary: "The part lifts because it was never firmly stuck down.",
       explanation: "Any warping force will lift a part that is only lightly attached. Fix the first layer before changing anything else.",
@@ -154,6 +156,7 @@ export const warpingAndDimensions: DiagnosticFlowInput = {
     },
     {
       id: "first-layer-squish",
+      slicerSettings: ["elephant-foot"],
       title: "The first layer is squashed too much",
       summary: "The nozzle is slightly too close on the first layer, so it spreads wider than the walls above it.",
       explanation: "A little squish helps adhesion. Too much spreads the first layer outwards, giving a flared base.",
@@ -215,6 +218,7 @@ export const warpingAndDimensions: DiagnosticFlowInput = {
     },
     {
       id: "over-extrusion",
+      slicerSettings: ["flow"],
       title: "Too much plastic is making walls slightly thick",
       summary: "Extra plastic widens every outer wall.",
       explanation: "A flow rate set slightly high makes outer walls wider than designed, so outside dimensions grow on every side.",

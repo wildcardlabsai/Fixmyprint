@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { GuideMeta } from "@/components/guides/guide-meta";
 import { GuideRunner } from "@/components/guides/guide-runner";
 import { SafetyNotices } from "@/components/safety/safety-notices";
+import { SlicerSettingsPanel } from "@/components/slicers/slicer-settings-panel";
 import { Breadcrumbs, Container } from "@/components/ui/layout";
 import { ReviewBadge, ReviewDetails } from "@/components/ui/review-status";
 import { SourceList } from "@/components/ui/source-list";
@@ -135,6 +136,16 @@ export default async function GuidePage({ params }: { params: Promise<Params> })
                 ))}
               </dl>
             </section>
+          )}
+
+          {guide.slicerSettings.length > 0 && (
+            <Suspense fallback={null}>
+              <SlicerSettingsPanel
+                settingKeys={guide.slicerSettings}
+                slicers={c.slicers}
+                printers={c.printers.map((p) => ({ slug: p.slug, manufacturer: p.manufacturer }))}
+              />
+            </Suspense>
           )}
 
           <section aria-labelledby="review-heading" className="rounded-lg border border-line bg-surface p-4">

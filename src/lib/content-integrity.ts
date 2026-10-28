@@ -108,6 +108,28 @@ export function checkContentIntegrity(c: SeedContent): string[] {
     checkSources(e.sourceIds, `error ${e.slug}`);
   }
 
+  const slicers = unique(c.slicers.map((s) => s.slug), "slicer");
+  for (const s of c.slicers) {
+    const where = `slicer ${s.slug}`;
+    if (s.basedOn) has(slicers, s.basedOn, where, "slicer");
+    for (const link of s.usedBy) {
+      has(manufacturers, link.manufacturer, where, "manufacturer");
+      for (const slug of link.printerSlugs) {
+        const printer = c.printers.find((p) => p.slug === slug);
+        if (!printer) problems.push(`${where}: unknown printer "${slug}"`);
+        else if (printer.manufacturer !== link.manufacturer) problems.push(`${where}: printer "${slug}" is not made by ${link.manufacturer}`);
+      }
+    }
+    const seen = new Set([s.slug]);
+    for (let parent = s.basedOn; parent; parent = c.slicers.find((x) => x.slug === parent)?.basedOn ?? null) {
+      if (seen.has(parent)) {
+        problems.push(`${where}: basedOn forms a cycle`);
+        break;
+      }
+      seen.add(parent);
+    }
+  }
+
   return problems;
 }
 

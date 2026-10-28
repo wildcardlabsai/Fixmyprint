@@ -25,6 +25,14 @@ describe("search normalisation", () => {
 });
 
 describe("search matching", () => {
+  it("finds slicers by name, alias and former name", () => {
+    expect(top("orca")?.id).toBe("orcaslicer");
+    expect(top("flash print")?.id).toBe("flashprint");
+    expect(top("orca flashforge")?.id).toBe("flash-studio-desktop");
+    expect(top("cura")?.id).toBe("ultimaker-cura");
+    expect(ids("bambu studio")[0]).toBe("bambu-studio");
+  });
+
   it("finds printers however the model is typed", () => {
     for (const q of ["Ender-3 V2", "ender 3 v2", "ender3v2", "e3v2", "Creality Ender 3 V2"]) {
       expect(top(q)?.id, q).toBe("creality-ender-3-v2");

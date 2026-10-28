@@ -9,6 +9,7 @@ import {
   partSchema,
   printerModelSchema,
   safetyNoticeSchema,
+  slicerSchema,
   sourceReferenceSchema,
   symptomCategorySchema,
   symptomSchema,
@@ -21,10 +22,11 @@ import { maintenanceInputs } from "./maintenance";
 import { partInputs } from "./parts";
 import { manufacturers as manufacturerInputs, printers as printerInputs } from "./printers";
 import { safetyNotices as safetyInputs, sources as sourceInputs } from "./shared";
+import { slicerInputs } from "./slicers";
 import { symptomCategories as categoryInputs, symptoms as symptomInputs } from "./symptoms";
 
 /** Bumped whenever seed content changes in a way that should be re-synced to the database. */
-export const CONTENT_VERSION = "2026-10-27.1";
+export const CONTENT_VERSION = "2026-10-28.1";
 
 function parseAll<T extends z.ZodType>(schema: T, items: unknown[], label: string): z.infer<T>[] {
   return items.map((item, i) => {
@@ -50,6 +52,7 @@ export interface RawContent {
   maintenance: unknown[];
   parts: unknown[];
   errorCodes: unknown[];
+  slicers: unknown[];
 }
 
 /** Validates raw content from any source (bundled seed or database) into typed content. */
@@ -68,6 +71,7 @@ export function parseContent(raw: RawContent, version: string) {
     maintenance: parseAll(maintenanceTaskSchema, raw.maintenance, "maintenance task"),
     parts: parseAll(partSchema, raw.parts, "part"),
     errorCodes: parseAll(errorCodeSchema, raw.errorCodes, "error code"),
+    slicers: parseAll(slicerSchema, raw.slicers, "slicer"),
   };
 }
 
@@ -91,6 +95,7 @@ export const seed: SeedContent = parseContent(
     maintenance: maintenanceInputs,
     parts: partInputs,
     errorCodes: errorCodeInputs,
+    slicers: slicerInputs,
   },
   CONTENT_VERSION,
 );

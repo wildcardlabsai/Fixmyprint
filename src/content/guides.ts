@@ -480,6 +480,7 @@ export const guideInputs: GuideInput[] = [
   },
   {
     slug: "check-the-extruder",
+    slicerSettings: ["flow"],
     title: "Check the extruder and calibrate extrusion",
     summary: "Check the filament path, clean and inspect the drive gear, set tension and confirm the extruder moves the right amount.",
     problem: "An extruder that slips or pushes the wrong amount of filament causes under-extrusion and clicking.",
@@ -585,6 +586,7 @@ export const guideInputs: GuideInput[] = [
   },
   {
     slug: "tune-retraction",
+    slicerSettings: ["retraction", "wipe", "avoid-crossing"],
     title: "Tune retraction to reduce stringing",
     summary: "Find retraction settings that suit your extruder type, after ruling out wet filament and high temperatures.",
     problem: "Too little retraction leaves pressure in the nozzle during travel moves, so plastic oozes and forms strings.",
@@ -693,6 +695,7 @@ export const guideInputs: GuideInput[] = [
   },
   {
     slug: "reduce-warping",
+    slicerSettings: ["brim", "first-layer-speed"],
     title: "Reduce warping and lifting corners",
     summary: "Get a strong first layer, add a brim, control cooling and keep the air around the print still and warm.",
     problem: "Plastic shrinks as it cools, and the stress pulls corners and edges up off the bed.",

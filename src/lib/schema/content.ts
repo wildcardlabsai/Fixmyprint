@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { conditionSchema, factKeySchema } from "./condition";
+import { slicerSettingKeySchema } from "./slicer";
 import { rangeSchema, safetyIdSchema, slugSchema, verificationSchema } from "./common";
 
 /* Symptoms and categories ------------------------------------------------- */
@@ -85,6 +86,8 @@ export const guideSchema = z.object({
   hardwareSelector: hardwareSelectorSchema.optional(),
   steps: z.array(guideStepSchema).min(1),
   settings: z.array(z.object({ name: z.string(), value: z.string(), note: z.string().optional() })).default([]),
+  /** Slicer settings this guide adjusts. Shown with each slicer's own names. */
+  slicerSettings: z.array(slicerSettingKeySchema).default([]),
   expectedResult: z.string().min(1),
   verificationSteps: z.array(z.string()).min(1),
   ifFails: z.object({

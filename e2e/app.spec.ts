@@ -56,6 +56,20 @@ test("printer page marks unknown specifications instead of guessing", async ({ p
   await expect(page.getByText("Not yet reviewed").first()).toBeVisible();
 });
 
+test("slicer names follow the printer through guides and printer pages", async ({ page }) => {
+  await page.goto("/printers/prusa-mk4");
+  await expect(page.getByRole("link", { name: "PrusaSlicer" })).toBeVisible();
+  await page.goto("/guides/tune-retraction?printer=prusa-mk4");
+  const panel = page.getByRole("region", { name: "In your slicer" });
+  await expect(panel.getByLabel("Slicer")).toHaveValue("prusaslicer");
+  await expect(panel.getByText("Avoid crossing perimeters")).toBeVisible();
+  await panel.getByLabel("Slicer").selectOption("ultimaker-cura");
+  await expect(panel.getByText("Combing Mode")).toBeVisible();
+  await page.goto("/slicers");
+  await expect(page.getByRole("link", { name: /^OrcaSlicer/ }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /^FlashPrint 5/ }).first()).toBeVisible();
+});
+
 test("feedback reports say honestly when they are not stored", async ({ page }) => {
   await page.goto("/contact");
   await page.getByLabel("Your message").fill("The PETG page is missing a drying time for my brand.");
@@ -63,7 +77,7 @@ test("feedback reports say honestly when they are not stored", async ({ page }) 
   await expect(page.getByText("Your report was not saved.")).toBeVisible();
 });
 
-for (const path of ["/", "/diagnose", "/diagnose/heating-faults", "/printers", "/printers/prusa-mk4", "/guides/clear-a-blocked-nozzle", "/filament", "/maintenance", "/error-codes"]) {
+for (const path of ["/", "/diagnose", "/diagnose/heating-faults", "/printers", "/printers/prusa-mk4", "/guides/clear-a-blocked-nozzle", "/filament", "/maintenance", "/error-codes", "/slicers", "/slicers/orcaslicer"]) {
   test(`no horizontal overflow on ${path}`, async ({ page }) => {
     await page.goto(path);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
