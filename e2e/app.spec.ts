@@ -1,4 +1,10 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+/** Picture cards are labelled radio buttons; people click the card itself. */
+const pickCard = async (page: Page, name: RegExp) => {
+  await page.locator("label", { has: page.getByRole("radio", { name }) }).click();
+  await expect(page.getByRole("radio", { name })).toBeChecked();
+};
 
 test.describe("landing page", () => {
   test("hero actions, search and image work", async ({ page }) => {
@@ -52,7 +58,9 @@ test.describe("landing page", () => {
     await page.getByRole("link", { name: /Stringing, blobs and surface quality/ }).click();
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Stringing, blobs and surface quality");
     await page.getByRole("link", { name: /Diagnose this/ }).first().click();
-    await expect(page.getByRole("heading", { name: "What does the problem look like?" })).toBeVisible();
+    // Choosing "Stringing" answers the first question, so the diagnosis continues from the next one.
+    await expect(page.getByText("The problem you chose")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /hear popping or crackling/ })).toBeVisible();
   });
 });
 
@@ -64,7 +72,7 @@ test("completes a diagnosis, follows the repair guide and returns when not fixed
   await expect(page.getByRole("heading", { name: "The nozzle is too far from the bed" })).toBeVisible();
   await expect(page.getByText("From your printer's specifications")).toBeVisible();
 
-  await page.getByRole("link", { name: "Start repair guide" }).click();
+  await page.getByRole("link", { name: "Open the step-by-step guide" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Level the bed" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Set each corner with a sheet of paper" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Measure a fresh bed mesh at temperature" })).toHaveCount(0);
@@ -78,11 +86,46 @@ test("completes a diagnosis, follows the repair guide and returns when not fixed
   await expect(page.getByRole("heading", { name: "The nozzle is too far from the bed" })).toHaveCount(0);
 });
 
+test("visual diagnosis: pick a picture, compare with your own photo, and reach a result", async ({ page }) => {
+  await page.goto("/diagnose");
+  await pickCard(page, /Corners lifting or warping/);
+  await page.getByRole("link", { name: /Continue/ }).click();
+  await expect(page.getByText("The problem you chose")).toBeVisible();
+  // The follow-up question compares pictures.
+  await expect(page.getByRole("heading", { name: "Which picture looks most like your print?" })).toBeVisible();
+  await page.getByRole("button", { name: /Every corner lifts/ }).click();
+
+  // An optional photo, kept in the browser and labelled as not analysed.
+  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==", "base64");
+  await page.locator(`input[type="file"]`).setInputFiles({ name: "print.png", mimeType: "image/png", buffer: png });
+  await expect(page.getByRole("img", { name: "Your photo of the print" })).toBeVisible();
+
+  for (const a of [/Within the first few layers/, /Smooth PEI/, /^PLA$/, /Open, near a window/, /It sticks well, and I'm not using a brim/]) {
+    await page.getByRole("button", { name: a }).click();
+  }
+  await expect(page.getByRole("heading", { name: "What you reported" })).toBeVisible();
+  await expect(page.getByText("(not analysed)")).toBeVisible();
+  await expect(page.getByText("These instructions are general")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "How to fix it" })).toBeVisible();
+});
+
+test("resin printers get resin problems and resin-specific advice", async ({ page }) => {
+  await page.goto("/diagnose?printer=elegoo-saturn-4-ultra-16k");
+  await expect(page.getByRole("radio", { name: /Corners lifting or warping/ })).toHaveCount(0);
+  await pickCard(page, /Prints failing to stick to the build plate/);
+  await page.getByRole("link", { name: /Continue/ }).click();
+  // The printer levels itself, so that question is answered from its specifications.
+  await page.getByRole("button", { name: /Yes, the resin maker's settings/ }).click();
+  await page.getByRole("button", { name: /Cool: an unheated room/ }).click();
+  await expect(page.getByText("Confirmed specifications used for the Elegoo Saturn 4 Ultra 16K")).toBeVisible();
+  await expect(page.getByText(/sheet of paper on the screen/)).toHaveCount(0);
+});
+
 test("search finds printers, problems and error messages", async ({ page }) => {
   await page.goto("/search?q=mintemp");
   await expect(page.getByRole("link", { name: /^MINTEMP/ })).toBeVisible();
   await page.goto("/search?q=strining");
-  await expect(page.getByRole("link", { name: /Stringing between parts/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Stringing and fine hairs/ })).toBeVisible();
 });
 
 test("printer page marks unknown specifications instead of guessing", async ({ page }) => {
@@ -128,7 +171,7 @@ test("feedback reports say honestly when they are not stored", async ({ page }) 
   await expect(page.getByText("Your report was not saved.")).toBeVisible();
 });
 
-for (const path of ["/", "/diagnose", "/diagnose/heating-faults", "/printers", "/printers/prusa-mk4", "/guides/clear-a-blocked-nozzle", "/filament", "/maintenance", "/error-codes", "/slicers", "/slicers/orcaslicer"]) {
+for (const path of ["/", "/diagnose", "/diagnose/heating-faults", "/printers", "/printers/prusa-mk4", "/guides/clear-a-blocked-nozzle", "/filament", "/maintenance", "/error-codes", "/slicers", "/slicers/orcaslicer", "/diagnose/warping-and-dimensions?symptom=warping", "/printers/elegoo-mars-5-ultra"]) {
   test(`no horizontal overflow on ${path}`, async ({ page }) => {
     await page.goto(path);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

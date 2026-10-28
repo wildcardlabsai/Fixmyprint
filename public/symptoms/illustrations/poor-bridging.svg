@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Poor bridging: lines sag and droop between two supports</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="36.0" y="300.0" width="408.0" height="14.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="40.0" y1="301.0" x2="440.0" y2="301.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <rect x="70.0" y="291.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="282.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="273.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="264.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="255.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="246.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="237.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="228.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="219.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="210.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="201.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="192.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="183.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="174.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="165.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="156.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="147.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="70.0" y="138.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="291.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="282.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="273.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="264.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="255.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="246.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="237.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="228.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="219.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="210.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="201.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="192.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="183.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="174.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="165.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="156.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="147.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="340.0" y="138.0" width="70.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <path d="M140,140 Q240,232 340,140" fill="none" stroke="#3B8EEA" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M140,146 Q240,222 340,146" fill="none" stroke="#3B8EEA" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M140,152 Q240,212 340,152" fill="none" stroke="#3B8EEA" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M140,158 Q240,202 340,158" fill="none" stroke="#3B8EEA" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="240.0" cy="200.0" r="60.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

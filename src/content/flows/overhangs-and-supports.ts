@@ -1,0 +1,192 @@
+import type { DiagnosticFlowInput } from "@/lib/schema";
+import { seedVerification } from "../shared";
+import { materialQuestion } from "./common-questions";
+
+export const overhangsAndSupports: DiagnosticFlowInput = {
+  id: "overhangs-and-supports",
+  version: 1,
+  title: "Overhangs, supports and failed prints",
+  summary: "Separates cooling, support settings, curling and adhesion problems behind sagging bridges, failed supports, spaghetti and a nozzle that hits the print.",
+  category: "overhangs-supports-and-failed-prints",
+  symptomSlugs: ["poor-bridging", "supports-failing", "spaghetti", "nozzle-dragging"],
+  start: "look",
+  safety: ["hot-surfaces"],
+  questions: [
+    {
+      id: "look",
+      prompt: "What does the problem look like?",
+      why: "Sagging, failed supports, spaghetti and a nozzle that hits the part each have a different most-common cause.",
+      options: [
+        { id: "drooping", image: "ill-poor-bridging", label: "Bridges or overhangs droop and sag", next: "overhang-kind", evidence: { "cooling-low": 2, "overhang-unsupported": 1 } },
+        { id: "supports", image: "ill-supports-failing", label: "Supports fail, or fuse to the model", next: "support-problem" },
+        { id: "spaghetti", image: "ill-spaghetti", label: "A tangle of loose filament, like spaghetti", next: "left-on-bed" },
+        { id: "nozzle-hits", image: "ill-nozzle-dragging", label: "The nozzle hits or drags across the print", next: "hit-where", evidence: { "overhang-curl": 2 } },
+      ],
+    },
+    {
+      id: "overhang-kind",
+      prompt: "Which part sags?",
+      why: "A flat span between two points (a bridge) needs strong cooling. An overhang that leans out too far may need support whatever the settings.",
+      options: [
+        { id: "bridges", label: "Flat spans between two points (bridges)", next: "material", evidence: { "cooling-low": 2, "too-hot": 1 } },
+        { id: "steep", label: "Overhangs that lean out a long way from the wall", detail: "Steeper than about 45 degrees from vertical.", next: "material", evidence: { "overhang-unsupported": 3 } },
+        { id: "small", label: "Small overhangs, curves, or the tops of holes", next: "material", evidence: { "cooling-low": 2, "too-hot": 1 } },
+      ],
+    },
+    {
+      id: "support-problem",
+      prompt: "What happens to the supports?",
+      why: "Supports that fall over need a better base; supports that fuse need a larger gap to the model.",
+      options: [
+        { id: "fall-over", label: "They fall over or come loose from the bed", next: "material", evidence: { "support-adhesion": 4, "support-too-weak": 1 } },
+        { id: "break-mid", label: "They break part way up", next: "material", evidence: { "support-too-weak": 4 } },
+        { id: "model-falls", label: "The model separates from them and droops", next: "material", evidence: { "support-interface": 3, "support-too-weak": 1 } },
+        { id: "fused", label: "They are fused to the model and hard to remove", next: "material", evidence: { "support-interface": 4 } },
+      ],
+    },
+    {
+      id: "left-on-bed",
+      prompt: "What is left on the bed?",
+      why: "Spaghetti is the result, not the cause. What is still on the bed shows whether the part came loose or something failed higher up.",
+      options: [
+        { id: "came-loose", label: "The part came loose, moved, or was knocked over", next: "material", evidence: { "part-detached": 4 } },
+        { id: "partial", label: "The lower part is fine; the mess starts at a certain height", next: "material", evidence: { "extrusion-stopped": 2, "overhang-unsupported": 2, "support-too-weak": 1 } },
+        { id: "never-stuck", label: "Nothing ever stuck to the bed", next: "material", evidence: { "part-detached": 3 } },
+      ],
+    },
+    {
+      id: "hit-where",
+      prompt: "Where does the nozzle hit the print?",
+      why: "Edges that curl up stand proud of the next layer and catch the nozzle. Scars across flat tops usually mean there is too much plastic.",
+      options: [
+        { id: "curled", label: "Where overhangs or edges have curled up", next: "material", evidence: { "overhang-curl": 4, "cooling-low": 1 } },
+        { id: "top-surfaces", label: "Across top surfaces, leaving scars", next: "material", evidence: { "over-extrusion": 3 } },
+        { id: "unsure", label: "I'm not sure", next: "material", uncertain: true },
+      ],
+    },
+    {
+      ...materialQuestion,
+      options: materialQuestion.options.map((o) => ({
+        ...o,
+        next: { branch: [{ when: { answer: "look", in: ["drooping", "nozzle-hits"] }, goto: "fan" }], otherwise: "result" },
+      })),
+    },
+    {
+      id: "fan",
+      prompt: "How is the part cooling fan set for this material?",
+      why: "Overhangs and bridges hold their shape only if they cool quickly. Some materials are printed with the fan low on purpose, which makes overhangs harder.",
+      options: [
+        { id: "high", label: "High, or 100% on overhangs and bridges", next: "result", evidence: { "cooling-low": -2, "too-hot": 2 } },
+        { id: "low", label: "Low or off", next: "result", evidence: { "cooling-low": 3 } },
+        { id: "unsure", label: "I'm not sure", next: "result", uncertain: true },
+      ],
+    },
+  ],
+  rules: [
+    {
+      id: "petg-fuses",
+      when: { all: [{ answer: "support-problem", in: ["fused"] }, { fact: "filament", in: ["petg"] }] },
+      evidence: { "support-interface": 2 },
+      reason: "PETG bonds strongly to itself, so supports printed close to a PETG part are hard to remove.",
+    },
+  ],
+  outcomes: [
+    {
+      id: "cooling-low",
+      title: "Overhangs are not cooling fast enough",
+      summary: "The plastic is still soft when the next line is laid on it, so it sags.",
+      explanation: "Bridges and overhangs have nothing underneath them, so they keep their shape only if they cool quickly. Low part cooling, a fan that is not working properly, or printing these features slowly with a hot nozzle all let them droop.",
+      checks: [
+        "Check the part cooling fan spins up when the slicer asks for it.",
+        "Use the filament profile's overhang and bridge fan settings, or raise them a little for PLA and PETG.",
+        "Print a small bridging test before changing several settings.",
+      ],
+      guideSlugs: [],
+    },
+    {
+      id: "too-hot",
+      title: "The nozzle is hotter than these features need",
+      summary: "Hotter plastic stays soft for longer and sags more.",
+      explanation: "Near the top of a filament's temperature range, plastic takes longer to set. That makes little difference to walls but shows on bridges and small overhangs.",
+      checks: ["Lower the nozzle temperature in 5 °C steps, staying within the filament's recommended range."],
+      guideSlugs: [],
+    },
+    {
+      id: "overhang-unsupported",
+      title: "The overhang is too steep to print without support",
+      summary: "Some shapes need support whatever the settings.",
+      explanation: "Each layer can only stick out a little beyond the one below. Past a certain angle, often around 45 degrees from vertical for common materials, the line has nothing to rest on and falls. Turning on supports, or rotating the model so the overhang faces the bed, solves it.",
+      checks: ["Turn on supports for this model, or only where the overhangs are.", "Try rotating the model so steep overhangs face down onto the bed."],
+      guideSlugs: [],
+    },
+    {
+      id: "overhang-curl",
+      title: "Overhang edges are curling up",
+      summary: "Edges lift as they cool and stand above the next layer, so the nozzle catches them.",
+      explanation: "Thin edges and overhangs can curl upwards as they cool, especially if they are printed hot or with little cooling. The nozzle then hits the raised edge on the next pass, which can knock the part loose or cause a layer shift.",
+      checks: [
+        "Increase part cooling for overhangs, within what the filament allows.",
+        "Turn on Z hop on travel moves in the slicer, so the nozzle lifts over raised edges.",
+        "Add supports under curling overhangs.",
+      ],
+      guideSlugs: [],
+    },
+    {
+      id: "over-extrusion",
+      title: "Too much plastic is building up on top surfaces",
+      summary: "Extra plastic stands proud of the surface, and the nozzle drags through it.",
+      explanation: "If the printer extrudes more plastic than the lines need, the excess piles up on top layers. The nozzle then drags through it and leaves scars.",
+      checks: ["Check the flow setting has not been raised in the slicer or on the printer.", "Run the slicer's flow calibration for this filament."],
+      guideSlugs: ["check-the-extruder"],
+      slicerSettings: ["flow"],
+    },
+    {
+      id: "support-adhesion",
+      title: "Supports are not anchored well enough",
+      summary: "Tall, thin supports topple if their base is small or does not stick.",
+      explanation: "Supports have a small footprint, so they come loose more easily than the part. A support brim, a slightly wider base or a cleaner build plate gives them more to hold on to.",
+      checks: ["Turn on a brim for supports, or a raft under the model.", "Clean the build plate before printing.", "Use a sturdier support pattern for tall supports."],
+      guideSlugs: ["clean-the-build-plate"],
+      slicerSettings: ["brim"],
+    },
+    {
+      id: "support-too-weak",
+      title: "Supports are too thin or sparse",
+      summary: "The supports cannot carry the overhang, or wobble and break as they get taller.",
+      explanation: "Very sparse or thin supports save time and plastic but can bend or snap, especially under large overhangs or on tall, narrow towers.",
+      checks: ["Increase support density, or use a sturdier support style for tall supports.", "Check the supports reach every overhang in the slicer preview."],
+      guideSlugs: [],
+    },
+    {
+      id: "support-interface",
+      title: "The gap between supports and the model is set wrong",
+      summary: "Too small and supports fuse to the model; too large and the model is not held up.",
+      explanation: "Slicers leave a small vertical gap between the top of a support and the model so they can be separated. If the gap is too small, or the material bonds strongly, they weld together. If it is too large, the model's underside droops.",
+      checks: ["Start from the printer manufacturer's support settings for this material.", "Change the support top gap in small steps and test on a small part."],
+      guideSlugs: [],
+    },
+    {
+      id: "part-detached",
+      title: "The part came loose from the bed",
+      summary: "Once a part moves, the rest of the print is laid down in mid-air.",
+      explanation: "Spaghetti is usually what happens after a part comes loose: the printer carries on, laying plastic where the part used to be. The cause is almost always the first layer or the build surface.",
+      checks: ["Clean the build plate before the next print.", "Check the first layer is pressed onto the surface, not round and loose.", "Use a brim on small or tall parts."],
+      guideSlugs: ["clean-the-build-plate", "level-the-bed"],
+    },
+    {
+      id: "extrusion-stopped",
+      title: "Extrusion stopped part way through",
+      summary: "If plastic stops flowing, later layers have nothing to land on.",
+      explanation: "A partial clog, a snapped or tangled filament, or an extruder that slipped can stop extrusion mid-print. When it recovers, it prints into thin air and leaves a tangle.",
+      checks: ["Check the filament is not snapped, tangled or run out.", "Check the nozzle extrudes cleanly when heated.", "If it happens on long prints, see the extrusion problems diagnosis."],
+      guideSlugs: ["clear-a-blocked-nozzle"],
+    },
+  ],
+  insufficient: {
+    title: "Look at the slicer preview",
+    explanation: "Most overhang and support problems can be seen in the slicer's layer preview before printing.",
+    checks: ["Step through the layers where the problem starts and look for overhangs without support.", "Check the part cooling fan works."],
+  },
+  sourceIds: ["editorial", "prusa-kb"],
+  verification: seedVerification(undefined, ["The 45 degree overhang figure is a common rule of thumb, not a manufacturer specification."]),
+};

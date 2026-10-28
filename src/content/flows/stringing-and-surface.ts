@@ -15,11 +15,11 @@ const afterTemp: NextInput = {
 
 export const stringingAndSurface: DiagnosticFlowInput = {
   id: "stringing-and-surface",
-  version: 1,
+  version: 2,
   title: "Stringing, blobs and surface quality",
   summary: "Separates wet filament, temperature, retraction, travel, seam and flow problems behind stringing, zits and rough surfaces.",
   category: "stringing-and-surface-quality",
-  symptomSlugs: ["stringing", "blobs-and-zits", "bubbling-or-rough-surface"],
+  symptomSlugs: ["over-extrusion", "stringing", "blobs-and-zits", "bubbling-or-rough-surface"],
   start: "look",
   questions: [
     {
@@ -27,11 +27,11 @@ export const stringingAndSurface: DiagnosticFlowInput = {
       prompt: "What does the problem look like?",
       why: "Strings, zits and rough walls each have a different most-common cause.",
       options: [
-        { id: "fine-strings", label: "Fine hairs or wisps between separate parts", next: "popping", evidence: { retraction: 2, "too-hot": 2, "wet-filament": 1, travel: 1 } },
-        { id: "thick-strings", label: "Thicker strands or drips", next: "popping", evidence: { retraction: 3, "too-hot": 2 } },
-        { id: "zits", label: "Small bumps or zits on the surface", next: "zit-where", evidence: { seam: 3, "over-extrusion": 1 } },
-        { id: "rough-fuzzy", label: "Rough, fuzzy or bubbly walls", next: "popping", evidence: { "wet-filament": 3, "over-extrusion": 1 } },
-        { id: "blobs-everywhere", label: "Excess plastic and blobs all over the part", next: "popping", evidence: { "over-extrusion": 3 } },
+        { id: "fine-strings", image: "ill-stringing", label: "Fine hairs or wisps between separate parts", next: "popping", evidence: { retraction: 2, "too-hot": 2, "wet-filament": 1, travel: 1 } },
+        { id: "thick-strings", image: "ill-opt-thick-strings", label: "Thicker strands or drips", next: "popping", evidence: { retraction: 3, "too-hot": 2 } },
+        { id: "zits", image: "ill-blobs-and-zits", label: "Small bumps or zits on the surface", next: "zit-where", evidence: { seam: 3, "over-extrusion": 1 } },
+        { id: "rough-fuzzy", image: "ill-bubbling-or-rough-surface", label: "Rough, fuzzy or bubbly walls", next: "popping", evidence: { "wet-filament": 3, "over-extrusion": 1 } },
+        { id: "blobs-everywhere", image: "ill-over-extrusion", label: "Excess plastic and blobs all over the part", next: "popping", evidence: { "over-extrusion": 3 } },
       ],
     },
     {

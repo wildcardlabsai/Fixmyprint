@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Resin not curing: a soft, sticky surface that keeps a fingerprint</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="60.0" y="300.0" width="360.0" height="10.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <rect x="150.0" y="90.0" width="180.0" height="210.0" rx="14" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.5"/>
+  <path d="M170,110 q40,-6 70,10" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+  <ellipse cx="250.0" cy="190.0" rx="30.0" ry="22.0" fill="none" stroke="#2F6F6D" stroke-width="1.2"/>
+  <ellipse cx="250.0" cy="190.0" rx="24.0" ry="17.5" fill="none" stroke="#2F6F6D" stroke-width="1.2"/>
+  <ellipse cx="250.0" cy="190.0" rx="18.0" ry="13.0" fill="none" stroke="#2F6F6D" stroke-width="1.2"/>
+  <ellipse cx="250.0" cy="190.0" rx="12.0" ry="8.5" fill="none" stroke="#2F6F6D" stroke-width="1.2"/>
+  <ellipse cx="250.0" cy="190.0" rx="6.0" ry="4.0" fill="none" stroke="#2F6F6D" stroke-width="1.2"/>
+  <ellipse cx="190.0" cy="250.0" rx="5.0" ry="7.0" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1"/>
+  <ellipse cx="300.0" cy="140.0" rx="5.0" ry="7.0" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1"/>
+  <ellipse cx="210.0" cy="160.0" rx="5.0" ry="7.0" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1"/>
+  <circle cx="250.0" cy="190.0" r="46.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

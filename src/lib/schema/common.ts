@@ -57,6 +57,7 @@ export const safetyIdSchema = z.enum([
   "sharp-tools",
   "solvents",
   "firmware-flashing",
+  "resin-handling",
 ]);
 export type SafetyId = z.infer<typeof safetyIdSchema>;
 

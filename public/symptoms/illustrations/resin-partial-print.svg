@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Partial resin print: a section of the model never formed</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="220.0" y="10.0" width="40.0" height="50.0" rx="3" fill="#475569" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="110.0" y="60.0" width="260.0" height="22.0" rx="4" fill="#64748B" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="70.0" y="250.0" width="340.0" height="70.0" rx="6" fill="none" stroke="#1E293B" stroke-width="2"/>
+  <rect x="72.0" y="270.0" width="336.0" height="48.0" rx="0" fill="#A7D3D1" opacity="0.85"/>
+  <line x1="72.0" y1="318.0" x2="408.0" y2="318.0" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"/>
+  <rect x="80.0" y="324.0" width="320.0" height="18.0" rx="2" fill="#334155" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="160.0" y="82.0" width="160.0" height="18.0" rx="0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.5"/>
+  <rect x="170.0" y="100.0" width="140.0" height="110.0" rx="4" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.5"/>
+  <polygon points="258.4,210.3 259.6,202.3 261.4,190.7 258.1,187.0 259.9,175.1 264.6,168.2 264.0,159.9 270.8,156.2 278.8,158.9 286.1,156.4 295.0,150.7 303.5,152.2 308.8,147.2 312.2,158.4 311.3,169.4 311.3,178.2 309.4,186.1 309.7,195.5 312.3,199.0 310.0,210.0" fill="#F6F8FB" stroke="#2F6F6D" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="262.0" y="150.0" width="48.0" height="60.0" rx="0" fill="none" stroke="#1E293B" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <circle cx="286.0" cy="182.0" r="40.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

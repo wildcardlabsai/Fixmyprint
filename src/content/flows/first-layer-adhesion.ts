@@ -4,11 +4,11 @@ import { levelling, levellingQuestion, materialQuestion } from "./common-questio
 
 export const firstLayerAdhesion: DiagnosticFlowInput = {
   id: "first-layer-adhesion",
-  version: 1,
+  version: 2,
   title: "First layer will not stick",
   summary: "Works out whether the nozzle height, the build surface, the bed temperature, cooling or extrusion is stopping the first layer from bonding.",
   category: "first-layer-and-bed-adhesion",
-  symptomSlugs: ["first-layer-not-sticking", "rough-or-gappy-first-layer"],
+  symptomSlugs: ["first-layer-too-squashed", "nozzle-scraping", "print-detached", "first-layer-not-sticking", "rough-or-gappy-first-layer"],
   start: "what-happens",
   safety: ["hot-surfaces"],
   questions: [
@@ -17,11 +17,11 @@ export const firstLayerAdhesion: DiagnosticFlowInput = {
       prompt: "What happens when the first layer is printed?",
       why: "Each failure looks different. How the plastic behaves at the nozzle is the quickest way to tell a height problem from a surface or temperature problem.",
       options: [
-        { id: "dragged", label: "The filament never sticks and is dragged around", next: "line-shape", evidence: { "nozzle-too-far": 3, "dirty-surface": 2, "extrusion-problem": 1, "nozzle-too-close": -3 } },
-        { id: "corners-lift", label: "It sticks at first but lifts at the corners or edges", next: "surface-clean", evidence: { "thermal-contraction": 3, "dirty-surface": 1, drafts: 1 } },
-        { id: "thin", label: "The lines look very thin, flat, translucent or ridged", next: "thin-detail", evidence: { "nozzle-too-close": 4, "nozzle-too-far": -3 } },
-        { id: "patchy", label: "Some areas stick while others do not", next: "pattern", evidence: { "uneven-bed": 3, "dirty-surface": 2 } },
-        { id: "inconsistent", label: "The nozzle does not seem to extrude consistently", next: "extrude-test", evidence: { "extrusion-problem": 3 } },
+        { id: "dragged", image: "ill-first-layer-not-sticking", label: "The filament never sticks and is dragged around", next: "line-shape", evidence: { "nozzle-too-far": 3, "dirty-surface": 2, "extrusion-problem": 1, "nozzle-too-close": -3 } },
+        { id: "corners-lift", image: "ill-print-detached", label: "It sticks at first but lifts at the corners or edges", next: "surface-clean", evidence: { "thermal-contraction": 3, "dirty-surface": 1, drafts: 1 } },
+        { id: "thin", image: "ill-first-layer-too-squashed", label: "The lines look very thin, flat, translucent or ridged", next: "thin-detail", evidence: { "nozzle-too-close": 4, "nozzle-too-far": -3 } },
+        { id: "patchy", image: "ill-first-layer-uneven-across-bed", label: "Some areas stick while others do not", next: "pattern", evidence: { "uneven-bed": 3, "dirty-surface": 2 } },
+        { id: "inconsistent", image: "ill-under-extrusion", label: "The nozzle does not seem to extrude consistently", next: "extrude-test", evidence: { "extrusion-problem": 3 } },
         { id: "other", label: "Something else, or I'm not sure", detail: "We'll ask about the shape of the lines instead.", next: "line-shape", uncertain: true },
       ],
     },
@@ -31,9 +31,10 @@ export const firstLayerAdhesion: DiagnosticFlowInput = {
       why: "The cross-section of a line shows how far the nozzle was from the bed. A good first line is slightly flattened with straight edges.",
       help: "Pause the print after the first few lines if you need to. Use a torch held low across the bed to see the shape.",
       options: [
-        { id: "round", label: "Round, like a piece of string lying on the surface", next: "levelling", evidence: { "nozzle-too-far": 3, "nozzle-too-close": -2 } },
-        { id: "flat", label: "Flattened slightly, with straight edges", next: "levelling", evidence: { "nozzle-too-far": -2, "dirty-surface": 2, "bed-temperature": 1 } },
-        { id: "broken", label: "Thin, broken or missing in places", next: "levelling", evidence: { "extrusion-problem": 3, "nozzle-too-close": 1 } },
+        { id: "round", image: "ill-opt-line-round", label: "Round, like a piece of string lying on the surface", next: "levelling", evidence: { "nozzle-too-far": 3, "nozzle-too-close": -2 } },
+        { id: "flat", image: "ill-opt-line-flat", label: "Flattened slightly, with straight edges", next: "levelling", evidence: { "nozzle-too-far": -2, "dirty-surface": 2, "bed-temperature": 1 } },
+        { id: "broken", image: "ill-opt-line-broken", label: "Thin, broken or missing in places", next: "levelling", evidence: { "extrusion-problem": 3, "nozzle-too-close": 1 } },
+        { id: "squashed", image: "ill-opt-line-squashed", label: "Very flat and wide, with ridges between lines", next: "levelling", evidence: { "nozzle-too-close": 4, "nozzle-too-far": -3 } },
         { id: "cant-tell", label: "I can't tell", next: "levelling", uncertain: true },
       ],
     },
@@ -43,7 +44,7 @@ export const firstLayerAdhesion: DiagnosticFlowInput = {
       why: "These signs separate a nozzle that is too close from one that is struggling to push plastic out at all.",
       options: [
         { id: "ridges", label: "Ridges, or a rough, ploughed surface", next: "levelling", evidence: { "nozzle-too-close": 3 } },
-        { id: "scraping", label: "The nozzle scrapes or marks the bed", next: "levelling", evidence: { "nozzle-too-close": 4 } },
+        { id: "scraping", image: "ill-nozzle-scraping", label: "The nozzle scrapes or marks the bed", next: "levelling", evidence: { "nozzle-too-close": 4 } },
         { id: "clicking", label: "The extruder clicks or skips during the first layer only", next: "levelling", evidence: { "nozzle-too-close": 2, "extrusion-problem": 1 } },
         { id: "just-thin", label: "Just very thin lines", next: "levelling", evidence: { "nozzle-too-close": 1, "extrusion-problem": 1 } },
       ],

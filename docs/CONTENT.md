@@ -75,6 +75,12 @@ Slicers live in `src/content/slicers.ts`.
 - `usedBy` links the slicer to printers. Use `official` for the manufacturer's own slicer and `supported` when the manufacturer names it or publishes profiles for it. Leave `printerSlugs` empty only if the statement covers every model from that manufacturer, and always give the manufacturer's page as `sourceUrl`.
 - To point a diagnostic cause, guide or individual guide step at slicer settings, add the keys to its `slicerSettings`. Steps show the name inline. Give a guide's general `settings` values a `key` so they appear beside the slicer's name for the same setting. To add a new key, extend `slicerSettingKeySchema` and `SLICER_SETTING_LABELS` in `src/lib/schema/slicer.ts`.
 
+## Symptoms and pictures
+
+Symptoms live in `src/content/symptoms.ts`. A visual symptom has `images` (photo first, then illustration; see `docs/VISUAL_ASSETS.md`), the `printerTypes` it applies to (`fdm`, `msla`), and a `preset`: the answers its picture already gives in its flow, for example `{ look: "fine-strings" }`. The tests check that every preset is on the flow's path and that the flow continues past it. Symptoms without images are listed as text under "Something else".
+
+Answer options can show a picture with `image`. An option may use its own comparison image (`subject: "option:<flow>/<question>/<option>"`) or the image of the symptom it describes. Flows, guides, categories and maintenance tasks take `printerTypes` so resin and filament content never mix.
+
 ## Filament, maintenance and parts
 
 - Filament ranges are general starting points. Add manufacturer data sheets under `manufacturerProfiles` with their source URL; do not merge them into the general range.

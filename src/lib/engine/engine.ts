@@ -296,3 +296,19 @@ function pathAnswers(ev: Evaluation): Record<string, string> {
 export function pruneToPath(flow: DiagnosticFlow, state: DiagnosticState, facts: Facts = {}): DiagnosticState {
   return { ...state, answers: pathAnswers(evaluate(flow, state, facts)) };
 }
+
+/**
+ * Starts a diagnosis with answers already given, for example by choosing a
+ * picture of the problem. Answers are applied in path order, so only those on
+ * the path are kept and the flow continues at the first question still open.
+ */
+export function applyAnswers(flow: DiagnosticFlow, given: Record<string, string>, facts: Facts = {}): DiagnosticState {
+  let state = emptyState();
+  for (let i = 0; i < flow.questions.length; i++) {
+    const q = evaluate(flow, state, facts).current;
+    const optionId = q ? given[q.id] : undefined;
+    if (!q || !optionId) break;
+    state = answerQuestion(flow, state, q.id, optionId, facts);
+  }
+  return state;
+}

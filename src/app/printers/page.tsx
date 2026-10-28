@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PrinterLibrary, type LibraryPrinter } from "@/components/printers/printer-library";
 import { Container, PageHeader } from "@/components/ui/layout";
 import { getContent } from "@/lib/data/repository";
+import { PRINTER_TYPE_LABEL } from "@/lib/schema";
 import { manufacturerOptions, printerOptions } from "@/lib/data/view-models";
 import { ENCLOSURE_LABEL, EXTRUDER_LABEL, LEVELLING_LABEL, LEVELLING_SHORT } from "@/lib/printer-labels";
 
@@ -24,6 +25,7 @@ export default async function PrintersPage() {
       enclosure: s.enclosure,
       status: p.verification.status,
       facts: [
+        s.printerType === "msla" ? "Resin (MSLA)" : null,
         s.buildVolumeMm ? `${s.buildVolumeMm.x} × ${s.buildVolumeMm.y} × ${s.buildVolumeMm.z} mm` : null,
         s.levelling ? LEVELLING_SHORT[s.levelling] : null,
         s.extruder ? EXTRUDER_LABEL[s.extruder] : null,
@@ -43,6 +45,7 @@ export default async function PrintersPage() {
           printers={printers}
           manufacturers={manufacturerOptions(c)}
           filters={[
+            { key: "printerType", label: "Printing technology", options: Object.entries(PRINTER_TYPE_LABEL).map(([value, label]) => ({ value, label })) },
             { key: "levelling", label: "Bed levelling", options: Object.entries(LEVELLING_LABEL).map(([value, label]) => ({ value, label })) },
             { key: "extruder", label: "Extruder", options: Object.entries(EXTRUDER_LABEL).map(([value, label]) => ({ value, label })) },
             { key: "enclosure", label: "Enclosure", options: Object.entries(ENCLOSURE_LABEL).map(([value, label]) => ({ value, label })) },

@@ -10,7 +10,13 @@ import { Button, LinkButton } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { applicableChecks, evaluateCondition } from "@/lib/engine/conditions";
 import type { Contribution, Evaluation, RankedOutcome } from "@/lib/engine/engine";
-import type { Condition, DiagnosticFlow, PrinterModel, SafetyNotice, Slicer } from "@/lib/schema";
+import { TroubleshootingStep } from "@/components/guides/troubleshooting-step";
+import { SymptomImage } from "@/components/symptoms/symptom-image";
+import { useUploadedPhoto } from "@/lib/client/storage";
+import { visibleSteps } from "@/lib/guide-steps";
+import { specFactsUsed } from "@/lib/printer-labels";
+import type { Condition, DiagnosticFlow, Guide, PrinterModel, SafetyNotice, Slicer, VisualAsset } from "@/lib/schema";
+import type { AssetMap } from "@/lib/visual";
 import { CONFIDENCE, ConfidenceBadge } from "./confidence";
 
 export interface GuideSummary {
@@ -28,6 +34,14 @@ interface Props {
   slicers: Slicer[];
   printers: Pick<PrinterModel, "slug" | "manufacturer">[];
   printerSlug: string | null;
+  /** The selected printer and its display name, so confirmed specifications can be listed. */
+  printer: PrinterModel | null;
+  printerName: string | null;
+  /** The problem the person picked, with its example image. */
+  reported: { title: string; asset: VisualAsset | null } | null;
+  /** Full guides for this flow's causes, to show their steps on the result. */
+  fullGuides: Guide[];
+  assets: AssetMap;
   fixed: boolean;
   onFixed: () => void;
   onNotFixed: (outcomeId: string) => void;
@@ -104,11 +118,15 @@ export function ResultView(p: Props) {
   }
 
   const topGuides = guidesFor(top);
+  const topGuide = topGuides[0] ? (p.fullGuides.find((g) => g.slug === topGuides[0]!.slug) ?? null) : null;
+  const steps = topGuide ? visibleSteps(topGuide, p.evaluation.facts) : [];
+  const specsUsed = p.printer ? specFactsUsed(p.printer) : [];
   const supporting = reasons(top.supporting);
   const against = reasons(top.against);
 
   return (
     <div className="space-y-6">
+      <Reported reported={p.reported} />
       <section aria-labelledby="result-heading" className="rounded-lg border border-line bg-surface shadow-sm">
         <div className="space-y-4 p-4 sm:p-6">
           <div className="flex flex-wrap items-center gap-2">
@@ -153,6 +171,7 @@ export function ResultView(p: Props) {
           <SafetyNotices ids={p.evaluation.safety} notices={p.safetyNotices} />
           <div>
             <h3 className="font-semibold">Recommended checks</h3>
+            <p className="mt-0.5 text-sm text-ink/70">General troubleshooting advice{p.printer ? ", matched to your printer's recorded hardware" : ""}.</p>
             <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-[15px] leading-relaxed">
               {applicableChecks(top.outcome.checks, p.evaluation.facts).map((c) => (
                 <li key={c}>{c}</li>
@@ -161,13 +180,46 @@ export function ResultView(p: Props) {
           </div>
           <SlicerSettingsPanel settingKeys={top.outcome.slicerSettings} slicers={p.slicers} printers={p.printers} printerSlug={p.printerSlug} />
           {top.outcome.escalation && <Notice title="If this does not solve it">{top.outcome.escalation}</Notice>}
+          <PrinterBasis printerName={p.printerName} printerSlug={p.printerSlug} specs={specsUsed} />
         </div>
+
+        {topGuide && steps.length > 0 && (
+          <div className="space-y-4 border-t border-line p-4 sm:p-6">
+            <div>
+              <h3 className="text-lg font-semibold">How to fix it</h3>
+              <p className="mt-0.5 text-sm text-ink/70">
+                From the guide &ldquo;{topGuide.title}&rdquo;.{" "}
+                {p.printer ? "Steps that do not apply to your printer's hardware are left out." : "Steps that depend on hardware are labelled."}
+              </p>
+            </div>
+            {(topGuide.tools.length > 0 || topGuide.parts.length > 0) && (
+              <div className="rounded-md bg-page p-3 text-sm">
+                <p className="font-medium">You may need</p>
+                <p className="mt-0.5 text-ink/80">{[...topGuide.tools, ...topGuide.parts.map((x) => `${x.name}${x.optional ? " (only if needed)" : ""}`)].join(" · ")}</p>
+              </div>
+            )}
+            <SafetyNotices ids={topGuide.safety.filter((s) => !p.evaluation.safety.includes(s))} notices={p.safetyNotices} />
+            <ol className="space-y-5">
+              {steps.map(({ step, conditional }, i) => (
+                <TroubleshootingStep key={step.id} step={step} number={i + 1} conditional={conditional} assets={p.assets} />
+              ))}
+            </ol>
+            <div className="rounded-md border border-line p-3 text-sm">
+              <p className="font-medium">Check whether it worked</p>
+              <ul className="mt-1 list-disc space-y-0.5 pl-5">
+                {topGuide.verificationSteps.map((v) => (
+                  <li key={v}>{v}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
 
         <div className="space-y-4 border-t border-line bg-page/60 p-4 sm:p-6">
           {topGuides.length > 0 && (
             <div className="flex flex-wrap gap-2">
               <LinkButton href={guideHref(topGuides[0]!.slug, p.flow.id, top.outcome.id, p.printerSlug)} size="lg">
-                Start repair guide
+                {steps.length > 0 ? "Open the step-by-step guide" : "Start repair guide"}
                 <ArrowRight aria-hidden />
               </LinkButton>
               {topGuides.slice(1).map((g) => (
@@ -312,5 +364,70 @@ function TriedList({ tried, onUntry }: { tried: RankedOutcome[]; onUntry: (id: s
         ))}
       </ul>
     </section>
+  );
+}
+
+/** The problem the person picked and their own photo, side by side. Neither is treated as proof of the cause. */
+function Reported({ reported }: { reported: { title: string; asset: VisualAsset | null } | null }) {
+  const photo = useUploadedPhoto();
+  if (!reported && !photo) return null;
+  return (
+    <section aria-labelledby="reported-heading" className="rounded-lg border border-line bg-surface p-4">
+      <h2 id="reported-heading" className="font-semibold">
+        What you reported
+      </h2>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {reported && (
+          <div>
+            <SymptomImage asset={reported.asset} credit eager />
+            <p className="mt-1 text-[15px] font-medium">{reported.title}</p>
+          </div>
+        )}
+        {photo && (
+          <figure>
+            {/* A local photo the person chose; nothing to optimise. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={photo.dataUrl} alt="Your photo of the print" className="aspect-[4/3] w-full rounded-md border border-line object-cover" />
+            <figcaption className="mt-1 text-[15px] font-medium">
+              Your photo <span className="text-sm font-normal text-ink/70">(not analysed)</span>
+            </figcaption>
+          </figure>
+        )}
+      </div>
+      <p className="mt-3 text-sm text-ink/70">
+        The example picture shows what this kind of problem looks like. Neither picture proves what caused it on your printer: the causes below come from your
+        answers.
+      </p>
+    </section>
+  );
+}
+
+/** Separates confirmed printer specifications from general advice. */
+function PrinterBasis({ printerName, printerSlug, specs }: { printerName: string | null; printerSlug: string | null; specs: { label: string; value: string }[] }) {
+  if (!printerName || !printerSlug) {
+    return (
+      <Notice title="These instructions are general">
+        Choose your printer above to leave out steps that do not apply to its hardware, such as manual levelling on a printer that levels itself.
+      </Notice>
+    );
+  }
+  return (
+    <div className="rounded-md border border-line p-3 text-sm">
+      <p className="font-medium">Confirmed specifications used for the {printerName}</p>
+      {specs.length > 0 ? (
+        <ul className="mt-1 space-y-0.5">
+          {specs.map((s) => (
+            <li key={s.label}>
+              <span className="text-ink/70">{s.label}:</span> {s.value}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-1 text-ink/70">None of the specifications this diagnosis uses are recorded for this printer yet, so the advice is general.</p>
+      )}
+      <p className="mt-1.5">
+        <Link href={`/printers/${printerSlug}`}>Where these figures come from</Link>
+      </p>
+    </div>
   );
 }

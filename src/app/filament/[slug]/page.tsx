@@ -33,7 +33,8 @@ export default async function FilamentDetailPage({ params }: { params: Promise<P
   const c = await getContent();
   const f = c.filaments.find((x) => x.slug === slug);
   if (!f) notFound();
-  const printers = sortedPrinters(c);
+  // Filament only applies to FDM printers.
+  const printers = sortedPrinters(c).filter((p) => p.specs.printerType === "fdm");
 
   const rows = [
     ["Nozzle temperature", range(f.nozzleTempC, " °C")],

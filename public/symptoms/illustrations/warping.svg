@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Warping: the corners of the print curl up off the bed</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="36.0" y="300.0" width="408.0" height="14.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="40.0" y1="301.0" x2="440.0" y2="301.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <path d="M96,254 Q132,294 176,294 L304,294 Q348,294 384,254" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,248 Q132,285 176,285 L304,285 Q348,285 384,248" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,242 Q132,276 176,276 L304,276 Q348,276 384,242" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,236 Q132,267 176,267 L304,267 Q348,267 384,236" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,230 Q132,258 176,258 L304,258 Q348,258 384,230" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,224 Q132,249 176,249 L304,249 Q348,249 384,224" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,218 Q132,240 176,240 L304,240 Q348,240 384,218" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,212 Q132,231 176,231 L304,231 Q348,231 384,212" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,206 Q132,222 176,222 L304,222 Q348,222 384,206" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,200 Q132,213 176,213 L304,213 Q348,213 384,200" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,194 Q132,204 176,204 L304,204 Q348,204 384,194" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96,188 Q132,195 176,195 L304,195 Q348,195 384,188" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="92.0,300.0 176.0,300.0 130.0,296.0 96.0,262.0" fill="#E2E8F0"/>
+  <polygon points="388.0,300.0 304.0,300.0 350.0,296.0 384.0,262.0" fill="#E2E8F0"/>
+  <circle cx="112.0" cy="274.0" r="32.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+  <circle cx="368.0" cy="274.0" r="32.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>First layer not sticking: filament dragged and curled behind the nozzle</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="36.0" y="300.0" width="408.0" height="14.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="40.0" y1="301.0" x2="440.0" y2="301.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <path d="M60,296 C110,296 130,296 160,293 C190,288 200,270 222,262 C246,254 262,278 250,286 C238,294 222,270 240,250 C258,232 290,236 300,242" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60,296 C110,296 130,296 160,293" fill="none" stroke="#1F6FCC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="296.0" y="162.0" width="68.0" height="40.0" rx="4" fill="#64748B" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="310.0" y="122.0" width="40.0" height="40.0" rx="3" fill="#475569" stroke="#1E293B" stroke-width="1.5"/>
+  <line x1="310.0" y1="128.0" x2="350.0" y2="128.0" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="310.0" y1="137.0" x2="350.0" y2="137.0" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="310.0" y1="146.0" x2="350.0" y2="146.0" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="310.0" y1="155.0" x2="350.0" y2="155.0" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <polygon points="314.0,202.0 346.0,202.0 335.0,240.0 325.0,240.0" fill="#C08A2E" stroke="#1E293B" stroke-width="1.5" stroke-linejoin="round"/>
+  <circle cx="238.0" cy="268.0" r="46.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

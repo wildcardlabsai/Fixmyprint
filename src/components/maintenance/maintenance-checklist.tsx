@@ -25,6 +25,8 @@ export function MaintenanceChecklist({ tasks, printers, names, guideTitles, safe
   const facts = factsFromPrinter(printer);
 
   const shown = tasks
+    // Filament tasks never apply to a resin printer, and the reverse.
+    .filter(({ printerTypes }) => !printer || printerTypes.includes(printer.specs.printerType))
     .map((t) => ({ t, applies: t.appliesWhen ? evaluateCondition(t.appliesWhen, { facts, answers: {} }) : true }))
     .filter((x) => x.applies !== false)
     .sort((a, b) => a.t.interval.sortHours - b.t.interval.sortHours);
@@ -63,6 +65,7 @@ export function MaintenanceChecklist({ tasks, printers, names, guideTitles, safe
               <h2 className="text-[17px] font-semibold">{t.title}</h2>
               <p className="text-sm font-medium text-primary-dark">{t.interval.label}</p>
             </div>
+            {!printer && !t.printerTypes.includes("fdm") && <p className="mt-1 text-xs font-semibold tracking-wide text-ink/70 uppercase">Resin printers only</p>}
             {applies === "unknown" && t.appliesLabel && <p className="mt-1 text-xs font-semibold tracking-wide text-ink/70 uppercase">{t.appliesLabel} only</p>}
             <p className="mt-1 text-[15px] text-muted">{t.summary}</p>
             {t.tools.length > 0 && (

@@ -19,7 +19,10 @@ export const levellingSchema = z.enum([
 ]);
 export type Levelling = z.infer<typeof levellingSchema>;
 
-export const printerTypeSchema = z.enum(["fdm"]);
+/** Printing technology. FDM melts filament; MSLA cures liquid resin with a masked LCD light source. */
+export const printerTypeSchema = z.enum(["fdm", "msla"]);
+export type PrinterType = z.infer<typeof printerTypeSchema>;
+export const PRINTER_TYPE_LABEL: Record<PrinterType, string> = { fdm: "FDM (filament)", msla: "MSLA (resin)" };
 export const motionSystemSchema = z.enum(["bed-slinger", "corexy", "delta", "other"]);
 export const extruderSchema = z.enum(["direct", "bowden"]);
 export const enclosureSchema = z.enum(["open", "enclosed", "optional"]);
@@ -68,6 +71,16 @@ export const printerSpecsSchema = z.object({
   firmwareDetail: z.string().nullable(),
   connectivity: z.array(z.string()).default([]),
   supportedFilaments: z.array(slugSchema).default([]),
+  /** Resin printers only. */
+  resin: z
+    .object({
+      lcd: z.string().nullable(),
+      xyResolution: z.string().nullable(),
+      layerHeightMm: z.object({ min: z.number().positive(), max: z.number().positive() }).nullable(),
+      lightSource: z.string().nullable(),
+    })
+    .nullable()
+    .default(null),
 });
 export type PrinterSpecs = z.infer<typeof printerSpecsSchema>;
 

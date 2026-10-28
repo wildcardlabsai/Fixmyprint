@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Only one side of the print has lifted</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="36.0" y="300.0" width="408.0" height="14.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="40.0" y1="301.0" x2="440.0" y2="301.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <path d="M100,290 L300,290 Q340,290 380,264" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,281 L300,281 Q340,281 380,257" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,272 L300,272 Q340,272 380,250" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,263 L300,263 Q340,263 380,243" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,254 L300,254 Q340,254 380,236" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,245 L300,245 Q340,245 380,229" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,236 L300,236 Q340,236 380,222" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,227 L300,227 Q340,227 380,215" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,218 L300,218 Q340,218 380,208" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,209 L300,209 Q340,209 380,201" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,200 L300,200 Q340,200 380,194" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100,191 L300,191 Q340,191 380,187" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="368.0" cy="278.0" r="30.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

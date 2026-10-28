@@ -1,5 +1,6 @@
 import type { SeedContent } from "@/content";
 import { printerDisplayName } from "@/lib/data/selectors";
+import { symptomHref } from "@/lib/visual";
 
 export type SearchType = "printer" | "symptom" | "error" | "guide" | "filament" | "maintenance" | "part" | "slicer";
 
@@ -154,7 +155,7 @@ export function buildIndex(c: SeedContent): SearchIndex {
       id: s.slug,
       title: s.title,
       subtitle: s.description,
-      href: s.flowId ? `/diagnose/${s.flowId}` : `/problems/${s.category}`,
+      href: symptomHref(s),
       names: [s.title, ...s.synonyms],
       keywords: [s.description, c.categories.find((x) => x.slug === s.category)?.title ?? ""],
     });

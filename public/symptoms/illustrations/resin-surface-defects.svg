@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Resin surface defects: drips and cured runs on the surface</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="60.0" y="300.0" width="360.0" height="10.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <rect x="150.0" y="90.0" width="180.0" height="210.0" rx="14" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.5"/>
+  <path d="M180,300 q-4,-20.0 0,-40 q4,20.0 0,40" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="180.0" cy="300.0" r="7.0" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1.2"/>
+  <path d="M230,300 q-4,-35.0 0,-70 q4,35.0 0,70" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="230.0" cy="300.0" r="7.0" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1.2"/>
+  <path d="M290,300 q-4,-15.0 0,-30 q4,15.0 0,30" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="290.0" cy="300.0" r="7.0" fill="#A7D3D1" stroke="#2F6F6D" stroke-width="1.2"/>
+  <line x1="160.0" y1="110.0" x2="320.0" y2="112.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="128.0" x2="320.0" y2="130.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="146.0" x2="320.0" y2="148.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="164.0" x2="320.0" y2="166.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="182.0" x2="320.0" y2="184.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="200.0" x2="320.0" y2="202.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="218.0" x2="320.0" y2="220.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="236.0" x2="320.0" y2="238.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="254.0" x2="320.0" y2="256.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160.0" y1="272.0" x2="320.0" y2="274.0" stroke="#2F6F6D" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+  <circle cx="232.0" cy="270.0" r="50.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

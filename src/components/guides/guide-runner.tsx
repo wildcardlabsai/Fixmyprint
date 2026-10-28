@@ -13,19 +13,23 @@ import { cn } from "@/lib/cn";
 import { evaluateCondition, factsFromPrinter } from "@/lib/engine/conditions";
 import { visibleSteps } from "@/lib/guide-steps";
 import type { Guide, PrinterModel, SafetyNotice, Slicer } from "@/lib/schema";
+import { SymptomImage } from "@/components/symptoms/symptom-image";
+import { pickImage, type AssetMap } from "@/lib/visual";
 import { GuideDiagram } from "./diagrams";
 
 interface Props {
   guide: Guide;
   printers: Pick<PrinterModel, "slug" | "name" | "manufacturer" | "specs">[];
   slicers: Slicer[];
+  /** Reference images used by this guide's steps. */
+  assets?: AssetMap;
   printerNames: Record<string, string>;
   safetyNotices: SafetyNotice[];
   flowTitles: Record<string, string>;
   guideTitles: Record<string, string>;
 }
 
-export function GuideRunner({ guide, printers, slicers, printerNames, safetyNotices, flowTitles, guideTitles }: Props) {
+export function GuideRunner({ guide, printers, slicers, assets, printerNames, safetyNotices, flowTitles, guideTitles }: Props) {
   const params = useSearchParams();
   const [savedPrinter] = useSavedPrinter();
   const fromFlow = params.get("from");
@@ -92,7 +96,9 @@ export function GuideRunner({ guide, printers, slicers, printerNames, safetyNoti
     return null;
   })();
 
-  const guideFits = !guide.appliesWhen || evaluateCondition(guide.appliesWhen, { facts: printerFacts, answers: {} }) !== false;
+  const guideFits =
+    (!printer || guide.printerTypes.includes(printer.specs.printerType)) &&
+    (!guide.appliesWhen || evaluateCondition(guide.appliesWhen, { facts: printerFacts, answers: {} }) !== false);
 
   return (
     <div className="space-y-5">
@@ -205,6 +211,7 @@ export function GuideRunner({ guide, printers, slicers, printerNames, safetyNoti
                   />
                   {step.tip && <p className="mt-3 text-sm text-muted">Tip: {step.tip}</p>}
                   {step.diagram && <GuideDiagram id={step.diagram} />}
+                  {step.image && assets && <SymptomImage asset={pickImage(assets, [step.image])} credit className="mt-3 max-w-sm" />}
                   {!done && <SafetyNotices ids={step.safety.filter((s) => !guide.safety.includes(s))} notices={safetyNotices} className="mt-3" />}
                 </div>
               </div>

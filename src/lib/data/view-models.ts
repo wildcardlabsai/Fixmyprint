@@ -1,4 +1,5 @@
 import type { SeedContent } from "@/content";
+import type { PrinterType } from "@/lib/schema";
 import { slicersForPrinter } from "@/lib/slicers";
 import { manufacturersWithCounts, printerDisplayName, sortedPrinters } from "./selectors";
 
@@ -11,6 +12,7 @@ export interface PrinterOption {
   manufacturerName: string;
   aliases: string[];
   summary: string;
+  printerType: PrinterType;
 }
 
 export interface ManufacturerOption {
@@ -30,6 +32,7 @@ export function printerOptions(c: SeedContent): PrinterOption[] {
       manufacturerName: m?.name ?? p.manufacturer,
       aliases: [...p.aliases, ...(m?.aliases ?? [])],
       summary: p.summary,
+      printerType: p.specs.printerType,
     };
   });
 }

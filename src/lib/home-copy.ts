@@ -6,10 +6,10 @@ import type { SeedContent } from "@/content";
  * accurate alternative is shown, so the page never claims more than we have.
  */
 
-type Content = Pick<SeedContent, "printers" | "manufacturers" | "guides" | "slicers">;
+type Content = Pick<SeedContent, "printers" | "manufacturers" | "guides" | "visualAssets">;
 
 export interface Benefit {
-  icon: "brands" | "steps" | "data" | "slicer" | "printer-types";
+  icon: "brands" | "steps" | "data" | "visual" | "printer-types";
   title: string;
   text: string;
 }
@@ -21,8 +21,17 @@ export function coverage(c: Content) {
   const types = new Set<string>(c.printers.map((p) => p.specs.printerType));
   const hasResin = [...types].some((t) => RESIN_TYPES.has(t));
   const hasFdm = types.has("fdm");
-  const illustratedGuides = c.guides.filter((g) => g.steps.some((s) => s.diagram)).length;
-  return { brands, models: c.printers.length, hasResin, hasFdm, allGuidesIllustrated: c.guides.length > 0 && illustratedGuides === c.guides.length };
+  const illustratedGuides = c.guides.filter((g) => g.steps.some((s) => s.diagram || s.image)).length;
+  const available = c.visualAssets.filter((a) => a.status === "available");
+  return {
+    brands,
+    models: c.printers.length,
+    hasResin,
+    hasFdm,
+    allGuidesIllustrated: c.guides.length > 0 && illustratedGuides === c.guides.length,
+    photos: available.filter((a) => a.kind === "photo").length,
+    illustrations: available.filter((a) => a.kind === "illustration").length,
+  };
 }
 
 export function heroEyebrow(c: Content): string {
@@ -34,9 +43,6 @@ export function heroEyebrow(c: Content): string {
 
 export function benefits(c: Content): Benefit[] {
   const cov = coverage(c);
-  const slicerNames = c.slicers
-    .map((s) => s.name)
-    .filter((n) => ["OrcaSlicer", "Bambu Studio", "PrusaSlicer"].includes(n));
   return [
     { icon: "brands", title: `${cov.brands} major brands`, text: "Find supported models from leading manufacturers." },
     {
@@ -46,9 +52,10 @@ export function benefits(c: Content): Benefit[] {
     },
     { icon: "data", title: "Real technical data", text: "Use sourced, model-specific specifications and maintenance guidance." },
     {
-      icon: "slicer",
-      title: "Your slicer's settings",
-      text: `See what each setting is called in ${slicerNames.length ? `${slicerNames.join(", ")} and ${c.slicers.length - slicerNames.length} more slicers` : "your slicer"}.`,
+      icon: "visual",
+      title: "Visual diagnostics",
+      // Photographs are claimed only once licensed ones are in the asset library.
+      text: cov.photos > 0 ? "Compare symptoms with relevant photographs and diagrams." : "Compare symptoms with clear technical illustrations.",
     },
     cov.hasFdm && cov.hasResin
       ? { icon: "printer-types", title: "FDM & MSLA support", text: "Troubleshooting for filament and resin printers." }

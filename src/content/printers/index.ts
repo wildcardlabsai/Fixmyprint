@@ -3,6 +3,7 @@ import { bambuLabPrinters } from "./bambu-lab";
 import { crealityPrinters } from "./creality";
 import { anycubicPrinters, artilleryPrinters, elegooPrinters, flashforgePrinters, qidiPrinters, raise3dPrinters, sovolPrinters, ultimakerPrinters } from "./others";
 import { prusaPrinters } from "./prusa-research";
+import { resinPrinters } from "./resin";
 
 export const manufacturers: Manufacturer[] = [
   { slug: "bambu-lab", name: "Bambu Lab", website: "https://bambulab.com/", supportUrl: "https://wiki.bambulab.com/", aliases: ["bambu", "bambulab"] },
@@ -15,6 +16,7 @@ export const manufacturers: Manufacturer[] = [
   { slug: "flashforge", name: "Flashforge", website: "https://www.flashforge.com/", supportUrl: null, aliases: ["flash forge"] },
   { slug: "artillery", name: "Artillery", website: "https://www.artillery3d.com/", supportUrl: "https://www.artillery3d.com/pages/firmware-download", aliases: ["artillery3d"] },
   { slug: "raise3d", name: "Raise3D", website: "https://www.raise3d.com/", supportUrl: "https://support.raise3d.com/", aliases: ["raise 3d"] },
+  { slug: "phrozen", name: "Phrozen", website: "https://phrozen3d.com/", supportUrl: "https://helpcenter.phrozen3d.com/", aliases: [] },
   { slug: "ultimaker", name: "UltiMaker", website: "https://ultimaker.com/", supportUrl: "https://support.ultimaker.com/", aliases: ["ultimaker"] },
 ];
 
@@ -30,4 +32,5 @@ export const printers: PrinterModel[] = [
   ...artilleryPrinters,
   ...raise3dPrinters,
   ...ultimakerPrinters,
+  ...resinPrinters,
 ];

@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { cn } from "@/lib/cn";
 import type { ManufacturerOption, PrinterOption } from "@/lib/data/view-models";
-import type { Question, SafetyNotice } from "@/lib/schema";
+import type { AnswerOption, Question, SafetyNotice } from "@/lib/schema";
+import type { AssetMap } from "@/lib/visual";
+import { VisualComparisonQuestion } from "./visual-comparison-question";
 
 interface Props {
   question: Question;
@@ -21,6 +23,7 @@ interface Props {
   printers: PrinterOption[];
   manufacturers: ManufacturerOption[];
   safetyNotices: SafetyNotice[];
+  assets: AssetMap;
   focusOnMount: boolean;
   onAnswer: (optionId: string) => void;
   onBack: () => void;
@@ -43,6 +46,10 @@ export function QuestionView(p: Props) {
   }, [q.id, p.focusOnMount]);
 
   const printerCouldAnswer = Boolean(q.autoAnswer);
+  // Options with an available picture are compared side by side; the rest stay as text.
+  const hasPicture = (o: AnswerOption) => Boolean(o.image && p.assets[o.image]?.status === "available");
+  const pictured = q.options.some(hasPicture) ? q.options.filter(hasPicture) : [];
+  const textOnly = q.options.filter((o) => !pictured.includes(o));
 
   return (
     <section aria-labelledby={`q-${q.id}`} className="rounded-lg border border-line bg-surface p-4 shadow-sm sm:p-6">
@@ -102,8 +109,14 @@ export function QuestionView(p: Props) {
 
       <fieldset className="mt-5">
         <legend className="sr-only">{q.prompt}</legend>
+        {pictured.length > 0 && (
+          <div className="mb-3">
+            <VisualComparisonQuestion options={pictured} assets={p.assets} selectedOptionId={p.selectedOptionId} onAnswer={p.onAnswer} />
+            <p className="mt-2 text-xs text-ink/70">Example illustrations of each case, to compare with your print.</p>
+          </div>
+        )}
         <div className="space-y-2.5">
-          {q.options.map((o) => {
+          {textOnly.map((o) => {
             const selected = o.id === p.selectedOptionId;
             return (
               <button

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Thin first-layer lines with missing sections</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="30.0" y="250.0" width="420.0" height="40.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <ellipse cx="70.0" cy="244.0" rx="18.0" ry="6.0" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.5"/>
+  <ellipse cx="182.0" cy="244.0" rx="18.0" ry="6.0" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.5"/>
+  <ellipse cx="238.0" cy="244.0" rx="14.0" ry="6.0" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.5"/>
+  <ellipse cx="406.0" cy="244.0" rx="18.0" ry="6.0" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.5"/>
+  <circle cx="154.0" cy="244.0" r="30.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+  <circle cx="322.0" cy="244.0" r="40.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

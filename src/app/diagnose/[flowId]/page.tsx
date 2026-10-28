@@ -4,7 +4,8 @@ import { Suspense } from "react";
 import { DiagnosticRunner } from "@/components/diagnose/diagnostic-runner";
 import { Breadcrumbs, Container } from "@/components/ui/layout";
 import { getContent } from "@/lib/data/repository";
-import { findFlow } from "@/lib/data/selectors";
+import { findFlow, guidesFor } from "@/lib/data/selectors";
+import { assetMap } from "@/lib/visual";
 import { manufacturerOptions, printerOptions } from "@/lib/data/view-models";
 
 type Params = { flowId: string };
@@ -32,6 +33,13 @@ export default async function DiagnoseFlowPage({ params }: { params: Promise<Par
   if (!flow) notFound();
   const category = c.categories.find((x) => x.slug === flow.category);
   const guides = c.guides.map((g) => ({ slug: g.slug, title: g.title, summary: g.summary, appliesWhen: g.appliesWhen }));
+  const symptoms = c.symptoms.filter((s) => s.flowId === flow.id);
+  const fullGuides = guidesFor(c, [...new Set(flow.outcomes.flatMap((o) => o.guideSlugs))]);
+  const imageIds = [
+    ...symptoms.flatMap((s) => s.images),
+    ...flow.questions.flatMap((q) => q.options.flatMap((o) => (o.image ? [o.image] : []))),
+    ...fullGuides.flatMap((g) => g.steps.flatMap((s) => (s.image ? [s.image] : []))),
+  ];
 
   return (
     <Container className="py-6 sm:py-8">
@@ -53,6 +61,9 @@ export default async function DiagnoseFlowPage({ params }: { params: Promise<Par
           guides={guides}
           safetyNotices={c.safetyNotices}
           slicers={c.slicers}
+          symptoms={symptoms.map((s) => ({ slug: s.slug, title: s.title, description: s.description, category: s.category, flowId: s.flowId, images: s.images, printerTypes: s.printerTypes, preset: s.preset }))}
+          assets={assetMap(c.visualAssets, imageIds)}
+          fullGuides={fullGuides}
         />
       </Suspense>
     </Container>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Spaghetti: a tangle of loose filament above a short failed print</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="36.0" y="300.0" width="408.0" height="14.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="40.0" y1="301.0" x2="440.0" y2="301.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <rect x="170.0" y="291.0" width="130.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="170.0" y="282.0" width="130.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="170.0" y="273.0" width="130.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="170.0" y="264.0" width="130.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="170.0" y="255.0" width="130.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <path d="M240,250 Q230.7,252.5 199.8,258.3 Q207.4,261.1 165.7,262.0 Q126.3,239.9 166.3,238.5 Q194.9,199.5 176.6,203.4 Q200.3,203.9 144.5,166.3 Q129.7,154.2 189.5,169.4 Q225.5,143.0 189.2,137.6 Q138.5,180.4 147.8,154.8 Q132.4,152.9 142.2,153.4 Q155.3,120.5 110.0,130.0 Q164.3,161.5 143.6,130.0 Q165.4,155.1 174.2,143.4 Q177.7,116.2 128.9,136.7 Q147.1,137.0 179.7,158.9 Q216.4,143.3 173.8,145.9 Q162.9,177.4 117.1,130.0 Q120.9,149.9 116.6,130.0 Q117.8,141.1 110.0,132.6 Q97.9,165.5 110.0,130.0 Q94.5,99.2 110.0,131.8 Q132.2,130.3 110.0,148.8 Q152.9,189.1 132.0,156.1 Q163.3,177.9 120.8,185.3 Q133.9,162.3 166.8,179.7 Q154.9,189.8 212.0,151.0 Q255.4,112.1 244.8,144.9" fill="none" stroke="#3B8EEA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="210.8" y="62.9" width="68.0" height="40.0" rx="4" fill="#64748B" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="224.8" y="22.9" width="40.0" height="40.0" rx="3" fill="#475569" stroke="#1E293B" stroke-width="1.5"/>
+  <line x1="224.8" y1="28.9" x2="264.8" y2="28.9" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="224.8" y1="37.9" x2="264.8" y2="37.9" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="224.8" y1="46.9" x2="264.8" y2="46.9" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="224.8" y1="55.9" x2="264.8" y2="55.9" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <polygon points="228.8,102.9 260.8,102.9 249.8,140.9 239.8,140.9" fill="#C08A2E" stroke="#1E293B" stroke-width="1.5" stroke-linejoin="round"/>
+  <circle cx="240.0" cy="200.0" r="80.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

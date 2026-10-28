@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { printerTypeSchema } from "./printer";
 import { slicerSettingKeySchema } from "./slicer";
 import { conditionSchema, factKeySchema } from "./condition";
 import { safetyIdSchema, slugSchema, verificationSchema } from "./common";
@@ -30,6 +31,8 @@ export const answerOptionSchema = z.object({
   facts: z.partialRecord(factKeySchema, z.string()).default({}),
   /** "Not sure" or "something else": the engine treats this as weak information. */
   uncertain: z.boolean().default(false),
+  /** An image from the visual asset library, so options can be compared by eye. */
+  image: slugSchema.optional(),
 });
 export type AnswerOption = z.infer<typeof answerOptionSchema>;
 
@@ -103,6 +106,8 @@ export const diagnosticFlowSchema = z.object({
   }),
   sourceIds: z.array(slugSchema).default([]),
   verification: verificationSchema,
+  /** Printing technologies this flow is written for. */
+  printerTypes: z.array(printerTypeSchema).min(1).default(["fdm"]),
 });
 export type DiagnosticFlow = z.infer<typeof diagnosticFlowSchema>;
 

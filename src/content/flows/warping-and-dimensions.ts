@@ -4,11 +4,11 @@ import { levelling, materialQuestion } from "./common-questions";
 
 export const warpingAndDimensions: DiagnosticFlowInput = {
   id: "warping-and-dimensions",
-  version: 1,
+  version: 2,
   title: "Warping, cracking and dimensional problems",
   summary: "Separates shrinkage, drafts, adhesion, first layer squish, cooling and calibration problems that change the shape or size of a print.",
   category: "warping-and-dimensions",
-  symptomSlugs: ["warping", "elephants-foot", "layer-separation"],
+  symptomSlugs: ["warping", "elephants-foot", "layer-separation", "wrong-dimensions"],
   start: "seeing",
   questions: [
     {
@@ -16,10 +16,44 @@ export const warpingAndDimensions: DiagnosticFlowInput = {
       prompt: "What are you seeing?",
       why: "Lifting, flaring, cracking and size errors have different causes, so we start by separating them.",
       options: [
-        { id: "corners-lift", label: "Corners or edges curl up from the bed", next: "material", evidence: { contraction: 3, adhesion: 2 } },
-        { id: "elephant-foot", label: "The bottom layers flare out wider than the rest", next: "first-layer-look", evidence: { "first-layer-squish": 3, "bed-too-hot": 2 } },
-        { id: "cracks", label: "Cracks or splits between layers", next: "material", evidence: { "cold-layers": 3, contraction: 2 } },
-        { id: "wrong-size", label: "Parts come out the wrong size", next: "size-pattern", evidence: {} },
+        { id: "corners-lift", image: "ill-warping", label: "Corners or edges curl up from the bed", next: "lift-look", evidence: { contraction: 3, adhesion: 2 } },
+        { id: "elephant-foot", image: "ill-elephants-foot", label: "The bottom layers flare out wider than the rest", next: "first-layer-look", evidence: { "first-layer-squish": 3, "bed-too-hot": 2 } },
+        { id: "cracks", image: "ill-layer-separation", label: "Cracks or splits between layers", next: "material", evidence: { "cold-layers": 3, contraction: 2 } },
+        { id: "wrong-size", image: "ill-wrong-dimensions", label: "Parts come out the wrong size", next: "size-pattern", evidence: {} },
+      ],
+    },
+    {
+      id: "lift-look",
+      prompt: "Which picture looks most like your print?",
+      why: "Where the lifting happens points to the cause. Every corner lifting evenly is the part shrinking; one side only suggests a draft or an uneven first layer on that side.",
+      help: "Look at the part from the side, at eye level with the bed. A corner that has lifted shows a gap you can slide paper under.",
+      options: [
+        { id: "all-corners", image: "ill-opt-warp-all-corners", label: "Every corner lifts by about the same amount", next: "lift-when", evidence: { contraction: 2 } },
+        { id: "one-side", image: "ill-opt-warp-one-side", label: "Only one side or one corner lifts", next: "lift-when", evidence: { drafts: 2, adhesion: 1 } },
+        { id: "long-edges", image: "ill-opt-warp-long-edges", label: "The long edges bow up in the middle", next: "lift-when", evidence: { contraction: 2 } },
+        { id: "slight", image: "ill-opt-warp-flat", label: "It looks almost flat; the lift is very slight", next: "lift-when", evidence: { adhesion: 1 } },
+      ],
+    },
+    {
+      id: "lift-when",
+      prompt: "When does the lifting start?",
+      why: "Lifting in the first few layers means the first layer is not holding. Lifting later means the part is pulling itself up as it cools.",
+      options: [
+        { id: "early", label: "Within the first few layers", next: "surface", evidence: { adhesion: 3 } },
+        { id: "later", label: "Later, as the part gets taller", next: "surface", evidence: { contraction: 2, drafts: 1 } },
+        { id: "unsure", label: "I'm not sure", next: "surface", uncertain: true },
+      ],
+    },
+    {
+      id: "surface",
+      prompt: "What is the build plate's surface?",
+      why: "Some surface and material pairs hold better than others, and glass in particular needs to be very clean to hold.",
+      autoAnswer: { fact: "printer.bedSurface", map: { "smooth-pei": "smooth-pei", "textured-pei": "textured-pei", glass: "glass" } },
+      options: [
+        { id: "smooth-pei", label: "Smooth PEI", next: "material" },
+        { id: "textured-pei", label: "Textured PEI", next: "material" },
+        { id: "glass", label: "Glass", next: "material", evidence: { adhesion: 1 } },
+        { id: "other", label: "Something else, or I'm not sure", next: "material", uncertain: true },
       ],
     },
     {

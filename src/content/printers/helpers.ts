@@ -22,6 +22,7 @@ const unknownSpecs: PrinterSpecs = {
   firmwareDetail: null,
   connectivity: [],
   supportedFilaments: [],
+  resin: null,
 };
 
 export const volume = (x: number, y: number, z: number) => ({ x, y, z });

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Seen from above at an angle: all four corners lifted by about the same amount</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <polygon points="240.0,0.0 534.4,170.0 240.0,340.0 -54.4,170.0" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5" stroke-linejoin="round"/>
+  <polygon points="-54.4,170.0 240.0,340.0 240.0,350.0 -54.4,180.0" fill="#94A3B8" stroke="#94A3B8" stroke-width="1.5" stroke-linejoin="round"/>
+  <polygon points="534.4,170.0 240.0,340.0 240.0,350.0 534.4,180.0" fill="#A9B6C7" stroke="#94A3B8" stroke-width="1.5" stroke-linejoin="round"/>
+  <polygon points="208.8,88.0 382.0,188.0 271.2,252.0 98.0,152.0" fill="#A9B6C7" opacity="0.7"/>
+  <path d="M98.0,126.0 Q184.6,228.0 271.2,226.0 L271.2,200.0 Q184.6,202.0 98.0,100.0 Z" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M382.0,162.0 Q326.6,246.0 271.2,226.0 L271.2,200.0 Q326.6,220.0 382.0,136.0 Z" fill="#1F6FCC" stroke="#1F6FCC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M208.8,36.0 Q295.4,138.0 382.0,136.0 Q326.6,220.0 271.2,200.0 Q184.6,202.0 98.0,100.0 Q153.4,120.0 208.8,36.0 Z" fill="#9CC8F5" stroke="#1F6FCC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="98.0" y1="126.0" x2="98.0" y2="152.0" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 3"/>
+  <line x1="271.2" y1="226.0" x2="271.2" y2="252.0" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 3"/>
+  <line x1="382.0" y1="162.0" x2="382.0" y2="188.0" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 3"/>
+  <circle cx="271.2" cy="239.0" r="26.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+  <circle cx="98.0" cy="139.0" r="26.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

@@ -91,6 +91,14 @@ Diagnostic flows are data, not components. A flow is a set of questions; each an
 
 No AI model is involved, and nothing depends on an API key.
 
+### Visual diagnosis
+
+Diagnoses start from pictures. `/diagnose` shows a grid of picture cards for the selected printer's technology (filament or resin), with "I'm not sure" and "Something else" for anything that does not match. Choosing a card opens the diagnosis with that answer filled in (each symptom's `preset`), so the next question is the first one the picture does not answer. Follow-up questions can compare pictures, and the result shows the chosen picture, the repair steps with their reference pictures, tools, a way to check the fix, and which confirmed printer specifications were used.
+
+People can add a photo of their own print to compare with the examples. It is resized in the browser, kept in the tab's session storage only, never uploaded, and not analysed; the page says so wherever it appears.
+
+Images come from the asset manifest; see [docs/VISUAL_ASSETS.md](docs/VISUAL_ASSETS.md) for sources, licences and how to add photographs.
+
 ### My setup
 
 People can save their printer and slicer once from the header ("My setup"). Guides, diagnoses and slicer setting names then use it on every page; a `?printer=` link still takes priority for that page. If no slicer is chosen, the printer manufacturer's own slicer is used. Guide steps that change a slicer setting name it inline ("In PrusaSlicer: Retraction length · Printer Settings › Extruder 1 › Retraction"), or ask which slicer is in use.
@@ -122,6 +130,8 @@ See [docs/CONTENT.md](docs/CONTENT.md) for how to add printers, flows and guides
 
 - 58 printer models from 11 manufacturers: Bambu Lab, Prusa Research, Creality, Anycubic, Elegoo, QIDI Tech, Sovol, Flashforge, Artillery, Raise3D and UltiMaker. Each record lists the manufacturer pages its specifications came from and the date they were read. Values the manufacturer does not publish, or publishes inconsistently, are left blank with the reason given (for example, Creality's own pages give three different hotend maximums for the Ender-3 V2).
 - Levelling is recorded as manual, separate probe, nozzle-sensing, or automatic where the manufacturer does not say which sensor it uses. Advice, guide steps and guide recommendations are filtered by it, and a test walks every diagnostic path for every printer to make sure manual-levelling advice never reaches a self-levelling printer and vice versa.
+- 5 MSLA resin printers (Elegoo Saturn 4 Ultra 16K and Mars 5 Ultra, Anycubic Photon Mono M7 Pro and Photon Mono 4, Phrozen Sonic Mini 8K S) with two resin diagnoses, five resin repair guides and three resin maintenance tasks, from the Phrozen, Elegoo, Anycubic and Formlabs help pages.
+- A visual symptom library: 35 picture-led symptoms (26 filament, 9 resin), each with an original illustration. No licensed photographs have been added yet; each is listed as missing in the asset manifest.
 - 11 slicers: OrcaSlicer, Bambu Studio, PrusaSlicer, UltiMaker Cura, Creality Print, Anycubic Slicer Next, ElegooSlicer, QIDI Studio, Flash Studio Desktop (formerly Orca-Flashforge), FlashPrint 5 and ideaMaker. Each has its lineage, links to the printers whose manufacturer names it, and the setting names its developer documents. Setting names Creality, Anycubic, Elegoo, QIDI and Flashforge do not publish for their slicers are shown as inherited from the project they are built on, or as not documented.
 - 10 diagnostic flows covering every symptom category (77 questions, 100 possible causes).
 - 11 repair guides, 8 filament profiles, 12 maintenance tasks, 12 manufacturer-sold spare parts with links to the manufacturers' stores, and 13 firmware error messages.

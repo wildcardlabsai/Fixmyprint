@@ -6,7 +6,9 @@ import { CategoryIcon } from "@/components/icons";
 import { LinkButton } from "@/components/ui/button";
 import { Breadcrumbs, Container } from "@/components/ui/layout";
 import { getContent } from "@/lib/data/repository";
+import { SymptomImage } from "@/components/symptoms/symptom-image";
 import { guidesFor } from "@/lib/data/selectors";
+import { assetMap, isVisual, pickImage, symptomHref } from "@/lib/visual";
 
 type Params = { category: string };
 
@@ -27,6 +29,7 @@ export default async function ProblemCategoryPage({ params }: { params: Promise<
   const cat = c.categories.find((x) => x.slug === category);
   if (!cat) notFound();
   const symptoms = c.symptoms.filter((s) => s.category === cat.slug);
+  const assets = assetMap(c.visualAssets, symptoms.flatMap((s) => s.images));
   const categoryGuides = c.guides.filter((g) => g.category === cat.slug);
   const flowIds = new Set(symptoms.map((s) => s.flowId).filter(Boolean));
   const errorCodes = c.errorCodes.filter((e) => e.flowId && flowIds.has(e.flowId));
@@ -52,23 +55,26 @@ export default async function ProblemCategoryPage({ params }: { params: Promise<
           {symptoms.map((s) => {
             const guides = guidesFor(c, s.guideSlugs);
             return (
-              <li key={s.slug} id={s.slug} className="rounded-lg border border-line bg-surface p-4 sm:p-5">
-                <h3 className="font-semibold">{s.title}</h3>
-                <p className="mt-1 text-[15px] text-muted">{s.description}</p>
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-                  {s.flowId ? (
-                    <LinkButton href={`/diagnose/${s.flowId}`} size="sm">
-                      Diagnose this
-                      <ArrowRight aria-hidden />
-                    </LinkButton>
-                  ) : (
-                    <span className="text-sm text-muted">No step-by-step diagnosis for this yet. The guides below cover the usual fixes.</span>
-                  )}
-                  {guides.map((g) => (
-                    <Link key={g.slug} href={`/guides/${g.slug}`} className="text-sm font-medium">
-                      {g.title}
-                    </Link>
-                  ))}
+              <li key={s.slug} id={s.slug} className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-4 sm:flex-row sm:p-5">
+                {isVisual(s) && <SymptomImage asset={pickImage(assets, s.images)} className="w-full shrink-0 sm:w-44" />}
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-semibold">{s.title}</h3>
+                  <p className="mt-1 text-[15px] text-muted">{s.description}</p>
+                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    {s.flowId ? (
+                      <LinkButton href={symptomHref(s)} size="sm">
+                        Diagnose this
+                        <ArrowRight aria-hidden />
+                      </LinkButton>
+                    ) : (
+                      <span className="text-sm text-muted">No step-by-step diagnosis for this yet. The guides below cover the usual fixes.</span>
+                    )}
+                    {guides.map((g) => (
+                      <Link key={g.slug} href={`/guides/${g.slug}`} className="text-sm font-medium">
+                        {g.title}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </li>
             );

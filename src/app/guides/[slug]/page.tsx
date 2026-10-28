@@ -11,6 +11,7 @@ import { ReviewBadge, ReviewDetails } from "@/components/ui/review-status";
 import { SourceList } from "@/components/ui/source-list";
 import { getContent } from "@/lib/data/repository";
 import { findGuide, printerDisplayName } from "@/lib/data/selectors";
+import { assetMap } from "@/lib/visual";
 
 type Params = { slug: string };
 
@@ -73,6 +74,7 @@ export default async function GuidePage({ params }: { params: Promise<Params> })
               guide={guide}
               printers={c.printers.map((p) => ({ slug: p.slug, name: p.name, manufacturer: p.manufacturer, specs: p.specs }))}
               slicers={c.slicers}
+              assets={assetMap(c.visualAssets, guide.steps.flatMap((s) => (s.image ? [s.image] : [])))}
               printerNames={Object.fromEntries(c.printers.map((p) => [p.slug, printerDisplayName(c, p)]))}
               safetyNotices={c.safetyNotices}
               flowTitles={Object.fromEntries(c.flows.map((f) => [f.id, f.title]))}

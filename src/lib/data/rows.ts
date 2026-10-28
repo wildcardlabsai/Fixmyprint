@@ -13,6 +13,7 @@ export type TableRows = Record<(typeof TABLE_ORDER)[number], Row[]>;
 /** Insert order respecting foreign keys. Delete in reverse. */
 export const TABLE_ORDER = [
   "source_references",
+  "visual_assets",
   "safety_notices",
   "manufacturers",
   "printer_models",
@@ -115,6 +116,7 @@ export function contentToRows(c: SeedContent): TableRows {
         firmwareDetail: s.firmwareDetail,
         connectivity: s.connectivity,
         supportedFilaments: s.supportedFilaments,
+        resin: s.resin,
       },
     });
     p.variants.forEach((v, position) =>
@@ -123,9 +125,36 @@ export function contentToRows(c: SeedContent): TableRows {
     sourceLink("printer", p.slug, p.sourceIds);
   }
 
-  rows.symptom_categories = c.categories.map((x, position) => ({ ...x, position }));
+  rows.visual_assets = c.visualAssets.map((a) => ({
+    id: a.id,
+    kind: a.kind,
+    status: a.status,
+    file: a.file,
+    width: a.width,
+    height: a.height,
+    alt: a.alt,
+    subject: a.subject,
+    creator: a.creator,
+    licence: a.licence,
+    source_url: a.sourceUrl,
+    attribution: a.attribution,
+    notes: n(a.notes),
+  }));
+  rows.symptom_categories = c.categories.map(({ printerTypes, ...x }, position) => ({ ...x, printer_types: printerTypes, position }));
   c.symptoms.forEach((s, position) => {
-    rows.symptoms.push({ slug: s.slug, category_slug: s.category, title: s.title, description: s.description, synonyms: s.synonyms, flow_key: s.flowId, common: s.common, position });
+    rows.symptoms.push({
+      slug: s.slug,
+      category_slug: s.category,
+      title: s.title,
+      description: s.description,
+      synonyms: s.synonyms,
+      flow_key: s.flowId,
+      common: s.common,
+      printer_types: s.printerTypes,
+      images: s.images,
+      preset: s.preset,
+      position,
+    });
     s.guideSlugs.forEach((g, i) => rows.symptom_guides.push({ symptom_slug: s.slug, guide_slug: g, position: i }));
   });
 
@@ -141,13 +170,14 @@ export function contentToRows(c: SeedContent): TableRows {
       entry_conditions: n(f.entryConditions),
       safety: f.safety,
       insufficient: f.insufficient,
+      printer_types: f.printerTypes,
       ...toV(f.verification),
     });
     f.symptomSlugs.forEach((symptom_slug) => rows.diagnostic_flow_symptoms.push({ ...k, symptom_slug }));
     f.questions.forEach((q, position) => {
       rows.diagnostic_questions.push({ ...k, key: q.id, position, prompt: q.prompt, why: q.why, help: n(q.help), auto_answer: n(q.autoAnswer), skip_when: n(q.skipWhen), skip_to: n(q.skipTo), safety: q.safety });
       q.options.forEach((o, i) => {
-        rows.diagnostic_answer_options.push({ ...k, question_key: q.id, key: o.id, position: i, label: o.label, detail: n(o.detail), next: o.next, facts: o.facts, uncertain: o.uncertain });
+        rows.diagnostic_answer_options.push({ ...k, question_key: q.id, key: o.id, position: i, label: o.label, detail: n(o.detail), next: o.next, facts: o.facts, uncertain: o.uncertain, image: n(o.image) });
         for (const [outcome_key, weight] of Object.entries(o.evidence)) {
           rows.diagnostic_option_evidence.push({ ...k, question_key: q.id, option_key: o.id, outcome_key, weight });
         }
@@ -184,10 +214,11 @@ export function contentToRows(c: SeedContent): TableRows {
       expected_result: g.expectedResult,
       verification_steps: g.verificationSteps,
       if_fails: g.ifFails,
+      printer_types: g.printerTypes,
       ...toV(g.verification),
     });
     g.steps.forEach((s, position) =>
-      rows.repair_steps.push({ guide_slug: g.slug, key: s.id, position, title: s.title, body: s.body, applies_when: n(s.appliesWhen), applies_label: n(s.appliesLabel), warning: n(s.warning), tip: n(s.tip), safety: s.safety, diagram: n(s.diagram), slicer_settings: s.slicerSettings }),
+      rows.repair_steps.push({ guide_slug: g.slug, key: s.id, position, title: s.title, body: s.body, applies_when: n(s.appliesWhen), applies_label: n(s.appliesLabel), warning: n(s.warning), tip: n(s.tip), safety: s.safety, diagram: n(s.diagram), image: n(s.image), slicer_settings: s.slicerSettings }),
     );
     g.symptomSlugs.forEach((symptom_slug) => rows.guide_symptoms.push({ guide_slug: g.slug, symptom_slug }));
     g.printerSlugs.forEach((printer_slug) => rows.guide_printers.push({ guide_slug: g.slug, printer_slug }));
@@ -240,6 +271,7 @@ export function contentToRows(c: SeedContent): TableRows {
       cautions: m.cautions,
       safety: m.safety,
       guide_slugs: m.guideSlugs,
+      printer_types: m.printerTypes,
       ...toV(m.verification),
     });
     sourceLink("maintenance", m.slug, m.sourceIds);
@@ -357,6 +389,7 @@ export function rowsToContent(r: TableRows): RawContent {
         firmwareDetail: d.firmwareDetail ?? null,
         connectivity: d.connectivity ?? [],
         supportedFilaments: d.supportedFilaments ?? [],
+        resin: d.resin ?? null,
       },
       variants: (variants.get(p.slug as string) ?? []).map((v) => ({ slug: v.slug, name: v.name, kind: v.kind, description: v.description, specOverrides: v.spec_overrides })),
       troubleshootingNotes: p.troubleshooting_notes,
@@ -418,6 +451,7 @@ export function rowsToContent(r: TableRows): RawContent {
             evidence: evidence(evByOption.get(`${key}/${q.key}/${o.key}`)),
             facts: o.facts,
             uncertain: o.uncertain,
+            image: u(o.image),
           })),
         })),
         outcomes: (outByFlow.get(key) ?? []).map((o) => ({
@@ -435,6 +469,7 @@ export function rowsToContent(r: TableRows): RawContent {
         rules: (rulesByFlow.get(key) ?? []).map((x) => ({ id: x.key, when: x.condition, evidence: evidence(reByRule.get(`${key}/${x.key}`)), reason: x.reason })),
         safety: f.safety,
         insufficient: f.insufficient,
+        printerTypes: f.printer_types ?? ["fdm"],
         sourceIds: sourceIds("flow", key),
         verification: fromV(f),
       };
@@ -470,6 +505,7 @@ export function rowsToContent(r: TableRows): RawContent {
       tip: u(s.tip),
       safety: s.safety,
       diagram: u(s.diagram),
+      image: u(s.image),
       slicerSettings: s.slicer_settings ?? [],
     })),
     settings: g.settings,
@@ -477,6 +513,7 @@ export function rowsToContent(r: TableRows): RawContent {
     expectedResult: g.expected_result,
     verificationSteps: g.verification_steps,
     ifFails: g.if_fails,
+    printerTypes: g.printer_types ?? ["fdm"],
     sourceIds: sourceIds("guide", g.slug as string),
     verification: fromV(g),
   }));
@@ -519,7 +556,7 @@ export function rowsToContent(r: TableRows): RawContent {
     safetyNotices: [...r.safety_notices].sort((a, b) => String(a.id).localeCompare(String(b.id))),
     manufacturers: bySlug(r.manufacturers).map((m) => ({ slug: m.slug, name: m.name, website: m.website ?? null, supportUrl: m.support_url ?? null, aliases: m.aliases })),
     printers,
-    categories: byPosition(r.symptom_categories).map((x) => ({ slug: x.slug, title: x.title, description: x.description, icon: x.icon })),
+    categories: byPosition(r.symptom_categories).map((x) => ({ slug: x.slug, title: x.title, description: x.description, icon: x.icon, printerTypes: x.printer_types ?? ["fdm"] })),
     symptoms: byPosition(r.symptoms).map((s) => ({
       slug: s.slug,
       category: s.category_slug,
@@ -529,6 +566,9 @@ export function rowsToContent(r: TableRows): RawContent {
       flowId: s.flow_key ?? null,
       guideSlugs: (symptomGuides.get(s.slug as string) ?? []).map((g) => g.guide_slug),
       common: s.common,
+      printerTypes: s.printer_types ?? ["fdm"],
+      images: s.images ?? [],
+      preset: s.preset ?? {},
     })),
     flows,
     guides,
@@ -569,6 +609,7 @@ export function rowsToContent(r: TableRows): RawContent {
       cautions: m.cautions,
       safety: m.safety,
       guideSlugs: m.guide_slugs,
+      printerTypes: m.printer_types ?? ["fdm"],
       sourceIds: sourceIds("maintenance", m.slug as string),
       verification: fromV(m),
     })),
@@ -598,5 +639,22 @@ export function rowsToContent(r: TableRows): RawContent {
       verification: fromV(e),
     })),
     slicers,
+    visualAssets: [...r.visual_assets]
+      .sort((a, b) => String(a.id).localeCompare(String(b.id)))
+      .map((a) => ({
+        id: a.id,
+        kind: a.kind,
+        status: a.status,
+        file: a.file ?? null,
+        width: a.width ?? null,
+        height: a.height ?? null,
+        alt: a.alt,
+        subject: a.subject,
+        creator: a.creator ?? null,
+        licence: a.licence ?? null,
+        sourceUrl: a.source_url ?? null,
+        attribution: a.attribution ?? null,
+        notes: u(a.notes),
+      })),
   };
 }

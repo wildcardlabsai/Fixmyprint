@@ -1,10 +1,17 @@
-import type { PrinterModel, PrinterSpecs } from "@/lib/schema";
+import { PRINTER_TYPE_LABEL, type PrinterModel, type PrinterSpecs } from "@/lib/schema";
 
 export const LEVELLING_LABEL: Record<NonNullable<PrinterSpecs["levelling"]>, string> = {
   manual: "Manual (knobs or screws)",
   "probe-offset": "Separate probe with Z offset",
   "nozzle-sensing": "Automatic, nozzle senses the bed",
   automatic: "Automatic (sensor type not published)",
+};
+/** Resin build plates: "manual" is paper and screws; "automatic" covers automatic and levelling-free plates. */
+export const RESIN_LEVELLING_LABEL: Record<NonNullable<PrinterSpecs["levelling"]>, string> = {
+  manual: "Manual (paper and plate screws)",
+  "probe-offset": "Separate probe",
+  "nozzle-sensing": "Sensor",
+  automatic: "Automatic or levelling-free",
 };
 export const LEVELLING_SHORT: Record<NonNullable<PrinterSpecs["levelling"]>, string> = {
   manual: "Manual levelling",
@@ -43,8 +50,21 @@ export function withDetail(label: string, detail: string | null | undefined): st
 /** Rows for a specification table. Unknown values are shown as unknown, never guessed. */
 export function specRows(p: PrinterModel, filamentName: (slug: string) => string): { label: string; value: string | null }[] {
   const s = p.specs;
+  if (s.printerType === "msla") {
+    const r = s.resin;
+    return [
+      { label: "Printer type", value: PRINTER_TYPE_LABEL.msla },
+      { label: "Build volume", value: s.buildVolumeMm ? `${s.buildVolumeMm.x} × ${s.buildVolumeMm.y} × ${s.buildVolumeMm.z} mm` : null },
+      { label: "Screen", value: r?.lcd ?? null },
+      { label: "XY resolution", value: r?.xyResolution ?? null },
+      { label: "Layer height", value: r?.layerHeightMm ? `${r.layerHeightMm.min}–${r.layerHeightMm.max} mm` : null },
+      { label: "Light source", value: r?.lightSource ?? null },
+      { label: "Build plate levelling", value: s.levelling ? withDetail(RESIN_LEVELLING_LABEL[s.levelling], s.levellingDetail) : null },
+      { label: "Connectivity", value: s.connectivity.length ? s.connectivity.join(", ") : null },
+    ];
+  }
   return [
-    { label: "Printer type", value: "FDM (filament)" },
+    { label: "Printer type", value: PRINTER_TYPE_LABEL.fdm },
     { label: "Motion system", value: s.motionSystem ? MOTION_LABEL[s.motionSystem] : null },
     { label: "Linear motion", value: s.linearMotion ? LINEAR_LABEL[s.linearMotion] : null },
     { label: "Build volume", value: s.buildVolumeMm ? `${s.buildVolumeMm.x} × ${s.buildVolumeMm.y} × ${s.buildVolumeMm.z} mm` : null },
@@ -68,4 +88,22 @@ export function specRows(p: PrinterModel, filamentName: (slug: string) => string
     { label: "Connectivity", value: s.connectivity.length ? s.connectivity.join(", ") : null },
     { label: "Manufacturer-listed materials", value: s.supportedFilaments.length ? s.supportedFilaments.map(filamentName).join(", ") : null },
   ];
+}
+
+/**
+ * The recorded specifications that diagnoses and guides rely on, labelled for
+ * display. Only values the manufacturer publishes are listed.
+ */
+export function specFactsUsed(p: PrinterModel): { label: string; value: string }[] {
+  const s = p.specs;
+  const resin = s.printerType === "msla";
+  const rows: [string, string | null][] = [
+    ["Printing technology", PRINTER_TYPE_LABEL[s.printerType]],
+    [resin ? "Build plate levelling" : "Bed levelling", s.levelling ? (resin ? RESIN_LEVELLING_LABEL : LEVELLING_LABEL)[s.levelling] : null],
+    ["Extruder", !resin && s.extruder ? EXTRUDER_LABEL[s.extruder] : null],
+    ["Enclosure", !resin && s.enclosure ? ENCLOSURE_LABEL[s.enclosure] : null],
+    ["Build surface", !resin ? (s.bed?.surface ?? null) : null],
+    ["Firmware", !resin && s.firmwareFamily ? FIRMWARE_LABEL[s.firmwareFamily] : null],
+  ];
+  return rows.filter((r): r is [string, string] => r[1] !== null).map(([label, value]) => ({ label, value }));
 }

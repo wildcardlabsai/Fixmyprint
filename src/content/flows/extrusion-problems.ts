@@ -4,11 +4,11 @@ import { levelling, materialQuestion, withNext } from "./common-questions";
 
 export const extrusionProblems: DiagnosticFlowInput = {
   id: "extrusion-problems",
-  version: 1,
+  version: 2,
   title: "Extrusion problems and blocked nozzles",
   summary: "Separates blockages, heat creep, extruder grip, filament path friction and settings problems when plastic will not flow properly.",
   category: "nozzle-and-extrusion",
-  symptomSlugs: ["not-extruding", "under-extrusion", "extruder-clicking"],
+  symptomSlugs: ["not-extruding", "under-extrusion", "extruder-clicking", "brittle-filament"],
   start: "symptom",
   safety: ["hot-surfaces"],
   questions: [
@@ -17,10 +17,21 @@ export const extrusionProblems: DiagnosticFlowInput = {
       prompt: "Which best describes the problem?",
       why: "A nozzle that never extrudes, one that stops part way and one that extrudes too little usually have different causes.",
       options: [
-        { id: "nothing", label: "Nothing comes out at all", next: "extrude-test", evidence: { "nozzle-blocked": 3, "ptfe-gap": 1, "extruder-grip": 1, "heat-creep": 1 } },
+        { id: "nothing", image: "ill-not-extruding", label: "Nothing comes out at all", next: "extrude-test", evidence: { "nozzle-blocked": 3, "ptfe-gap": 1, "extruder-grip": 1, "heat-creep": 1 } },
         { id: "stops-midway", label: "It prints for a while, then extrusion weakens or stops", next: "when-stops", evidence: { "heat-creep": 3, "filament-path": 2, "nozzle-blocked": 2 } },
-        { id: "thin-throughout", label: "It extrudes, but walls are thin or gappy throughout", next: "speed", evidence: { "flow-calibration": 3, "nozzle-blocked": 1, "melt-rate": 1 } },
-        { id: "clicking", label: "The extruder clicks, or the filament has chewed grooves", next: "click-when", evidence: { "extruder-grip": 2, "nozzle-blocked": 2, "melt-rate": 1 } },
+        { id: "thin-throughout", image: "ill-under-extrusion", label: "It extrudes, but walls are thin or gappy throughout", next: "speed", evidence: { "flow-calibration": 3, "nozzle-blocked": 1, "melt-rate": 1 } },
+        { id: "clicking", image: "ill-extruder-clicking", label: "The extruder clicks, or the filament has chewed grooves", next: "click-when", evidence: { "extruder-grip": 2, "nozzle-blocked": 2, "melt-rate": 1 } },
+        { id: "snaps", image: "ill-brittle-filament", label: "The filament snaps before it reaches the nozzle", next: "bend-test", evidence: { "brittle-filament": 3, "filament-path": 1 } },
+      ],
+    },
+    {
+      id: "bend-test",
+      prompt: "Pull out a length of filament from the spool and bend it gently into a loop. What happens?",
+      why: "Filament that snaps when bent has become brittle. Filament that bends normally but breaks in the printer is being stressed by a tight bend in its path.",
+      options: [
+        { id: "snaps-easily", label: "It snaps before it forms a loop", next: "material", evidence: { "brittle-filament": 4 } },
+        { id: "bends", label: "It bends without breaking", next: "material", evidence: { "brittle-filament": -2, "filament-path": 3 } },
+        { id: "only-at-bend", label: "It only breaks at the same sharp bend, guide or tube entry", next: "material", evidence: { "filament-path": 4 } },
       ],
     },
     {
@@ -200,6 +211,19 @@ export const extrusionProblems: DiagnosticFlowInput = {
         "For flexible filament on a Bowden printer, print slowly or consider whether the material suits the printer.",
       ],
       guideSlugs: ["check-the-extruder"],
+    },
+    {
+      id: "brittle-filament",
+      title: "The filament has become brittle",
+      summary: "Old or damp filament, especially PLA, can snap where it bends on its way to the extruder.",
+      explanation: "Filament that has absorbed moisture, or has been stored for a long time, can lose its flexibility. It then snaps where it curves off the spool or into a tube, often while the printer is unattended. Drying can help some materials; badly degraded filament may need replacing.",
+      checks: [
+        "Bend filament from deeper in the spool. If it bends there but not at the outer turns, only the exposed outer length is affected.",
+        "Dry the spool following the filament manufacturer's guidance, then test again.",
+        "Store open spools sealed with desiccant.",
+        "Make sure the filament path has no tight bends between the spool and the extruder.",
+      ],
+      guideSlugs: ["dry-filament"],
     },
     {
       id: "melt-rate",

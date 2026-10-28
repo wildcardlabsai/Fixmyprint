@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Clogged nozzle: the printer moves but no plastic comes out</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="36.0" y="300.0" width="408.0" height="14.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="40.0" y1="301.0" x2="440.0" y2="301.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <rect x="70.0" y="292.0" width="300.0" height="8.0" rx="4" fill="none" stroke="#1F6FCC" stroke-width="1.5" stroke-dasharray="8 6"/>
+  <circle cx="84.0" cy="296.0" r="3.0" fill="#3B8EEA"/>
+  <circle cx="96.0" cy="296.0" r="2.0" fill="#3B8EEA"/>
+  <rect x="346.0" y="192.0" width="68.0" height="40.0" rx="4" fill="#64748B" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="360.0" y="152.0" width="40.0" height="40.0" rx="3" fill="#475569" stroke="#1E293B" stroke-width="1.5"/>
+  <line x1="360.0" y1="158.0" x2="400.0" y2="158.0" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="360.0" y1="167.0" x2="400.0" y2="167.0" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="360.0" y1="176.0" x2="400.0" y2="176.0" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="360.0" y1="185.0" x2="400.0" y2="185.0" stroke="#334155" stroke-width="1.2" stroke-linecap="round"/>
+  <polygon points="364.0,232.0 396.0,232.0 385.0,270.0 375.0,270.0" fill="#C08A2E" stroke="#1E293B" stroke-width="1.5" stroke-linejoin="round"/>
+  <polygon points="374.0,240.0 386.0,240.0 383.0,264.0 377.0,264.0" fill="#3F2A12"/>
+  <circle cx="380.0" cy="252.0" r="32.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

@@ -108,6 +108,40 @@ export function checkContentIntegrity(c: SeedContent): string[] {
     checkSources(e.sourceIds, `error ${e.slug}`);
   }
 
+  // Visual assets: every reference resolves, and an image is only used for what it depicts.
+  const assets = new Map(c.visualAssets.map((a) => [a.id, a]));
+  unique(c.visualAssets.map((a) => a.id), "visual asset");
+  const assetFor = (id: string, where: string, allowed: string[]) => {
+    const a = assets.get(id);
+    if (!a) return problems.push(`${where}: unknown visual asset "${id}"`);
+    if (!allowed.includes(a.subject)) problems.push(`${where}: image "${id}" depicts ${a.subject}, not ${allowed.join(" or ")}`);
+  };
+  const symptomSubjects = new Set(c.symptoms.map((s) => `symptom:${s.slug}`));
+  for (const s of c.symptoms) {
+    s.images.forEach((id) => assetFor(id, `symptom ${s.slug}`, [`symptom:${s.slug}`]));
+    const category = c.categories.find((x) => x.slug === s.category);
+    if (category && !s.printerTypes.every((t) => category.printerTypes.includes(t))) problems.push(`symptom ${s.slug}: printer types not covered by its category`);
+    const flow = s.flowId ? c.flows.find((f) => f.id === s.flowId) : undefined;
+    if (flow && !s.printerTypes.every((t) => flow.printerTypes.includes(t))) problems.push(`symptom ${s.slug}: printer types not covered by flow ${flow.id}`);
+    for (const [q, o] of Object.entries(s.preset)) {
+      const question = flow?.questions.find((x) => x.id === q);
+      if (!flow) problems.push(`symptom ${s.slug}: preset answers need a flow`);
+      else if (!question?.options.some((x) => x.id === o)) problems.push(`symptom ${s.slug}: preset ${q}=${o} is not an option in ${flow.id}`);
+    }
+  }
+  for (const f of c.flows) {
+    for (const q of f.questions) {
+      for (const o of q.options) {
+        if (!o.image) continue;
+        const own = `option:${f.id}/${q.id}/${o.id}`;
+        const a = assets.get(o.image);
+        // An option may show its own comparison image, or the image of the symptom it describes.
+        assetFor(o.image, `flow ${f.id} option ${q.id}/${o.id}`, a && symptomSubjects.has(a.subject) ? [a.subject] : [own]);
+      }
+    }
+  }
+  for (const g of c.guides) g.steps.forEach((st) => st.image && assetFor(st.image, `guide ${g.slug} step ${st.id}`, [assets.get(st.image)?.subject ?? ""]));
+
   const slicers = unique(c.slicers.map((s) => s.slug), "slicer");
   for (const s of c.slicers) {
     const where = `slicer ${s.slug}`;

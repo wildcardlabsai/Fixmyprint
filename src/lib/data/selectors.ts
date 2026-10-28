@@ -38,11 +38,12 @@ export function guidesFor(c: Pick<SeedContent, "guides">, slugs: string[]): Guid
   return slugs.map((s) => findGuide(c, s)).filter((g): g is Guide => g !== null);
 }
 
-/** Guides that mention a printer explicitly, plus general guides that apply to every printer. */
-export function guidesForPrinter(c: Pick<SeedContent, "guides">, slug: string) {
+/** Guides that mention a printer explicitly, plus general guides for its printing technology. */
+export function guidesForPrinter(c: Pick<SeedContent, "guides" | "printers">, slug: string) {
+  const type = c.printers.find((p) => p.slug === slug)?.specs.printerType;
   return {
     specific: c.guides.filter((g) => g.printerSlugs.includes(slug)),
-    general: c.guides.filter((g) => g.printerSlugs.length === 0),
+    general: c.guides.filter((g) => g.printerSlugs.length === 0 && (!type || g.printerTypes.includes(type))),
   };
 }
 

@@ -6,7 +6,9 @@ import { firstLayerAdhesion } from "./first-layer-adhesion";
 import { heatingFaults } from "./heating-faults";
 import { motionAndNoises } from "./motion-and-noises";
 import { multiColour } from "./multi-colour";
+import { overhangsAndSupports } from "./overhangs-and-supports";
 import { printerStops } from "./printer-stops";
+import { resinBuildAndSupports, resinSurfaceAndCuring } from "./resin";
 import { stringingAndSurface } from "./stringing-and-surface";
 import { warpingAndDimensions } from "./warping-and-dimensions";
 
@@ -21,4 +23,7 @@ export const flowInputs: DiagnosticFlowInput[] = [
   motionAndNoises,
   heatingFaults,
   firmwareAndConnectivity,
+  overhangsAndSupports,
+  resinBuildAndSupports,
+  resinSurfaceAndCuring,
 ];

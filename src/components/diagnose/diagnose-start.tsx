@@ -4,16 +4,20 @@ import { ChevronRight, History, Printer, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { CategoryIcon } from "@/components/icons";
 import { PrinterPicker } from "@/components/printers/printer-picker";
+import { PhotoUpload } from "@/components/symptoms/photo-upload";
+import { SymptomGrid, type SymptomView } from "@/components/symptoms/symptom-grid";
 import { listSessions, useSavedPrinter, type StoredSession } from "@/lib/client/storage";
 import type { ManufacturerOption, PrinterOption } from "@/lib/data/view-models";
 import { compact } from "@/lib/search/search";
-import type { SymptomCategory } from "@/lib/schema";
+import { PRINTER_TYPE_LABEL, type PrinterType, type SymptomCategory } from "@/lib/schema";
+import { cn } from "@/lib/cn";
+import { isVisual, symptomsForType, type AssetMap } from "@/lib/visual";
 
 interface Props {
   categories: SymptomCategory[];
-  symptoms: { slug: string; category: string; title: string; description: string; flowId: string | null }[];
+  symptoms: SymptomView[];
+  assets: AssetMap;
   flows: { id: string; title: string }[];
   errorCodes: { slug: string; message: string; aliases: string[]; firmwareLabel: string }[];
   printers: PrinterOption[];
@@ -39,7 +43,15 @@ export function DiagnoseStart(p: Props) {
   const printerSlug = chosenSlug ?? (cleared ? null : (saved?.slug ?? null));
   const printer = p.printers.find((x) => x.slug === printerSlug);
   const usingSaved = Boolean(printer && printer.slug === savedPrinter);
-  const suffix = printerSlug ? `?printer=${encodeURIComponent(printerSlug)}` : "";
+  // Printing technology: the printer's own, or the person's choice when no printer is selected.
+  const urlType = params.get("type");
+  const [chosenType, setChosenType] = useState<PrinterType>(urlType === "msla" ? "msla" : "fdm");
+  const printerType: PrinterType = printer?.printerType ?? chosenType;
+  const forType = symptomsForType(p.symptoms, printerType);
+  const chooseType = (t: PrinterType) => {
+    setChosenType(t);
+    router.replace(t === "msla" ? "/diagnose?type=msla" : "/diagnose", { scroll: false });
+  };
 
   const select = (slug: string | null) => {
     setChosenSlug(slug);
@@ -131,36 +143,43 @@ export function DiagnoseStart(p: Props) {
         )}
       </section>
 
-      <section aria-labelledby="symptom-heading">
-        <h2 id="symptom-heading" className="text-lg font-semibold">
-          <span className="mr-2 text-muted">2.</span>What is happening?
+      <section aria-labelledby="type-heading" className="space-y-4">
+        <h2 id="type-heading" className="sr-only">
+          Printing technology
         </h2>
-        <p className="mt-1 text-sm text-muted">Choose the closest description. You can start without choosing a printer.</p>
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          {p.categories.map((c) => (
-            <div key={c.slug} className="rounded-lg border border-line bg-surface">
-              <h3 className="flex items-center gap-2 border-b border-line px-4 py-3 text-[15px] font-semibold">
-                <CategoryIcon name={c.icon} className="size-4 text-primary-dark" />
-                {c.title}
-              </h3>
-              <ul className="divide-y divide-line">
-                {p.symptoms
-                  .filter((s) => s.category === c.slug)
-                  .map((s) => (
-                    <li key={s.slug}>
-                      <Link
-                        href={s.flowId ? `/diagnose/${s.flowId}${suffix}` : `/problems/${c.slug}`}
-                        className="flex items-center gap-3 px-4 py-3 text-ink no-underline hover:bg-page"
-                      >
-                        <span className="flex-1 text-[15px]">{s.title}</span>
-                        <ChevronRight className="size-4 shrink-0 text-muted" aria-hidden />
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        {printer ? (
+          <p className="text-sm text-ink/70">
+            Showing problems for <span className="font-medium text-ink">{PRINTER_TYPE_LABEL[printerType]}</span> printers, from the {printer.displayName}&apos;s
+            specifications.
+          </p>
+        ) : (
+          <div role="group" aria-label="What kind of printer is it?" className="inline-flex rounded-lg border border-line-strong bg-surface p-1">
+            {(["fdm", "msla"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                aria-pressed={printerType === t}
+                onClick={() => chooseType(t)}
+                className={cn(
+                  "rounded-md px-3.5 py-2 text-sm font-medium transition-colors",
+                  printerType === t ? "bg-primary-dark text-white" : "text-ink hover:bg-page",
+                )}
+              >
+                {t === "fdm" ? "Filament printer (FDM)" : "Resin printer (MSLA)"}
+              </button>
+            ))}
+          </div>
+        )}
+        <PhotoUpload />
+        <SymptomGrid
+          key={printerType}
+          symptoms={forType.filter(isVisual)}
+          otherProblems={forType.filter((s) => !isVisual(s))}
+          categories={p.categories}
+          assets={p.assets}
+          printerType={printerType}
+          printerSlug={printerSlug}
+        />
       </section>
 
       <section aria-labelledby="error-heading" className="rounded-lg border border-line bg-surface p-4 sm:p-5">

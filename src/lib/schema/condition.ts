@@ -6,6 +6,7 @@ import { z } from "zod";
  */
 export const factKeySchema = z.enum([
   "printer.selected",
+  "printer.type",
   "printer.levelling",
   "printer.extruder",
   "printer.enclosure",

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Layer separation: a crack has opened between layers</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="36.0" y="300.0" width="408.0" height="14.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="40.0" y1="301.0" x2="440.0" y2="301.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <rect x="150.0" y="291.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="282.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="273.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="264.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="255.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="246.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="237.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="228.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="219.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="210.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="201.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="192.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="176.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="167.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="158.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="149.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="140.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="131.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="122.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="113.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="104.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="95.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="86.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <rect x="150.0" y="77.0" width="180.0" height="9.0" rx="4.5" fill="#3B8EEA" stroke="#1F6FCC" stroke-width="1.2"/>
+  <path d="M150,186 L170,190 L190,185 L214,191 L240,186 L266,190 L292,185 L330,189" fill="none" stroke="#1E293B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="240.0" cy="188.0" r="50.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

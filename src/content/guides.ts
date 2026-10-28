@@ -262,6 +262,7 @@ export const guideInputs: GuideInput[] = [
       },
       {
         id: "judge",
+        image: "ill-opt-line-flat",
         title: "Judge the result",
         body: [
           "Good: lines slightly flattened, joined to each other, smooth on top.",
@@ -512,6 +513,7 @@ export const guideInputs: GuideInput[] = [
       },
       {
         id: "gear",
+        image: "ill-extruder-clicking",
         title: "Clean and inspect the drive gear",
         body: [
           "Switch off and unplug the printer, then remove the filament.",
@@ -608,7 +610,7 @@ export const guideInputs: GuideInput[] = [
     steps: [
       { id: "baseline", title: "Start from the manufacturer's profile", body: ["Load the printer manufacturer's slicer profile and the filament profile closest to yours. Note the retraction settings before changing them."] },
       { id: "dry", title: "Rule out wet filament", body: ["Wet filament strings whatever the retraction settings. If you hear popping or the filament has been open for a while, dry it first."] },
-      { id: "test", title: "Print a retraction test", body: ["Use your slicer's retraction calibration if it has one, or print two thin towers a few centimetres apart."] },
+      { id: "test", image: "ill-stringing", title: "Print a retraction test", body: ["Use your slicer's retraction calibration if it has one, or print two thin towers a few centimetres apart."] },
       {
         id: "direct",
         slicerSettings: ["retraction"],

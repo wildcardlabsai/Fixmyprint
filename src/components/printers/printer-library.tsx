@@ -18,7 +18,7 @@ export interface LibraryPrinter extends PrinterOption {
 }
 
 interface Filter {
-  key: "levelling" | "extruder" | "enclosure";
+  key: "printerType" | "levelling" | "extruder" | "enclosure";
   label: string;
   options: { value: string; label: string }[];
 }

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Unusual noises: a motor and belt drive with vibration marks</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="70.0" y="160.0" width="100.0" height="100.0" rx="8" fill="#475569" stroke="#1E293B" stroke-width="1.5"/>
+  <circle cx="120.0" cy="210.0" r="22.0" fill="#64748B" stroke="#1E293B" stroke-width="1.5"/>
+  <circle cx="380.0" cy="210.0" r="22.0" fill="#64748B" stroke="#1E293B" stroke-width="1.5"/>
+  <path d="M120,188 L380,188 A22,22 0 0 1 380,232 L120,232 A22,22 0 0 1 120,188 Z" fill="none" stroke="#334155" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96.0,178.0 A40,40 0 0 1 144.0,178.0" fill="none" stroke="#C0392B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/>
+  <path d="M85.2,163.6 A58,58 0 0 1 154.8,163.6" fill="none" stroke="#C0392B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.75"/>
+  <path d="M74.4,149.2 A76,76 0 0 1 165.6,149.2" fill="none" stroke="#C0392B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  <path d="M200,180 l5,-10 l5,10" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M250,180 l5,-10 l5,10" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M300,180 l5,-10 l5,10" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="120.0" cy="210.0" r="66.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Cracked resin print: a jagged crack through a finished part</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="60.0" y="300.0" width="360.0" height="10.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <rect x="150.0" y="90.0" width="180.0" height="210.0" rx="14" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.5"/>
+  <path d="M227.3,94.6 L227.4,100.6 L228.1,104.6 L238.4,112.8 L236.0,123.9 L235.2,132.8 L233.8,144.7 L233.9,147.3 L231.5,156.2 L233.6,171.2 L231.6,171.9 L228.7,189.2 L225.1,194.1 L226.5,203.0 L224.4,211.9 L228.3,219.8 L234.7,227.5 L229.4,230.6 L239.8,243.2 L234.6,256.1 L240.0,260.0" fill="none" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="234.0" cy="170.0" r="56.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

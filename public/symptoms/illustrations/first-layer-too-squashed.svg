@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>First layer too squashed: flat, see-through lines with ridges</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="40.0" y="90.0" width="400.0" height="200.0" rx="6" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <rect x="70.0" y="112.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="124.0" x2="410.0" y2="124.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="126.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="138.0" x2="410.0" y2="138.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="140.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="152.0" x2="410.0" y2="152.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="154.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="166.0" x2="410.0" y2="166.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="168.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="180.0" x2="410.0" y2="180.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="182.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="194.0" x2="410.0" y2="194.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="196.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="208.0" x2="410.0" y2="208.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="210.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="222.0" x2="410.0" y2="222.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="224.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="236.0" x2="410.0" y2="236.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="238.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="250.0" x2="410.0" y2="250.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="252.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="264.0" x2="410.0" y2="264.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <rect x="70.0" y="266.0" width="340.0" height="12.0" rx="2" fill="#7DB6F2" opacity="0.75"/>
+  <line x1="70.0" y1="278.0" x2="410.0" y2="278.0" stroke="#1F6FCC" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M80,116 l20,4 l20,-4 l20,4 l20,-4" fill="none" stroke="#1F6FCC" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M80,144 l20,4 l20,-4 l20,4 l20,-4" fill="none" stroke="#1F6FCC" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M80,172 l20,4 l20,-4 l20,4 l20,-4" fill="none" stroke="#1F6FCC" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M80,200 l20,4 l20,-4 l20,4 l20,-4" fill="none" stroke="#1F6FCC" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M80,228 l20,4 l20,-4 l20,4 l20,-4" fill="none" stroke="#1F6FCC" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M80,256 l20,4 l20,-4 l20,4 l20,-4" fill="none" stroke="#1F6FCC" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="150.0" cy="190.0" r="60.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

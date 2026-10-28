@@ -5,6 +5,7 @@ import { setParams } from "@/test/next-navigation";
 import { seed } from "@/content";
 import { keys } from "@/lib/client/storage";
 import { manufacturerOptions, printerOptions } from "@/lib/data/view-models";
+import { assetMap } from "@/lib/visual";
 import { DiagnosticRunner } from "./diagnostic-runner";
 
 const flow = seed.flows.find((f) => f.id === "first-layer-adhesion")!;
@@ -19,6 +20,9 @@ function renderRunner() {
       guides={seed.guides.map((g) => ({ slug: g.slug, title: g.title, summary: g.summary }))}
       safetyNotices={seed.safetyNotices}
       slicers={seed.slicers}
+      symptoms={seed.symptoms.filter((s) => s.flowId === flow.id)}
+      assets={assetMap(seed.visualAssets)}
+      fullGuides={seed.guides}
     />,
   );
 }
@@ -48,7 +52,7 @@ describe("DiagnosticRunner", () => {
     expect(screen.getByText("Strong match")).toBeInTheDocument();
     // Shown once as a reason and once in the answers summary.
     expect(screen.getAllByText(/^Round, like a piece of string/i)).toHaveLength(2);
-    expect(screen.getByRole("link", { name: /start repair guide/i })).toHaveAttribute("href", expect.stringContaining("/guides/level-the-bed?from=first-layer-adhesion&outcome=nozzle-too-far"));
+    expect(screen.getByRole("link", { name: /open the step-by-step guide/i })).toHaveAttribute("href", expect.stringContaining("/guides/level-the-bed?from=first-layer-adhesion&outcome=nozzle-too-far"));
     // Manual levelling selected: probe-only checks are hidden.
     expect(screen.queryByText(/separate probe: lower the z offset/i)).not.toBeInTheDocument();
   });
@@ -87,13 +91,15 @@ describe("DiagnosticRunner", () => {
     await answer(/a dry wipe/i);
     await answer(/^PLA$/);
     await answer(/lower than that/i);
-    const first = (await screen.findAllByRole("heading", { level: 2 }))[0]!.textContent;
+    // The most likely cause's heading; "What you reported" sits above it.
+    const cause = () => document.getElementById("result-heading")!.textContent;
+    await screen.findByRole("button", { name: /still not fixed/i });
+    const first = cause();
     await userEvent.click(screen.getByRole("button", { name: /still not fixed/i }));
-    const headings = await screen.findAllByRole("heading", { level: 2 });
-    expect(headings[0]!.textContent).not.toBe(first);
-    expect(screen.getByRole("heading", { name: /already tried/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /already tried/i })).toBeInTheDocument();
+    expect(cause()).not.toBe(first);
     await userEvent.click(screen.getByRole("button", { name: /undo/i }));
-    expect((await screen.findAllByRole("heading", { level: 2 }))[0]!.textContent).toBe(first);
+    expect(cause()).toBe(first);
   });
 
   it("applies a 'still not fixed' hand-back from a repair guide", async () => {

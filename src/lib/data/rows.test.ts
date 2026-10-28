@@ -17,6 +17,7 @@ function normalise(c: SeedContent) {
     parts: bySlug(c.parts),
     errorCodes: bySlug(c.errorCodes),
     slicers: bySlug(c.slicers),
+    visualAssets: [...c.visualAssets].sort((a, b) => a.id.localeCompare(b.id)),
   };
 }
 

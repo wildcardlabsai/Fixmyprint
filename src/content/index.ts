@@ -10,6 +10,7 @@ import {
   printerModelSchema,
   safetyNoticeSchema,
   slicerSchema,
+  visualAssetSchema,
   sourceReferenceSchema,
   symptomCategorySchema,
   symptomSchema,
@@ -18,15 +19,17 @@ import { errorCodeInputs } from "./error-codes";
 import { filamentInputs } from "./filaments";
 import { flowInputs } from "./flows";
 import { guideInputs } from "./guides";
+import { resinGuideInputs } from "./resin-guides";
 import { maintenanceInputs } from "./maintenance";
 import { partInputs } from "./parts";
 import { manufacturers as manufacturerInputs, printers as printerInputs } from "./printers";
 import { safetyNotices as safetyInputs, sources as sourceInputs } from "./shared";
 import { slicerInputs } from "./slicers";
+import { visualAssetInputs } from "./visual-assets";
 import { symptomCategories as categoryInputs, symptoms as symptomInputs } from "./symptoms";
 
 /** Bumped whenever seed content changes in a way that should be re-synced to the database. */
-export const CONTENT_VERSION = "2026-10-28.1";
+export const CONTENT_VERSION = "2026-10-28.2";
 
 function parseAll<T extends z.ZodType>(schema: T, items: unknown[], label: string): z.infer<T>[] {
   return items.map((item, i) => {
@@ -53,6 +56,7 @@ export interface RawContent {
   parts: unknown[];
   errorCodes: unknown[];
   slicers: unknown[];
+  visualAssets: unknown[];
 }
 
 /** Validates raw content from any source (bundled seed or database) into typed content. */
@@ -72,6 +76,7 @@ export function parseContent(raw: RawContent, version: string) {
     parts: parseAll(partSchema, raw.parts, "part"),
     errorCodes: parseAll(errorCodeSchema, raw.errorCodes, "error code"),
     slicers: parseAll(slicerSchema, raw.slicers, "slicer"),
+    visualAssets: parseAll(visualAssetSchema, raw.visualAssets, "visual asset"),
   };
 }
 
@@ -90,12 +95,13 @@ export const seed: SeedContent = parseContent(
     categories: categoryInputs,
     symptoms: symptomInputs,
     flows: flowInputs,
-    guides: guideInputs,
+    guides: [...guideInputs, ...resinGuideInputs],
     filaments: filamentInputs,
     maintenance: maintenanceInputs,
     parts: partInputs,
     errorCodes: errorCodeInputs,
     slicers: slicerInputs,
+    visualAssets: visualAssetInputs,
   },
   CONTENT_VERSION,
 );

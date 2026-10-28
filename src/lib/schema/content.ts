@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { conditionSchema, factKeySchema } from "./condition";
+import { printerTypeSchema } from "./printer";
 import { slicerSettingKeySchema } from "./slicer";
 import { rangeSchema, safetyIdSchema, slugSchema, verificationSchema } from "./common";
 
@@ -10,8 +11,10 @@ export const symptomCategorySchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   icon: z.string().min(1),
+  printerTypes: z.array(printerTypeSchema).min(1).default(["fdm"]),
 });
 export type SymptomCategory = z.infer<typeof symptomCategorySchema>;
+export type SymptomCategoryInput = z.input<typeof symptomCategorySchema>;
 
 export const symptomSchema = z.object({
   slug: slugSchema,
@@ -23,6 +26,16 @@ export const symptomSchema = z.object({
   flowId: z.string().nullable(),
   guideSlugs: z.array(slugSchema).default([]),
   common: z.boolean().default(false),
+  /** Printing technologies this problem applies to. */
+  printerTypes: z.array(printerTypeSchema).min(1).default(["fdm"]),
+  /**
+   * Images in order of preference: a licensed photograph first, then an
+   * illustration. The first available one is shown. Empty means the problem is
+   * not visual (for example a Wi-Fi fault) and is listed as text.
+   */
+  images: z.array(slugSchema).default([]),
+  /** Answers this symptom already gives in its flow, so the flow starts at the next relevant question. */
+  preset: z.record(z.string(), z.string()).default({}),
 });
 export type Symptom = z.infer<typeof symptomSchema>;
 
@@ -56,6 +69,8 @@ export const guideStepSchema = z.object({
   tip: z.string().optional(),
   safety: z.array(safetyIdSchema).default([]),
   diagram: z.enum(["first-layer-height", "bowden-coupler"]).optional(),
+  /** A reference image from the visual asset library. */
+  image: slugSchema.optional(),
   /** Slicer settings this step changes, shown inline with the name in the person's slicer. */
   slicerSettings: z.array(slicerSettingKeySchema).default([]),
 });
@@ -100,6 +115,7 @@ export const guideSchema = z.object({
   }),
   sourceIds: z.array(slugSchema).default([]),
   verification: verificationSchema,
+  printerTypes: z.array(printerTypeSchema).min(1).default(["fdm"]),
 });
 export type Guide = z.infer<typeof guideSchema>;
 
@@ -148,7 +164,7 @@ export const maintenanceTaskSchema = z.object({
   slug: slugSchema,
   title: z.string().min(1),
   summary: z.string().min(1),
-  area: z.enum(["build-surface", "motion", "extrusion", "electrical", "firmware", "frame"]),
+  area: z.enum(["build-surface", "motion", "extrusion", "electrical", "firmware", "frame", "resin-vat"]),
   interval: z.object({
     label: z.string().min(1),
     /** Rough ordering value in print hours, used only for sorting. */
@@ -163,6 +179,7 @@ export const maintenanceTaskSchema = z.object({
   guideSlugs: z.array(slugSchema).default([]),
   sourceIds: z.array(slugSchema).default([]),
   verification: verificationSchema,
+  printerTypes: z.array(printerTypeSchema).min(1).default(["fdm"]),
 });
 export type MaintenanceTask = z.infer<typeof maintenanceTaskSchema>;
 

@@ -3,11 +3,11 @@ import { seedVerification } from "../shared";
 
 export const motionAndNoises: DiagnosticFlowInput = {
   id: "motion-and-noises",
-  version: 1,
+  version: 2,
   title: "Layer shifts, ringing and unusual noises",
   summary: "Separates collisions, belts, pulleys, speed settings, friction and frame stiffness behind motion problems.",
   category: "motion-and-noises",
-  symptomSlugs: ["layer-shift", "unusual-noises", "ringing"],
+  symptomSlugs: ["layer-shift", "unusual-noises", "ringing", "inconsistent-layers"],
   start: "problem",
   safety: ["moving-parts"],
   questions: [
@@ -16,9 +16,10 @@ export const motionAndNoises: DiagnosticFlowInput = {
       prompt: "What is the problem?",
       why: "Shifts, noises and ripples share causes, but each has its own most likely one.",
       options: [
-        { id: "layer-shift", label: "Layers have shifted sideways", next: "shift-pattern" },
-        { id: "noise", label: "A new or unusual noise", next: "noise-kind" },
-        { id: "ringing", label: "Ripples or echoes after corners", next: "ringing-where" },
+        { id: "layer-shift", image: "ill-layer-shift", label: "Layers have shifted sideways", next: "shift-pattern" },
+        { id: "noise", image: "ill-unusual-noises", label: "A new or unusual noise", next: "noise-kind" },
+        { id: "ringing", image: "ill-ringing", label: "Ripples or echoes after corners", next: "ringing-where" },
+        { id: "banding", image: "ill-inconsistent-layers", label: "Layers look uneven, or horizontal lines repeat up the print", next: "band-pattern" },
       ],
     },
     {
@@ -26,9 +27,9 @@ export const motionAndNoises: DiagnosticFlowInput = {
       prompt: "How did the layers shift?",
       why: "A single shift is often a collision. Repeated or gradual shifts point to belts, pulleys or motors.",
       options: [
-        { id: "once", label: "Once, then the print carried on", next: "collision", evidence: { collision: 3, "belt-pulley": 1, "too-fast": 1 } },
-        { id: "repeated", label: "Several times, in the same direction", next: "collision", evidence: { "belt-pulley": 3, "motor-driver": 1 } },
-        { id: "gradual", label: "Gradually, so the part leans", next: "collision", evidence: { "belt-tension": 3, "belt-pulley": 1 } },
+        { id: "once", image: "ill-opt-shift-once", label: "Once, then the print carried on", next: "collision", evidence: { collision: 3, "belt-pulley": 1, "too-fast": 1 } },
+        { id: "repeated", image: "ill-opt-shift-repeated", label: "Several times, in the same direction", next: "collision", evidence: { "belt-pulley": 3, "motor-driver": 1 } },
+        { id: "gradual", image: "ill-opt-shift-gradual", label: "Gradually, so the part leans", next: "collision", evidence: { "belt-tension": 3, "belt-pulley": 1 } },
       ],
     },
     {
@@ -86,6 +87,17 @@ export const motionAndNoises: DiagnosticFlowInput = {
         { id: "rods", label: "Smooth rods or linear rails", next: "result", evidence: { lubrication: 3, friction: 1 } },
         { id: "belt", label: "A belt or pulley", next: "result", evidence: { "belt-tension": 2, "belt-pulley": 2 } },
         { id: "cant-tell", label: "I can't tell", next: "result", uncertain: true },
+      ],
+    },
+    {
+      id: "band-pattern",
+      prompt: "Look at the side of the print. How are the uneven layers spaced?",
+      why: "Bands at a regular spacing usually come from something that turns once per band, such as a Z lead screw. Irregular bands usually come from extrusion or temperature varying.",
+      help: "Hold a ruler against the side of the part and compare the gaps between bands.",
+      options: [
+        { id: "regular", label: "At a regular, repeating spacing", next: "result", evidence: { "z-axis": 4 } },
+        { id: "irregular", label: "Irregular, or some layers are thicker or rougher than others", next: "result", evidence: { "extrusion-variation": 4 } },
+        { id: "unsure", label: "I can't tell", next: "result", uncertain: true, evidence: { "z-axis": 1, "extrusion-variation": 1 } },
       ],
     },
     {
@@ -257,6 +269,19 @@ export const motionAndNoises: DiagnosticFlowInput = {
         "Check the couplers between motors and lead screws are tight and aligned.",
       ],
       safety: ["power-off-before-work"],
+    },
+    {
+      id: "extrusion-variation",
+      title: "Extrusion or temperature is varying between layers",
+      summary: "Some layers get more plastic than others, so the wall looks uneven.",
+      explanation: "If the amount of plastic changes from layer to layer, walls show irregular lines. Common reasons are a partly blocked nozzle, filament whose diameter varies, an extruder slipping now and then, or a nozzle temperature that swings during the print.",
+      checks: [
+        "Watch the nozzle temperature during a print. If it swings by more than a few degrees, see the heating faults diagnosis.",
+        "Measure the filament diameter at several points along the spool.",
+        "Check the extruder for slipping or a dirty drive gear.",
+      ],
+      guideSlugs: ["check-the-extruder", "clear-a-blocked-nozzle"],
+      slicerSettings: ["flow"],
     },
   ],
   insufficient: {

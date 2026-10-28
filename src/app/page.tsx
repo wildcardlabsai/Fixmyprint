@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronRight, Database, Factory, ListChecks, Printer, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, ChevronRight, Database, Factory, Images, ListChecks, Printer } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CategoryList } from "@/components/diagnose/category-list";
@@ -11,6 +11,7 @@ import { getContent } from "@/lib/data/repository";
 import { guidesFor, manufacturersWithCounts } from "@/lib/data/selectors";
 import { manufacturerOptions, printerOptions } from "@/lib/data/view-models";
 import { benefits, heroEyebrow, type Benefit } from "@/lib/home-copy";
+import { symptomHref } from "@/lib/visual";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
@@ -18,7 +19,7 @@ const BENEFIT_ICONS: Record<Benefit["icon"], typeof Printer> = {
   brands: Factory,
   steps: ListChecks,
   data: Database,
-  slicer: SlidersHorizontal,
+  visual: Images,
   "printer-types": Printer,
 };
 
@@ -127,7 +128,7 @@ export default async function HomePage() {
             {common.map((s) => (
               <li key={s.slug}>
                 <Link
-                  href={s.flowId ? `/diagnose/${s.flowId}` : `/problems/${s.category}`}
+                  href={symptomHref(s)}
                   className="group flex h-full items-start gap-3 rounded-lg border border-line bg-surface p-4 text-ink no-underline transition-colors hover:border-line-strong"
                 >
                   <span className="flex-1">

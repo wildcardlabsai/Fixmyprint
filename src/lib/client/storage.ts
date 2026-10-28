@@ -139,3 +139,41 @@ export const useSavedPrinter = () => useStoredString(keys.printer, getSavedPrint
 
 /** The slicer the user chose on this device, used to show setting names in their slicer. */
 export const useSavedSlicer = () => useStoredString(keys.slicer, getSavedSlicer);
+
+/* The person's own photo -------------------------------------------------- */
+
+/**
+ * A photo the person adds to compare with the examples. It is kept in this
+ * browser tab only (sessionStorage), is never uploaded, and is not analysed.
+ */
+export const photoSchema = z.object({ dataUrl: z.string().startsWith("data:image/"), name: z.string(), at: z.number() });
+export type StoredPhoto = z.infer<typeof photoSchema>;
+const PHOTO_KEY = `${PREFIX}photo`;
+
+let photoCache: { raw: string | null; value: StoredPhoto | null } = { raw: null, value: null };
+const getPhoto = (): StoredPhoto | null => {
+  try {
+    const raw = window.sessionStorage.getItem(PHOTO_KEY);
+    if (raw !== photoCache.raw) {
+      const parsed = raw ? photoSchema.safeParse(JSON.parse(raw)) : null;
+      photoCache = { raw, value: parsed?.success ? parsed.data : null };
+    }
+    return photoCache.value;
+  } catch {
+    return null;
+  }
+};
+
+/** Returns false if the photo could not be kept (for example, storage is full). */
+export function savePhoto(photo: StoredPhoto | null): boolean {
+  try {
+    if (photo) window.sessionStorage.setItem(PHOTO_KEY, JSON.stringify(photo));
+    else window.sessionStorage.removeItem(PHOTO_KEY);
+    window.dispatchEvent(new CustomEvent(EVENT, { detail: PHOTO_KEY }));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const useUploadedPhoto = () => useSyncExternalStore(subscribe, getPhoto, () => null);

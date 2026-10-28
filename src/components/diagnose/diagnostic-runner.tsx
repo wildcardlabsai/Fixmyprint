@@ -10,8 +10,12 @@ import { Notice } from "@/components/ui/notice";
 import { addHistory, keys, read, remove, sessionSchema, useSavedPrinter, write } from "@/lib/client/storage";
 import type { ManufacturerOption, PrinterOption } from "@/lib/data/view-models";
 import { factsFromPrinter } from "@/lib/engine/conditions";
-import { answerQuestion, emptyState, evaluate, goBack, markTried, type DiagnosticState } from "@/lib/engine/engine";
-import type { DiagnosticFlow, PrinterModel, SafetyNotice, Slicer } from "@/lib/schema";
+import { answerQuestion, applyAnswers, emptyState, evaluate, goBack, markTried, type DiagnosticState } from "@/lib/engine/engine";
+import { PhotoUpload } from "@/components/symptoms/photo-upload";
+import type { SymptomView } from "@/components/symptoms/symptom-grid";
+import { SymptomImage } from "@/components/symptoms/symptom-image";
+import { PRINTER_TYPE_LABEL, type DiagnosticFlow, type Guide, type PrinterModel, type SafetyNotice, type Slicer, type Symptom } from "@/lib/schema";
+import { pickImage, symptomForAnswers, type AssetMap } from "@/lib/visual";
 import { AnswersSummary } from "./answers-summary";
 import { QuestionView } from "./question-view";
 import { ResultView, type GuideSummary } from "./result-view";
@@ -24,6 +28,11 @@ export interface DiagnosticRunnerProps {
   guides: GuideSummary[];
   safetyNotices: SafetyNotice[];
   slicers: Slicer[];
+  /** This flow's symptoms, so a chosen picture can be shown and its answers filled in. */
+  symptoms: (SymptomView & Pick<Symptom, "preset">)[];
+  assets: AssetMap;
+  /** Full guides for this flow's causes, so the result can show their steps. */
+  fullGuides: Guide[];
 }
 
 export function DiagnosticRunner(props: DiagnosticRunnerProps) {
@@ -35,6 +44,8 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
   const initialPrinterSlug = known(params.get("printer"));
   /** Outcome the user just tried in a repair guide without success. */
   const initialTried = params.get("tried");
+  /** A symptom chosen from the pictures, whose answers are filled in. */
+  const initialSymptom = params.get("symptom");
   const [savedPrinter, setSavedPrinter] = useSavedPrinter();
   const [printerSlug, setPrinterSlug] = useState<string | null>(initialPrinterSlug);
   const [state, setState] = useState<DiagnosticState>(emptyState);
@@ -71,6 +82,16 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
       } catch {
         // Storage unavailable: carry on without a printer.
       }
+    }
+    // A symptom chosen by its picture fills in the answers it already gives.
+    const chosen = initialSymptom ? props.symptoms.find((s) => s.slug === initialSymptom && s.flowId === flow.id) : undefined;
+    if (chosen && Object.keys(chosen.preset).length > 0) {
+      const alreadyMatches = Object.entries(chosen.preset).every(([q, o]) => next.answers[q] === o);
+      if (!alreadyMatches) {
+        next = applyAnswers(flow, chosen.preset);
+        setResumed(false);
+      }
+      router.replace(printerSlugParam(pathname, initialPrinterSlug), { scroll: false });
     }
     if (initialTried && flow.outcomes.some((o) => o.id === initialTried)) {
       next = markTried(next, initialTried);
@@ -136,6 +157,9 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
   const editingQuestion = editing ? flow.questions.find((q) => q.id === editing) : undefined;
   const editingIndex = editing ? ev.steps.findIndex((s) => s.question.id === editing) : -1;
   const question = editingQuestion ?? ev.current;
+  const symptom = symptomForAnswers(props.symptoms, flow.id, state.answers);
+  const symptomImage = symptom ? pickImage(props.assets, symptom.images) : null;
+  const wrongType = printer && !flow.printerTypes.includes(printer.specs.printerType);
 
   const feedbackContext = {
     flowId: flow.id,
@@ -201,7 +225,28 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
               </button>
             </p>
           )}
+          {!printer && <p className="mt-2 text-sm text-ink/70">Without a printer, the questions and instructions are general. Choose your printer to tailor them to its hardware.</p>}
         </div>
+
+        {wrongType && printer && (
+          <Notice tone="warning" title={`This diagnosis is for ${flow.printerTypes.map((t) => PRINTER_TYPE_LABEL[t]).join(" and ")} printers`}>
+            The {printerName} is a {PRINTER_TYPE_LABEL[printer.specs.printerType]} printer, so most of this will not apply.{" "}
+            <Link href={`/diagnose?printer=${printer.slug}`}>Choose a problem for this printer</Link>
+          </Notice>
+        )}
+
+        {symptom && (
+          <div className="flex items-center gap-3 rounded-lg border border-line bg-surface p-2.5">
+            <SymptomImage asset={symptomImage} className="w-24 shrink-0 sm:w-28" />
+            <div className="min-w-0 flex-1 text-sm">
+              <p className="text-ink/70">The problem you chose</p>
+              <p className="text-[15px] font-semibold">{symptom.title}</p>
+              <Link href={`/diagnose${printerSlug ? `?printer=${printerSlug}` : ""}`} className="text-sm">
+                Choose a different problem
+              </Link>
+            </div>
+          </div>
+        )}
 
         {resumed && Object.keys(state.answers).length > 0 && (
           <Notice title="Picked up where you left off">
@@ -230,6 +275,7 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
                 printers={props.printerOptions}
                 manufacturers={props.manufacturerOptions}
                 safetyNotices={props.safetyNotices}
+                assets={props.assets}
                 focusOnMount={interacted.current}
                 onAnswer={(o) => onAnswer(question.id, o)}
                 onBack={() => update(goBack(flow, state, facts))}
@@ -245,6 +291,11 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
                 slicers={props.slicers}
                 printers={props.printers}
                 printerSlug={printerSlug}
+                printer={printer}
+                printerName={printerName}
+                reported={symptom ? { title: symptom.title, asset: symptomImage } : null}
+                fullGuides={props.fullGuides}
+                assets={props.assets}
                 fixed={fixed}
                 onFixed={onFixed}
                 onNotFixed={(id) => update(markTried(state, id))}
@@ -258,15 +309,18 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
         )}
       </div>
 
-      <aside aria-labelledby="your-answers" className="rounded-lg border border-line bg-surface p-4 lg:sticky lg:top-20">
-        <h2 id="your-answers" className="mb-3 scroll-mt-24 font-semibold">
-          Your answers
-        </h2>
-        <AnswersSummary steps={ev.steps} editing={editing} onChange={(id) => { interacted.current = true; setEditing(id); }} />
-        <p className="mt-4 border-t border-line pt-3 text-xs leading-relaxed text-ink/70">
-          Saved on this device only, so you can come back to it. <Link href="/privacy">Privacy</Link>
-        </p>
-      </aside>
+      <div className="space-y-4 lg:sticky lg:top-20">
+        <aside aria-labelledby="your-answers" className="rounded-lg border border-line bg-surface p-4">
+          <h2 id="your-answers" className="mb-3 scroll-mt-24 font-semibold">
+            Your answers
+          </h2>
+          <AnswersSummary steps={ev.steps} editing={editing} onChange={(id) => { interacted.current = true; setEditing(id); }} />
+          <p className="mt-4 border-t border-line pt-3 text-xs leading-relaxed text-ink/70">
+            Saved on this device only, so you can come back to it. <Link href="/privacy">Privacy</Link>
+          </p>
+        </aside>
+        <PhotoUpload compact />
+      </div>
     </div>
   );
 }

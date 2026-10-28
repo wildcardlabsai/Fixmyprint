@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>The long edges have bowed up in the middle</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="36.0" y="300.0" width="408.0" height="14.0" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="40.0" y1="301.0" x2="440.0" y2="301.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <path d="M60,290 Q240,256 420,290" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60,281 Q240,250 420,281" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60,272 Q240,244 420,272" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60,263 Q240,238 420,263" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60,254 Q240,232 420,254" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60,245 Q240,226 420,245" fill="none" stroke="#3B8EEA" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="240.0" cy="270.0" r="40.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>

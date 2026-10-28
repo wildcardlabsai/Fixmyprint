@@ -57,7 +57,7 @@ export const isTrue = (c: Condition | undefined, ctx: ConditionContext) =>
 export function factsFromPrinter(printer: PrinterModel | null | undefined): Facts {
   if (!printer) return {};
   const s = printer.specs;
-  const facts: Facts = { "printer.selected": "yes" };
+  const facts: Facts = { "printer.selected": "yes", "printer.type": s.printerType };
   if (s.levelling) facts["printer.levelling"] = s.levelling;
   if (s.extruder) facts["printer.extruder"] = s.extruder;
   if (s.enclosure) facts["printer.enclosure"] = s.enclosure;

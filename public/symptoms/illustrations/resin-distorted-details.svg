@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img">
+  <title>Distorted resin detail: fine pins swollen and small holes filled in</title>
+  <rect width="480" height="360" fill="#F6F8FB"/>
+  <rect x="60.0" y="280.0" width="360.0" height="20.0" rx="3" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.5"/>
+  <rect x="86.0" y="180.0" width="8.0" height="100.0" rx="4.0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <rect x="126.0" y="180.0" width="8.0" height="100.0" rx="4.0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <rect x="166.0" y="180.0" width="8.0" height="100.0" rx="4.0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <rect x="206.0" y="180.0" width="8.0" height="100.0" rx="4.0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <rect x="242.0" y="180.0" width="16.0" height="100.0" rx="8.0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <circle cx="250.0" cy="180.0" r="11.2" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <rect x="282.0" y="180.0" width="16.0" height="100.0" rx="8.0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <circle cx="290.0" cy="180.0" r="11.2" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <rect x="322.0" y="180.0" width="16.0" height="100.0" rx="8.0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <circle cx="330.0" cy="180.0" r="11.2" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <rect x="362.0" y="180.0" width="16.0" height="100.0" rx="8.0" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <circle cx="370.0" cy="180.0" r="11.2" fill="#5EAAA8" stroke="#2F6F6D" stroke-width="1.2"/>
+  <circle cx="330.0" cy="220.0" r="70.0" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 5"/>
+</svg>
