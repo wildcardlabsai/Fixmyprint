@@ -88,7 +88,7 @@ export default async function SlicersPage() {
                     <span className="block font-semibold text-primary-dark">{s.name}</span>
                     <span className="block text-sm text-muted">{s.developer}</span>
                     <span className="mt-2 block text-sm leading-relaxed">{s.summary}</span>
-                    <span className="mt-3 block space-y-0.5 text-xs text-muted">
+                    <span className="mt-3 block space-y-0.5 text-xs text-ink/70">
                       {parent && <span className="block">Built on {parent.name}</span>}
                       {openSourceLabel(s) && <span className="block">Open source: {openSourceLabel(s)}</span>}
                       {official.length > 0 && <span className="block">Official slicer for {official.join(", ")}</span>}

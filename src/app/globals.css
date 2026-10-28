@@ -11,6 +11,10 @@
 @theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
+  /* Smallest text size is 13px: notes, sources and labels still need to be readable. */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.45;
+
   --color-primary: #0878e8;
   --color-primary-dark: #0756b5;
   --color-primary-darker: #06479a;

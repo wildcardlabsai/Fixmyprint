@@ -46,7 +46,8 @@ describe("DiagnosticRunner", () => {
 
     expect(await screen.findByRole("heading", { name: /nozzle is too far from the bed/i })).toBeInTheDocument();
     expect(screen.getByText("Strong match")).toBeInTheDocument();
-    expect(screen.getByText(/you answered “round, like a piece of string/i)).toBeInTheDocument();
+    // Shown once as a reason and once in the answers summary.
+    expect(screen.getAllByText(/^Round, like a piece of string/i)).toHaveLength(2);
     expect(screen.getByRole("link", { name: /start repair guide/i })).toHaveAttribute("href", expect.stringContaining("/guides/level-the-bed?from=first-layer-adhesion&outcome=nozzle-too-far"));
     // Manual levelling selected: probe-only checks are hidden.
     expect(screen.queryByText(/separate probe: lower the z offset/i)).not.toBeInTheDocument();

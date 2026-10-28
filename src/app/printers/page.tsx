@@ -3,7 +3,7 @@ import { PrinterLibrary, type LibraryPrinter } from "@/components/printers/print
 import { Container, PageHeader } from "@/components/ui/layout";
 import { getContent } from "@/lib/data/repository";
 import { manufacturerOptions, printerOptions } from "@/lib/data/view-models";
-import { ENCLOSURE_LABEL, EXTRUDER_LABEL, LEVELLING_LABEL, UNKNOWN } from "@/lib/printer-labels";
+import { ENCLOSURE_LABEL, EXTRUDER_LABEL, LEVELLING_LABEL, LEVELLING_SHORT } from "@/lib/printer-labels";
 
 export const metadata: Metadata = {
   title: "Printer library",
@@ -24,10 +24,11 @@ export default async function PrintersPage() {
       enclosure: s.enclosure,
       status: p.verification.status,
       facts: [
-        { label: "Build volume", value: s.buildVolumeMm ? `${s.buildVolumeMm.x} × ${s.buildVolumeMm.y} × ${s.buildVolumeMm.z} mm` : UNKNOWN },
-        { label: "Levelling", value: s.levelling ? LEVELLING_LABEL[s.levelling] : UNKNOWN },
-        { label: "Extruder", value: s.extruder ? EXTRUDER_LABEL[s.extruder] : UNKNOWN },
-      ],
+        s.buildVolumeMm ? `${s.buildVolumeMm.x} × ${s.buildVolumeMm.y} × ${s.buildVolumeMm.z} mm` : null,
+        s.levelling ? LEVELLING_SHORT[s.levelling] : null,
+        s.extruder ? EXTRUDER_LABEL[s.extruder] : null,
+        s.enclosure === "enclosed" ? "Enclosed" : null,
+      ].filter((f): f is string => f !== null),
     };
   });
 

@@ -16,7 +16,7 @@ export function AnswersSummary({ steps, onChange, editing }: { steps: PathStep[]
           <div className="mt-0.5 flex items-start justify-between gap-2">
             <p className="font-medium text-ink">
               {s.option.label}
-              {s.source === "printer" && <span className="block text-xs font-normal text-muted">From your printer&apos;s specifications</span>}
+              {s.source === "printer" && <span className="block text-xs font-normal text-ink/70">From your printer&apos;s specifications</span>}
             </p>
             <button
               type="button"

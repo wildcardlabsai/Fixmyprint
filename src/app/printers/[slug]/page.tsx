@@ -77,13 +77,27 @@ export default async function PrinterPage({ params }: { params: Promise<Params> 
               Specifications
             </h2>
             <dl className="mt-3 divide-y divide-line rounded-lg border border-line bg-surface">
-              {rows.map((r) => (
-                <div key={r.label} className="grid gap-1 px-4 py-2.5 sm:grid-cols-[220px_1fr] sm:gap-4">
-                  <dt className="text-sm text-muted">{r.label}</dt>
-                  <dd className={r.value ? "text-[15px]" : "text-[15px] text-muted italic"}>{r.value ?? UNKNOWN}</dd>
-                </div>
-              ))}
+              {rows
+                .filter((r) => r.value)
+                .map((r) => (
+                  <div key={r.label} className="grid gap-1 px-4 py-2.5 sm:grid-cols-[220px_1fr] sm:gap-4">
+                    <dt className="text-sm text-muted">{r.label}</dt>
+                    <dd className="text-[15px]">{r.value}</dd>
+                  </div>
+                ))}
             </dl>
+            {rows.some((r) => !r.value) && (
+              <p className="mt-2 rounded-md border border-dashed border-line-strong px-4 py-2.5 text-sm text-ink/80">
+                <span className="font-medium">
+                  {UNKNOWN} from {maker?.name ?? "the manufacturer"}&apos;s pages:
+                </span>{" "}
+                {rows
+                  .filter((r) => !r.value)
+                  .map((r) => r.label.toLowerCase())
+                  .join(", ")}
+                . We leave these blank rather than guess.
+              </p>
+            )}
             <p className="mt-2 text-sm text-muted">{p.confidenceNotes}</p>
             {p.specSources.length > 0 && (
               <div className="mt-3 text-sm">
@@ -202,7 +216,7 @@ export default async function PrinterPage({ params }: { params: Promise<Params> 
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-xs text-muted">FixMyPrint is independent and not affiliated with {maker?.name ?? "the manufacturer"}.</p>
+            <p className="mt-3 text-xs text-ink/70">FixMyPrint is independent and not affiliated with {maker?.name ?? "the manufacturer"}.</p>
           </section>
 
           <section aria-labelledby="slicer-heading" className="rounded-lg border border-line bg-surface p-4">
@@ -217,7 +231,7 @@ export default async function PrinterPage({ params }: { params: Promise<Params> 
                       {slicer.name}
                     </Link>
                     <span className="text-muted"> · {link.relation === "official" ? `${maker?.name ?? "Manufacturer"}'s own slicer` : `named by ${maker?.name ?? "the manufacturer"}`}</span>
-                    {link.note && <p className="text-xs text-muted">{link.note}</p>}
+                    {link.note && <p className="text-xs text-ink/70">{link.note}</p>}
                     <a href={link.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs">
                       Manufacturer source
                       <ExternalLink className="size-3" aria-hidden />

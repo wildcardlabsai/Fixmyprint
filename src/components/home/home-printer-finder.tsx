@@ -30,7 +30,7 @@ export function HomePrinterFinder({ printers, manufacturers }: { printers: Print
               </LinkButton>
               {printer.slug !== savedPrinter && (
                 <button type="button" onClick={() => setSavedPrinter(printer.slug)} className="inline-flex h-9 items-center px-2 text-sm font-medium text-primary-dark hover:underline">
-                  Save as my printer
+                  Use as my setup
                 </button>
               )}
               <Link href={`/printers/${printer.slug}`} className="inline-flex h-9 items-center px-2 text-sm font-medium">

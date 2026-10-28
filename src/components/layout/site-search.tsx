@@ -131,7 +131,7 @@ export function SiteSearch({ className, autoFocus, onNavigate }: { className?: s
               onMouseEnter={() => setActive(i)}
               className={cn("cursor-pointer px-3 py-2", i === active && "bg-primary-50")}
             >
-              <span className="block text-xs font-medium text-muted">{TYPE_LABELS[h.type]}</span>
+              <span className="block text-xs font-medium text-ink/70">{TYPE_LABELS[h.type]}</span>
               <span className="block truncate text-sm font-medium text-ink">{h.title}</span>
             </li>
           ))}

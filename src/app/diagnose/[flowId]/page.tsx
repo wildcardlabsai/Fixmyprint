@@ -38,7 +38,8 @@ export default async function DiagnoseFlowPage({ params }: { params: Promise<Par
       <Breadcrumbs
         items={[
           { href: "/diagnose", label: "Diagnose" },
-          ...(category ? [{ href: `/problems/${category.slug}`, label: category.title }] : []),
+          // Skip the category when the diagnosis has the same name, so the trail does not repeat itself.
+          ...(category && category.title !== flow.title ? [{ href: `/problems/${category.slug}`, label: category.title }] : []),
           { label: flow.title },
         ]}
       />

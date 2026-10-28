@@ -9,7 +9,7 @@ function Figure({ caption, children, label }: { caption: string; label: string; 
       <div role="img" aria-label={label}>
         {children}
       </div>
-      <figcaption className="mt-2 text-xs text-muted">{caption} Diagram, not to scale.</figcaption>
+      <figcaption className="mt-2 text-xs text-ink/70">{caption} Diagram, not to scale.</figcaption>
     </figure>
   );
 }

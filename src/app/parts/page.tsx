@@ -54,7 +54,7 @@ export default async function PartsPage() {
                     <li key={x.printerSlug}>
                       {p ? <Link href={`/printers/${p.slug}`}>{printerDisplayName(c, p)}</Link> : x.printerSlug}{" "}
                       <span className="text-muted">· {STATUS[x.status]}</span>
-                      {x.note && <span className="block text-xs text-muted">{x.note}</span>}
+                      {x.note && <span className="block text-xs text-ink/70">{x.note}</span>}
                     </li>
                   );
                 })}

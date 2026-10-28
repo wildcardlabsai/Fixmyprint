@@ -25,19 +25,25 @@ export function DiagnoseStart(p: Props) {
   const params = useSearchParams();
   const [savedPrinter, setSavedPrinter] = useSavedPrinter();
   const fromUrl = params.get("printer");
-  const [printerSlug, setPrinterSlug] = useState<string | null>(fromUrl && p.printers.some((x) => x.slug === fromUrl) ? fromUrl : null);
+  const [chosenSlug, setChosenSlug] = useState<string | null>(fromUrl && p.printers.some((x) => x.slug === fromUrl) ? fromUrl : null);
+  /** True once the person says they do not want to use a printer this time. */
+  const [cleared, setCleared] = useState(false);
   const [choosing, setChoosing] = useState(false);
   const [sessions, setSessions] = useState<{ flowId: string; session: StoredSession }[]>([]);
   const [errorQuery, setErrorQuery] = useState("");
 
   useEffect(() => setSessions(listSessions().filter((s) => p.flows.some((f) => f.id === s.flowId))), [p.flows]);
 
-  const printer = p.printers.find((x) => x.slug === printerSlug);
   const saved = p.printers.find((x) => x.slug === savedPrinter);
+  // The saved setup is used automatically unless another printer is chosen or it is cleared.
+  const printerSlug = chosenSlug ?? (cleared ? null : (saved?.slug ?? null));
+  const printer = p.printers.find((x) => x.slug === printerSlug);
+  const usingSaved = Boolean(printer && printer.slug === savedPrinter);
   const suffix = printerSlug ? `?printer=${encodeURIComponent(printerSlug)}` : "";
 
   const select = (slug: string | null) => {
-    setPrinterSlug(slug);
+    setChosenSlug(slug);
+    setCleared(slug === null);
     setChoosing(false);
     router.replace(slug ? `/diagnose?printer=${encodeURIComponent(slug)}` : "/diagnose", { scroll: false });
   };
@@ -87,17 +93,20 @@ export function DiagnoseStart(p: Props) {
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <p className="flex flex-1 items-center gap-2">
               <Printer className="size-4 text-primary-dark" aria-hidden />
-              <span className="font-medium">{printer.displayName}</span>
+              <span>
+                {usingSaved && <span className="text-muted">Using your </span>}
+                <span className="font-medium">{printer.displayName}</span>
+              </span>
             </p>
             <button type="button" className="text-sm font-medium text-primary-dark hover:underline" onClick={() => setChoosing(true)}>
               Change
             </button>
             <button type="button" className="text-sm text-muted hover:text-ink hover:underline" onClick={() => select(null)}>
-              Clear
+              {usingSaved ? "Don't use a printer" : "Clear"}
             </button>
             {savedPrinter !== printer.slug && (
               <button type="button" className="text-sm font-medium text-primary-dark hover:underline" onClick={() => setSavedPrinter(printer.slug)}>
-                Save as my printer
+                Use as my setup
               </button>
             )}
           </div>

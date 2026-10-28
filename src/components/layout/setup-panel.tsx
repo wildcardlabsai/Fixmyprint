@@ -93,14 +93,14 @@ export function SetupPanel({ data, onDone }: { data: SetupData; onDone: () => vo
           <label htmlFor="setup-slicer">Your slicer</label>
         </h2>
         <SlicerSelect id="setup-slicer" className="mt-2" slicers={data.slicers} forPrinter={setup.forPrinter} value={setup.slug} onChange={setup.setSlicer} />
-        <p className="mt-1.5 text-xs text-muted">
+        <p className="mt-1.5 text-xs text-ink/70">
           {setup.isDefault
             ? "Your printer maker's own slicer. Change it if you use another."
             : setup.slug
               ? "Guides and results show setting names for this slicer."
               : "Guides and results will show setting names for this slicer."}
         </p>
-        <p className="mt-4 text-xs text-muted">Saved in this browser only. Nothing is sent to us.</p>
+        <p className="mt-4 text-xs text-ink/70">Saved in this browser only. Nothing is sent to us.</p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Button size="sm" onClick={onDone}>
             Done

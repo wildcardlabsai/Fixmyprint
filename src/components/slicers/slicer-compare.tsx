@@ -63,7 +63,7 @@ export function SlicerCompare({ slicers, rows }: Props) {
         <div className="grid grid-cols-2 gap-2">
           {([0, 1] as const).map((i) => (
             <div key={i} className="min-w-0">
-              <label htmlFor={`${id}-${i}`} className="text-xs text-muted">
+              <label htmlFor={`${id}-${i}`} className="text-xs text-ink/70">
                 {i === 0 ? "Compare" : "with"}
               </label>
               <select

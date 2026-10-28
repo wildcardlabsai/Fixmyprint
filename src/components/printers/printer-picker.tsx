@@ -110,7 +110,7 @@ export function PrinterPicker({ printers, manufacturers, selected, onSelect, lab
       )}
 
       {withoutModels.length > 0 && (
-        <p className="text-xs leading-relaxed text-muted">
+        <p className="text-xs leading-relaxed text-ink/70">
           Not yet documented: {withoutModels.map((m) => m.name).join(", ")}. The library is still being built.
         </p>
       )}

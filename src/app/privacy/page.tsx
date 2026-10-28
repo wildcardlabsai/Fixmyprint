@@ -14,7 +14,7 @@ export default function PrivacyPage() {
         <h2>Stored on your device</h2>
         <p>To let you pick up where you left off, this browser&apos;s local storage holds:</p>
         <ul>
-          <li>the printer you saved as &ldquo;my printer&rdquo;;</li>
+          <li>the printer and slicer you saved as <li>the printer you saved as &ldquo;my printer&rdquo;;</li>ldquo;my setup<li>the printer you saved as &ldquo;my printer&rdquo;;</li>rdquo;;</li>
           <li>your answers to each diagnosis you have started;</li>
           <li>which steps you have ticked off in repair guides, and whether a repair worked.</li>
         </ul>

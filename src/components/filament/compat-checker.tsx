@@ -53,7 +53,7 @@ export function CompatChecker({ filament, printers, names }: { filament: Filamen
           </ul>
         )}
       </div>
-      <p className="mt-3 text-xs text-muted">Based on general starting ranges and the printer&apos;s recorded specifications. Unknown specifications are shown as unknown.</p>
+      <p className="mt-3 text-xs text-ink/70">Based on general starting ranges and the printer&apos;s recorded specifications. Unknown specifications are shown as unknown.</p>
     </div>
   );
 }

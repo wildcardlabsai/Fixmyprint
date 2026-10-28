@@ -40,7 +40,7 @@ export default async function FilamentPage() {
                 <tr key={f.slug} className="hover:bg-page">
                   <th scope="row" className="px-4 py-3 font-medium">
                     <Link href={`/filament/${f.slug}`}>{f.name}</Link>
-                    <span className="block text-xs font-normal text-muted">{GROUP[f.group]}{f.abrasive ? " · abrasive" : ""}</span>
+                    <span className="block text-xs font-normal text-ink/70">{GROUP[f.group]}{f.abrasive ? " · abrasive" : ""}</span>
                   </th>
                   <td className="px-4 py-3 tabular-nums">{range(f.nozzleTempC, " °C")}</td>
                   <td className="px-4 py-3 tabular-nums">{range(f.bedTempC, " °C")}</td>

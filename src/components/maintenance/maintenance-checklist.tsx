@@ -63,7 +63,7 @@ export function MaintenanceChecklist({ tasks, printers, names, guideTitles, safe
               <h2 className="text-[17px] font-semibold">{t.title}</h2>
               <p className="text-sm font-medium text-primary-dark">{t.interval.label}</p>
             </div>
-            {applies === "unknown" && t.appliesLabel && <p className="mt-1 text-xs font-semibold tracking-wide text-muted uppercase">{t.appliesLabel} only</p>}
+            {applies === "unknown" && t.appliesLabel && <p className="mt-1 text-xs font-semibold tracking-wide text-ink/70 uppercase">{t.appliesLabel} only</p>}
             <p className="mt-1 text-[15px] text-muted">{t.summary}</p>
             {t.tools.length > 0 && (
               <p className="mt-2 text-sm">

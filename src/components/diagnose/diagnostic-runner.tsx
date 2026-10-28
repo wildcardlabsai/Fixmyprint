@@ -63,6 +63,15 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
         setResumed(Object.keys(stored.answers).length > 0);
       }
     }
+    // With no printer in the link or the saved session, use the setup saved on this device.
+    if (!initialPrinterSlug && !(stored && stored.flowVersion === flow.version && stored.printerSlug)) {
+      try {
+        const fromSetup = known(window.localStorage.getItem(keys.printer));
+        if (fromSetup) setPrinterSlug(fromSetup);
+      } catch {
+        // Storage unavailable: carry on without a printer.
+      }
+    }
     if (initialTried && flow.outcomes.some((o) => o.id === initialTried)) {
       next = markTried(next, initialTried);
       router.replace(printerSlugParam(pathname, initialPrinterSlug ?? known(stored?.printerSlug ?? null)), { scroll: false });
@@ -151,6 +160,7 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
               <Printer className="size-4 shrink-0 text-muted" aria-hidden />
               <span className="text-muted">Printer:</span>
               <span className="truncate font-medium">{printerName ?? "Not selected"}</span>
+              {printerSlug && printerSlug === savedPrinter && <span className="shrink-0 text-muted">(your setup)</span>}
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button type="button" className="font-medium text-primary-dark hover:underline" aria-expanded={choosingPrinter} onClick={() => setChoosingPrinter((c) => !c)}>
@@ -187,7 +197,7 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
           {printerSlug && printerSlug !== savedPrinter && printerName && (
             <p className="mt-2 text-sm">
               <button type="button" className="text-primary-dark hover:underline" onClick={() => setSavedPrinter(printerSlug)}>
-                Save {printerName} as my printer on this device
+                Use {printerName} as my setup
               </button>
             </p>
           )}
@@ -253,7 +263,7 @@ export function DiagnosticRunner(props: DiagnosticRunnerProps) {
           Your answers
         </h2>
         <AnswersSummary steps={ev.steps} editing={editing} onChange={(id) => { interacted.current = true; setEditing(id); }} />
-        <p className="mt-4 border-t border-line pt-3 text-xs leading-relaxed text-muted">
+        <p className="mt-4 border-t border-line pt-3 text-xs leading-relaxed text-ink/70">
           Saved on this device only, so you can come back to it. <Link href="/privacy">Privacy</Link>
         </p>
       </aside>

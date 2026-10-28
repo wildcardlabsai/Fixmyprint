@@ -67,7 +67,7 @@ export function SlicerSettingsPanel(p: Props) {
           Slicer
         </label>
         <SlicerSelect id={`${id}-select`} slicers={p.slicers} forPrinter={forPrinter} value={slug} onChange={setSlicer} />
-        {isDefault && <p className="mt-1 text-xs text-muted">Your printer maker&apos;s slicer. Change it if you use another; we&apos;ll remember on this device.</p>}
+        {isDefault && <p className="mt-1 text-xs text-ink/70">Your printer maker&apos;s slicer. Change it if you use another; we&apos;ll remember on this device.</p>}
       </div>
 
       {slicer && inheritedFrom.length > 0 && (
@@ -85,13 +85,13 @@ export function SlicerSettingsPanel(p: Props) {
             <div key={key} className="py-2.5">
               <dt className="flex items-center justify-between gap-2 text-muted">
                 <span>{SLICER_SETTING_LABELS[key].label}</span>
-                {r?.inherited && <span className="shrink-0 rounded border border-line-strong px-1.5 text-[11px] font-medium text-ink/80">not confirmed</span>}
+                {r?.inherited && <span className="shrink-0 rounded border border-line-strong px-1.5 text-xs font-medium text-ink/80">not confirmed</span>}
               </dt>
               {!slicer ? null : r ? (
                 <dd>
                   <span className="block font-medium text-ink">{r.setting.name}</span>
                   {!r.inherited && r.setting.location && <span className="block text-muted">{r.setting.location}</span>}
-                  {!r.inherited && r.setting.note && <span className="mt-0.5 block text-xs text-muted">{r.setting.note}</span>}
+                  {!r.inherited && r.setting.note && <span className="mt-0.5 block text-xs text-ink/70">{r.setting.note}</span>}
                   <a href={r.setting.sourceUrl} target="_blank" rel="noreferrer" className="mt-0.5 inline-flex items-center gap-1 text-xs">
                     {r.inherited ? `${r.documentedBy.name} source` : "Source"}
                     <ExternalLink className="size-3" aria-hidden />
@@ -105,7 +105,7 @@ export function SlicerSettingsPanel(p: Props) {
                 <dd key={v.name} className="mt-1 text-[13px]">
                   <span className="text-muted">{v.name}: </span>
                   <span className="font-medium">{v.value}</span>
-                  {v.note && <span className="block text-xs text-muted">{v.note}</span>}
+                  {v.note && <span className="block text-xs text-ink/70">{v.note}</span>}
                 </dd>
               ))}
             </div>
@@ -115,7 +115,7 @@ export function SlicerSettingsPanel(p: Props) {
           <div key={v.name} className="py-2.5">
             <dt className="text-muted">{v.name}</dt>
             <dd className="font-medium">{v.value}</dd>
-            {v.note && <dd className="text-xs text-muted">{v.note}</dd>}
+            {v.note && <dd className="text-xs text-ink/70">{v.note}</dd>}
           </div>
         ))}
       </dl>

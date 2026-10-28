@@ -102,7 +102,7 @@ export default async function SlicerPage({ params }: { params: Promise<Params> }
                   <div key={k} className="grid gap-1 px-4 py-3 sm:grid-cols-[220px_1fr] sm:gap-4">
                     <dt className="text-sm">
                       <span className="block font-medium">{SLICER_SETTING_LABELS[k].label}</span>
-                      <span className="block text-xs text-muted">{SLICER_SETTING_LABELS[k].purpose}</span>
+                      <span className="block text-xs text-ink/70">{SLICER_SETTING_LABELS[k].purpose}</span>
                     </dt>
                     {r ? (
                       <dd className="text-[15px]">
@@ -113,7 +113,7 @@ export default async function SlicerPage({ params }: { params: Promise<Params> }
                             <span className="font-medium">Not confirmed for {s.name}.</span> Name taken from {r.documentedBy.name}, which it is built on; it may differ or sit elsewhere.
                           </span>
                         )}
-                        {r.setting.note && !r.inherited && <span className="mt-0.5 block text-xs text-muted">{r.setting.note}</span>}
+                        {r.setting.note && !r.inherited && <span className="mt-0.5 block text-xs text-ink/70">{r.setting.note}</span>}
                         <span className="mt-0.5 block text-xs">
                           <External href={r.setting.sourceUrl}>Source</External>
                         </span>
@@ -177,7 +177,7 @@ export default async function SlicerPage({ params }: { params: Promise<Params> }
                           </li>
                         ))}
                       </ul>
-                      {link.note && <p className="mt-1 text-xs text-muted">{link.note}</p>}
+                      {link.note && <p className="mt-1 text-xs text-ink/70">{link.note}</p>}
                       <p className="mt-1 text-xs">
                         <External href={link.sourceUrl}>Manufacturer source</External>
                       </p>
@@ -218,7 +218,7 @@ export default async function SlicerPage({ params }: { params: Promise<Params> }
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-xs text-muted">FixMyPrint is independent and not affiliated with {s.developer}.</p>
+            <p className="mt-3 text-xs text-ink/70">FixMyPrint is independent and not affiliated with {s.developer}.</p>
           </section>
         </aside>
       </div>

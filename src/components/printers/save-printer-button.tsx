@@ -10,7 +10,7 @@ export function SavePrinterButton({ slug }: { slug: string }) {
   return (
     <Button variant="secondary" onClick={() => setSaved(isSaved ? null : slug)} aria-pressed={isSaved}>
       {isSaved ? <BookmarkCheck className="text-primary-dark" aria-hidden /> : <Bookmark aria-hidden />}
-      {isSaved ? "Saved as my printer" : "Save as my printer"}
+      {isSaved ? "In my setup" : "Use as my setup"}
     </Button>
   );
 }

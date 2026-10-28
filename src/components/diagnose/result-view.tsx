@@ -42,7 +42,8 @@ function reasons(list: Contribution[]): string[] {
   const out = new Set<string>();
   for (const c of list) {
     if (c.kind === "rule" && c.reason) out.add(c.reason);
-    else if (c.prompt && c.answerLabel) out.add(`You answered “${c.answerLabel}” to “${c.prompt}”`);
+    // The full questions are in "Your answers"; the answer on its own reads faster here.
+    else if (c.answerLabel) out.add(c.answerLabel);
   }
   return [...out];
 }
@@ -121,7 +122,7 @@ export function ResultView(p: Props) {
           <p className="text-sm text-muted">{CONFIDENCE[top.confidence].description}</p>
 
           <div>
-            <h3 className="font-semibold">Why this matches your answers</h3>
+            <h3 className="font-semibold">Why this matches</h3>
             <ul className="mt-2 space-y-1.5 text-[15px]">
               {supporting.map((r) => (
                 <li key={r} className="flex gap-2">

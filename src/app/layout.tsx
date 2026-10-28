@@ -15,7 +15,13 @@ export const metadata: Metadata = {
     "Find the cause of a 3D printing problem and follow clear steps to fix it. Choose your printer, describe what is happening, and work through it step by step.",
   applicationName: SITE_NAME,
   openGraph: { type: "website", siteName: SITE_NAME, locale: "en_GB" },
-  icons: { icon: "/icon.svg" },
+  icons: {
+    icon: [
+      { url: "/brand/icon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/brand/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {

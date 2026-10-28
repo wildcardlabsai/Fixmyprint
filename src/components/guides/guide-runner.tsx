@@ -181,7 +181,7 @@ export function GuideRunner({ guide, printers, slicers, printerNames, safetyNoti
                     done ? "border-success bg-success text-white" : "border-line-strong hover:border-primary",
                   )}
                 >
-                  {done ? <Check className="size-4" strokeWidth={3} aria-hidden /> : <span className="text-xs font-semibold text-muted">{i + 1}</span>}
+                  {done ? <Check className="size-4" strokeWidth={3} aria-hidden /> : <span className="text-xs font-semibold text-ink/70">{i + 1}</span>}
                 </button>
                 <div className="min-w-0 flex-1">
                   {conditional && step.appliesLabel && <p className="mb-1 text-xs font-semibold tracking-wide text-primary-dark uppercase">{step.appliesLabel} only</p>}

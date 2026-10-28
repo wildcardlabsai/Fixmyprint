@@ -12,7 +12,8 @@ export interface LibraryPrinter extends PrinterOption {
   levelling: string | null;
   extruder: string | null;
   enclosure: string | null;
-  facts: { label: string; value: string }[];
+  /** Short facts shown as tags. Unknown facts are left out. */
+  facts: string[];
   status: ReviewStatus;
 }
 
@@ -45,6 +46,12 @@ export function PrinterLibrary({
       ),
     [printers, maker, query, selected, filters],
   );
+
+  const groups = manufacturers
+    .map((m) => ({ slug: m.slug, name: m.name, items: results.filter((p) => p.manufacturerSlug === m.slug) }))
+    .filter((g) => g.items.length > 0)
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const allUnreviewed = printers.every((p) => p.status === "unreviewed");
 
   const selectClass = "h-11 w-full rounded-md border border-line-strong bg-surface px-3 text-[15px] focus:border-primary focus:outline-none";
 
@@ -98,12 +105,13 @@ export function PrinterLibrary({
             </select>
           </div>
         ))}
-        <p className="text-xs leading-relaxed text-muted">Filters only match printers whose specification has been recorded. Printers with an unknown value are left out of a filtered list.</p>
+        <p className="text-[13px] leading-relaxed text-ink/70">Filters only match printers whose specification has been recorded. Printers with an unknown value are left out of a filtered list.</p>
       </div>
 
       <div className="min-w-0">
         <p className="mb-3 text-sm text-muted" role="status" aria-live="polite">
           {results.length} of {printers.length} {printers.length === 1 ? "printer" : "printers"}
+          {allUnreviewed && ". None has been reviewed by a second person yet; each printer page shows its sources."}
         </p>
         {results.length === 0 ? (
           <div className="rounded-lg border border-dashed border-line-strong bg-surface p-5 text-[15px]">
@@ -113,26 +121,38 @@ export function PrinterLibrary({
             </p>
           </div>
         ) : (
-          <ul className="grid gap-3 md:grid-cols-2">
-            {results.map((p) => (
-              <li key={p.slug}>
-                <Link href={`/printers/${p.slug}`} className="block h-full rounded-lg border border-line bg-surface p-4 text-ink no-underline transition-colors hover:border-line-strong">
-                  <span className="block text-sm text-muted">{p.manufacturerName}</span>
-                  <span className="block text-[17px] font-semibold text-primary-dark">{p.name}</span>
-                  <span className="mt-1 block text-sm text-muted">{p.summary}</span>
-                  <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
-                    {p.facts.map((f) => (
-                      <div key={f.label} className="contents">
-                        <dt className="text-muted">{f.label}</dt>
-                        <dd>{f.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <ReviewBadge status={p.status} className="mt-3" />
-                </Link>
-              </li>
+          <div className="space-y-8">
+            {groups.map((g) => (
+              <section key={g.slug} aria-labelledby={`maker-${g.slug}`}>
+                <h2 id={`maker-${g.slug}`} className="mb-3 flex items-baseline gap-2 text-lg font-semibold">
+                  {g.name}
+                  <span className="text-sm font-normal text-muted">{g.items.length}</span>
+                </h2>
+                <ul className="grid gap-3 md:grid-cols-2">
+                  {g.items.map((p) => (
+                    <li key={p.slug}>
+                      <Link href={`/printers/${p.slug}`} className="block h-full rounded-lg border border-line bg-surface p-4 text-ink no-underline transition-colors hover:border-line-strong">
+                        <span className="flex items-start justify-between gap-2">
+                          <span className="text-[17px] font-semibold text-primary-dark">{p.name}</span>
+                          {p.status !== "unreviewed" && <ReviewBadge status={p.status} className="shrink-0" />}
+                        </span>
+                        <span className="mt-1 line-clamp-2 block text-sm text-ink/75">{p.summary}</span>
+                        {p.facts.length > 0 && (
+                          <span className="mt-3 flex flex-wrap gap-1.5">
+                            {p.facts.map((f) => (
+                              <span key={f} className="rounded border border-line bg-page px-1.5 py-0.5 text-[13px] text-ink/80">
+                                {f}
+                              </span>
+                            ))}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
