@@ -1,0 +1,321 @@
+import type { DiagnosticFlowInput } from "@/lib/schema";
+import { seedVerification } from "../shared";
+import { levellingQuestion, materialQuestion } from "./common-questions";
+
+export const firstLayerAdhesion: DiagnosticFlowInput = {
+  id: "first-layer-adhesion",
+  version: 1,
+  title: "First layer will not stick",
+  summary: "Works out whether the nozzle height, the build surface, the bed temperature, cooling or extrusion is stopping the first layer from bonding.",
+  category: "first-layer-and-bed-adhesion",
+  symptomSlugs: ["first-layer-not-sticking", "rough-or-gappy-first-layer"],
+  start: "what-happens",
+  safety: ["hot-surfaces"],
+  questions: [
+    {
+      id: "what-happens",
+      prompt: "What happens when the first layer is printed?",
+      why: "Each failure looks different. How the plastic behaves at the nozzle is the quickest way to tell a height problem from a surface or temperature problem.",
+      options: [
+        { id: "dragged", label: "The filament never sticks and is dragged around", next: "line-shape", evidence: { "nozzle-too-far": 3, "dirty-surface": 2, "extrusion-problem": 1, "nozzle-too-close": -3 } },
+        { id: "corners-lift", label: "It sticks at first but lifts at the corners or edges", next: "surface-clean", evidence: { "thermal-contraction": 3, "dirty-surface": 1, drafts: 1 } },
+        { id: "thin", label: "The lines look very thin, flat, translucent or ridged", next: "thin-detail", evidence: { "nozzle-too-close": 4, "nozzle-too-far": -3 } },
+        { id: "patchy", label: "Some areas stick while others do not", next: "pattern", evidence: { "uneven-bed": 3, "dirty-surface": 2 } },
+        { id: "inconsistent", label: "The nozzle does not seem to extrude consistently", next: "extrude-test", evidence: { "extrusion-problem": 3 } },
+        { id: "other", label: "Something else, or I'm not sure", detail: "We'll ask about the shape of the lines instead.", next: "line-shape", uncertain: true },
+      ],
+    },
+    {
+      id: "line-shape",
+      prompt: "Look closely at a line of the first layer before it comes loose. What shape is it?",
+      why: "The cross-section of a line shows how far the nozzle was from the bed. A good first line is slightly flattened with straight edges.",
+      help: "Pause the print after the first few lines if you need to. Use a torch held low across the bed to see the shape.",
+      options: [
+        { id: "round", label: "Round, like a piece of string lying on the surface", next: "levelling", evidence: { "nozzle-too-far": 3, "nozzle-too-close": -2 } },
+        { id: "flat", label: "Flattened slightly, with straight edges", next: "levelling", evidence: { "nozzle-too-far": -2, "dirty-surface": 2, "bed-temperature": 1 } },
+        { id: "broken", label: "Thin, broken or missing in places", next: "levelling", evidence: { "extrusion-problem": 3, "nozzle-too-close": 1 } },
+        { id: "cant-tell", label: "I can't tell", next: "levelling", uncertain: true },
+      ],
+    },
+    {
+      id: "thin-detail",
+      prompt: "What else do you notice during the first layer?",
+      why: "These signs separate a nozzle that is too close from one that is struggling to push plastic out at all.",
+      options: [
+        { id: "ridges", label: "Ridges, or a rough, ploughed surface", next: "levelling", evidence: { "nozzle-too-close": 3 } },
+        { id: "scraping", label: "The nozzle scrapes or marks the bed", next: "levelling", evidence: { "nozzle-too-close": 4 } },
+        { id: "clicking", label: "The extruder clicks or skips during the first layer only", next: "levelling", evidence: { "nozzle-too-close": 2, "extrusion-problem": 1 } },
+        { id: "just-thin", label: "Just very thin lines", next: "levelling", evidence: { "nozzle-too-close": 1, "extrusion-problem": 1 } },
+      ],
+    },
+    {
+      id: "pattern",
+      prompt: "Where does it stick, and where does it not?",
+      why: "A pattern across the bed points to the bed's height or flatness. Random patches point to the surface itself.",
+      options: [
+        { id: "one-side", label: "Good on one side or corner, poor on the other", next: "levelling", evidence: { "uneven-bed": 4 } },
+        { id: "centre-edges", label: "Different in the centre than at the edges", next: "levelling", evidence: { "uneven-bed": 3 } },
+        { id: "random", label: "Random patches with no clear pattern", next: "levelling", evidence: { "dirty-surface": 3, "worn-surface": 1 } },
+        { id: "same-spot", label: "Always the same area, even after cleaning", next: "levelling", evidence: { "worn-surface": 3, "uneven-bed": 1 } },
+      ],
+    },
+    {
+      id: "extrude-test",
+      prompt: "Heat the nozzle and use the printer's extrude or load function. What happens?",
+      why: "If plastic will not flow freely with the nozzle well clear of the bed, the problem is extrusion rather than adhesion.",
+      help: "Raise the nozzle at least 50 mm above the bed first, and keep your hands away from the hot nozzle.",
+      safety: ["hot-surfaces"],
+      options: [
+        { id: "smooth", label: "Filament comes out in a smooth, steady line", next: "levelling", evidence: { "extrusion-problem": -2, "nozzle-too-close": 2 } },
+        { id: "weak", label: "It comes out thin, curls sharply, or stops and starts", next: "result", evidence: { "extrusion-problem": 4 } },
+        { id: "nothing", label: "Nothing comes out, or the extruder clicks", next: "result", evidence: { "extrusion-problem": 5 } },
+        { id: "cant-check", label: "I can't check this right now", next: "levelling", evidence: { "extrusion-problem": 1 }, uncertain: true },
+      ],
+    },
+    {
+      ...levellingQuestion,
+      options: levellingQuestion.options.map((o) => ({
+        ...o,
+        next: {
+          branch: [{ when: { answer: "what-happens", in: ["thin", "inconsistent"] }, goto: "recent-change" }],
+          otherwise: "surface-clean",
+        },
+      })),
+    },
+    {
+      id: "recent-change",
+      prompt: "Has anything changed since prints last went down well?",
+      why: "A recent change often explains a height problem and tells us which setting to recheck.",
+      options: [
+        { id: "nozzle-sheet", label: "I changed the nozzle, the build sheet or the probe", next: "result", evidence: { "nozzle-too-close": 2, "nozzle-too-far": 2 } },
+        { id: "moved", label: "The printer was moved, knocked or rebuilt", next: "result", evidence: { "uneven-bed": 2, "nozzle-too-close": 1 } },
+        { id: "settings", label: "I changed slicer settings or the first layer height", next: "result", evidence: { "nozzle-too-close": 2 } },
+        { id: "nothing", label: "Nothing I know of", next: "result", uncertain: true },
+      ],
+    },
+    {
+      id: "surface-clean",
+      prompt: "When did you last clean the build surface, and how?",
+      why: "Oil from fingers is the most common reason a surface stops holding prints, even when it looks clean.",
+      options: [
+        {
+          id: "washed",
+          label: "Recently, with dish soap and water or isopropyl alcohol",
+          next: { branch: [{ when: { answer: "what-happens", in: ["dragged", "other", "corners-lift"] }, goto: "material" }], otherwise: "result" },
+          evidence: { "dirty-surface": -2 },
+        },
+        {
+          id: "not-really",
+          label: "A dry wipe, or not for a while",
+          next: { branch: [{ when: { answer: "what-happens", in: ["dragged", "other", "corners-lift"] }, goto: "material" }], otherwise: "result" },
+          evidence: { "dirty-surface": 3 },
+        },
+        {
+          id: "worn",
+          label: "The surface looks worn, shiny or scratched where I print most",
+          next: { branch: [{ when: { answer: "what-happens", in: ["dragged", "other", "corners-lift"] }, goto: "material" }], otherwise: "result" },
+          evidence: { "worn-surface": 4 },
+        },
+        {
+          id: "unsure",
+          label: "I'm not sure",
+          next: { branch: [{ when: { answer: "what-happens", in: ["dragged", "other", "corners-lift"] }, goto: "material" }], otherwise: "result" },
+          evidence: { "dirty-surface": 1 },
+          uncertain: true,
+        },
+      ],
+    },
+    {
+      ...materialQuestion,
+      options: materialQuestion.options.map((o) => ({
+        ...o,
+        next: { branch: [{ when: { answer: "what-happens", in: ["corners-lift"] }, goto: "lift-when" }], otherwise: "bed-temp" },
+      })),
+    },
+    {
+      id: "lift-when",
+      prompt: "When does the lifting start?",
+      why: "Lifting in the first layers is usually adhesion. Lifting that starts once the part is taller is usually the plastic shrinking as it cools.",
+      options: [
+        { id: "early", label: "Within the first few layers", next: "environment", evidence: { "dirty-surface": 2, "bed-temperature": 2, "thermal-contraction": 1 } },
+        { id: "later", label: "Later, as the part gets taller", next: "environment", evidence: { "thermal-contraction": 3 } },
+        { id: "large-parts", label: "Mostly on large flat parts or sharp corners", next: "environment", evidence: { "thermal-contraction": 3 } },
+      ],
+    },
+    {
+      id: "environment",
+      prompt: "Where is the printer, and is it enclosed?",
+      why: "Moving air cools one side of a part faster than the other, which pulls that side up.",
+      autoAnswer: { fact: "printer.enclosure", map: { enclosed: "enclosed" } },
+      options: [
+        { id: "enclosed", label: "Inside an enclosure with the doors closed", next: "bed-temp", evidence: { drafts: -2 } },
+        { id: "open-still", label: "Open, in a room with still air", next: "bed-temp", evidence: { "thermal-contraction": 1 } },
+        { id: "open-draft", label: "Open, near a window, fan, air conditioning or door", next: "bed-temp", evidence: { drafts: 4 } },
+      ],
+    },
+    {
+      id: "bed-temp",
+      prompt: "Is the bed temperature in the usual range for that material?",
+      why: "Too cool a bed lets the first layer shrink and release before it grips.",
+      help: "General starting points: PLA 50–65 °C, PETG 70–85 °C, ABS and ASA 90–110 °C, TPU 30–60 °C. Your filament maker's figures take priority.",
+      options: [
+        { id: "in-range", label: "Yes, within the range", next: "result", evidence: { "bed-temperature": -2 } },
+        { id: "low", label: "No, it's lower than that", next: "result", evidence: { "bed-temperature": 3 } },
+        { id: "high", label: "No, it's higher than that", next: "result", evidence: { "bed-temperature": 1 } },
+        { id: "unsure", label: "I don't know what it's set to", next: "result", evidence: { "bed-temperature": 1 }, uncertain: true },
+      ],
+    },
+  ],
+  rules: [
+    {
+      id: "manual-tilt",
+      when: { all: [{ fact: "printer.levelling", in: ["manual"] }, { answer: "pattern", in: ["one-side", "centre-edges"] }] },
+      evidence: { "uneven-bed": 1 },
+      reason: "Manual beds have no mesh compensation, so any tilt or dip shows directly in the first layer.",
+    },
+    {
+      id: "probe-offset-change",
+      when: { all: [{ fact: "printer.levelling", in: ["probe-offset"] }, { answer: "recent-change", in: ["nozzle-sheet"] }] },
+      evidence: { "nozzle-too-far": 1, "nozzle-too-close": 1 },
+      reason: "On printers with a separate probe, changing the nozzle or sheet changes the distance the stored Z offset assumes.",
+    },
+    {
+      id: "shrinking-material-open",
+      when: {
+        all: [
+          { fact: "filament", in: ["abs-asa", "nylon-pc"] },
+          { any: [{ fact: "printer.enclosure", in: ["open"] }, { answer: "environment", in: ["open-still", "open-draft"] }] },
+        ],
+      },
+      evidence: { "thermal-contraction": 2 },
+      reason: "ABS, ASA, nylon and PC shrink a lot as they cool; without an enclosure this pulls corners up.",
+    },
+  ],
+  outcomes: [
+    {
+      id: "nozzle-too-far",
+      title: "The nozzle is too far from the bed",
+      summary: "The first layer is not being pressed onto the surface, so it has very little to grip.",
+      explanation: "The first layer only sticks when the nozzle presses the molten plastic slightly into the build surface. If the gap is too large, the line lands as a round thread touching the surface along a thin edge, and the nozzle drags it away.",
+      checks: [
+        "Print a single-layer test square. The lines should be slightly flattened and just touching each other, with no gaps.",
+        { text: "Manual levelling: re-level with the bed and nozzle at printing temperature.", when: { fact: "printer.levelling", in: ["manual"] } },
+        { text: "Separate probe: lower the Z offset in small steps (0.02–0.05 mm) while the first layer prints.", when: { fact: "printer.levelling", in: ["probe-offset"] } },
+        { text: "Nozzle-sensing printers: clean the nozzle tip and rerun the automatic calibration before changing any offset.", when: { fact: "printer.levelling", in: ["nozzle-sensing"] } },
+      ],
+      guideSlugs: ["level-the-bed", "set-the-z-offset"],
+    },
+    {
+      id: "nozzle-too-close",
+      title: "The nozzle is too close to the bed",
+      summary: "There is not enough room for the plastic to flow, so lines come out thin, rough or not at all.",
+      explanation: "When the gap is smaller than the first layer height, the nozzle squeezes plastic out sideways or blocks it. Lines become thin or translucent, ridges build up between them, and the extruder may click as pressure builds. It can also mark the build surface.",
+      checks: [
+        "Raise the nozzle in small steps (0.02–0.05 mm) with the Z offset or Live Adjust Z while the first layer prints.",
+        { text: "Manual levelling: re-level each corner with a slightly larger gap.", when: { fact: "printer.levelling", in: ["manual"] } },
+        "Check the build surface for marks left by the nozzle.",
+      ],
+      guideSlugs: ["set-the-z-offset", "level-the-bed"],
+    },
+    {
+      id: "dirty-surface",
+      title: "The build surface is contaminated",
+      summary: "Oil, dust or residue is stopping the plastic from bonding.",
+      explanation: "Grease from fingers, dust and old adhesive residue form a film the plastic cannot bond to. A surface can look clean and still be contaminated. It is the most common cause when prints used to stick and have gradually stopped.",
+      checks: [
+        "Wash the plate with warm water and dish soap, rinse, and dry with a clean paper towel, if the manufacturer says the plate can be washed.",
+        "Between washes, wipe with isopropyl alcohol while the bed is cool.",
+        "Handle the plate by its edges.",
+      ],
+      guideSlugs: ["clean-the-build-plate"],
+      safety: ["solvents"],
+    },
+    {
+      id: "worn-surface",
+      title: "The build surface is worn or damaged",
+      summary: "The most-used areas of a PEI or coated sheet lose their grip over time.",
+      explanation: "PEI and coated sheets wear in the areas used most, and can be damaged by the nozzle or by materials that bond too strongly, such as PETG on smooth PEI. Worn areas often look shiny or discoloured.",
+      checks: [
+        "Compare adhesion in the worn area with an unused area of the same sheet.",
+        "Clean thoroughly first: contamination is far more common than wear.",
+        "If the area still fails after cleaning, the sheet may need replacing. Follow the manufacturer's advice before trying to resurface it.",
+      ],
+      guideSlugs: ["clean-the-build-plate"],
+      notApplicableWhen: { fact: "printer.bedSurface", in: ["glass"] },
+    },
+    {
+      id: "uneven-bed",
+      title: "The bed is not level or flat, or the mesh is out of date",
+      summary: "The nozzle height changes across the bed.",
+      explanation: "If the gap between nozzle and bed differs from one area to another, the first layer is squashed in some places and loose in others. On manual beds this comes from tilt or a warped plate. On printers with a probe or nozzle sensing, it usually means the mesh is out of date, the readings are inconsistent, or the plate has moved since it was measured.",
+      checks: [
+        "Print a first-layer test that covers the whole bed and note where it is too close and too far.",
+        { text: "Manual levelling: re-level at printing temperature, working around the corners twice.", when: { fact: "printer.levelling", in: ["manual"] } },
+        { text: "Probe or nozzle-sensing printers: clean the nozzle and probe, then run a fresh bed mesh with the bed at printing temperature.", when: { fact: "printer.levelling", in: ["probe-offset", "nozzle-sensing"] } },
+        "Check the build plate sits flat on its base with nothing trapped underneath.",
+      ],
+      guideSlugs: ["level-the-bed"],
+    },
+    {
+      id: "bed-temperature",
+      title: "The bed temperature does not suit the material",
+      summary: "A bed that is too cool lets the first layer shrink and release.",
+      explanation: "Each material bonds best within a temperature range. Below it, the first layer cools and shrinks before it can grip. Well above it, some materials stay soft and deform at the base.",
+      checks: [
+        "Set the bed to the filament manufacturer's recommended temperature, or the general starting range in the filament reference.",
+        "Check the bed reaches its target and stays there during the first layer.",
+        "Change the temperature in 5 °C steps, testing with the same small print each time.",
+      ],
+    },
+    {
+      id: "thermal-contraction",
+      title: "The part is shrinking as it cools",
+      summary: "Plastic contracts as it cools, pulling corners and edges up off the bed.",
+      explanation: "Every layer shrinks slightly as it cools, and the stress adds up as the part gets taller. Corners and long straight edges are where it pulls hardest. ABS, ASA, nylon and PC shrink far more than PLA, which is why they usually need an enclosure.",
+      checks: [
+        "Add a 5–10 mm brim to large or sharp-cornered parts.",
+        "Turn the part cooling fan down for the first few layers. For ABS, ASA, nylon and PC keep it low throughout.",
+        "Print ABS, ASA, nylon and PC in an enclosure.",
+        "Round off sharp corners in the design where you can.",
+      ],
+      guideSlugs: ["reduce-warping"],
+    },
+    {
+      id: "drafts",
+      title: "Drafts are cooling the print unevenly",
+      summary: "Moving air cools one side of the part faster than the other.",
+      explanation: "Air from a window, fan, air conditioning unit or doorway cools the side of the part it reaches first. That side contracts first and lifts. It is a common cause of lifting on only one side or corner.",
+      checks: [
+        "Move the printer away from the air source, or shield it.",
+        "Use an enclosure or a simple cover, especially for ABS, ASA, nylon and PC.",
+        "Check whether lifting is always on the side facing the air source.",
+      ],
+      guideSlugs: ["reduce-warping"],
+    },
+    {
+      id: "extrusion-problem",
+      title: "Extrusion is not consistent",
+      summary: "The first layer is failing because not enough plastic is coming out, rather than because of adhesion.",
+      explanation: "If the nozzle is partly blocked, the extruder is slipping or the filament is snagging, the first layer comes out thin and broken and cannot form a continuous sheet. Adjusting the bed will not help until extrusion is reliable.",
+      checks: [
+        "Heat the nozzle and extrude 50 mm. It should come out in a smooth, straight line.",
+        "Check the spool turns freely and the filament is not tangled.",
+        "Work through the extrusion diagnosis for a detailed check.",
+      ],
+      guideSlugs: ["clear-a-blocked-nozzle", "check-the-extruder"],
+      safety: ["hot-surfaces"],
+      escalation: "Continue with the “Nothing comes out of the nozzle” diagnosis for a full check of the extruder and hotend.",
+    },
+  ],
+  insufficient: {
+    title: "We need one more check before suggesting a cause",
+    explanation: "Your answers do not point clearly to one cause. A simple test print will show what the first layer is doing.",
+    checks: [
+      "Print a single-layer square about 50 × 50 mm in the middle of the bed.",
+      "Look at it from the side under a low torch: note whether the lines are round, flat, thin or broken.",
+      "Note the material, nozzle temperature and bed temperature, then run this diagnosis again.",
+    ],
+  },
+  sourceIds: ["editorial", "prusa-kb", "bambu-wiki"],
+  verification: seedVerification(),
+};

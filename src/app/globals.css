@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/*
+ * FixMyPrint design tokens.
+ *
+ * Colour is used for hierarchy and status, not decoration. Note on contrast:
+ * white text on the brand blue (#0878E8) is 4.3:1, below WCAG AA for normal-size
+ * text, so filled buttons use the dark blue and the brand blue is reserved for
+ * focus rings, selection, progress and the logo mark.
+ */
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --color-primary: #0878e8;
+  --color-primary-dark: #0756b5;
+  --color-primary-darker: #06479a;
+  --color-primary-50: #eef5fd;
+  --color-primary-100: #d9e9fb;
+
+  --color-ink: #111827;
+  --color-muted: #64748b;
+  --color-page: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
+
+  --color-success: #16835d;
+  --color-success-50: #ecf7f2;
+  --color-warning: #b7791f;
+  --color-warning-text: #8a5a14;
+  --color-warning-50: #fdf6ea;
+  --color-error: #c0392b;
+  --color-error-50: #fcefed;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --shadow-sm: 0 1px 2px rgb(17 24 39 / 0.05);
+  --shadow-md: 0 2px 8px rgb(17 24 39 / 0.06), 0 1px 2px rgb(17 24 39 / 0.04);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply bg-page text-ink font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-ink;
+    text-wrap: balance;
+    letter-spacing: -0.011em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    @apply text-primary-dark;
+    text-underline-offset: 3px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-primary-100);
+  }
+}
+
+@layer components {
+  /* Long-form text such as guide steps and policy pages. */
+  .prose-body {
+    @apply text-[15px] leading-relaxed text-ink;
+  }
+  .prose-body p + p {
+    @apply mt-3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
