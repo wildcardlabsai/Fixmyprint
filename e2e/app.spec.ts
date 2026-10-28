@@ -60,14 +60,30 @@ test("slicer names follow the printer through guides and printer pages", async (
   await page.goto("/printers/prusa-mk4");
   await expect(page.getByRole("link", { name: "PrusaSlicer" })).toBeVisible();
   await page.goto("/guides/tune-retraction?printer=prusa-mk4");
-  const panel = page.getByRole("region", { name: "In your slicer" });
+  const panel = page.getByRole("region", { name: "Settings" });
   await expect(panel.getByLabel("Slicer")).toHaveValue("prusaslicer");
   await expect(panel.getByText("Avoid crossing perimeters")).toBeVisible();
+  // The step itself names the setting in PrusaSlicer.
+  await expect(page.getByRole("listitem").filter({ hasText: "In PrusaSlicer: Retraction length" }).first()).toBeVisible();
   await panel.getByLabel("Slicer").selectOption("ultimaker-cura");
   await expect(panel.getByText("Combing Mode")).toBeVisible();
+  await expect(page.getByText("In UltiMaker Cura: Retraction Distance").first()).toBeVisible();
   await page.goto("/slicers");
   await expect(page.getByRole("link", { name: /^OrcaSlicer/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /^FlashPrint 5/ }).first()).toBeVisible();
+});
+
+test("my setup is saved once and used by guides", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: /set your printer and slicer/ }).click();
+  const setup = page.getByRole("region", { name: "My setup" });
+  await setup.getByLabel("Search by manufacturer or model").fill("p1s");
+  await setup.getByRole("button", { name: /^Bambu Lab P1S\b/ }).click();
+  await expect(setup.getByLabel("Your slicer")).toHaveValue("bambu-studio");
+  await setup.getByRole("button", { name: "Done" }).click();
+  await page.goto("/guides/reduce-warping");
+  await expect(page.getByText(/Showing steps for the Bambu Lab P1S/)).toBeVisible();
+  await expect(page.getByText("In Bambu Studio: Brim")).toBeVisible();
 });
 
 test("feedback reports say honestly when they are not stored", async ({ page }) => {

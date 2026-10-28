@@ -5,25 +5,27 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { SafetyNotices } from "@/components/safety/safety-notices";
+import { StepSlicerHint, useSlicerFor } from "@/components/slicers/slicer-settings-panel";
 import { Button, LinkButton } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { addHistory, guideProgressSchema, keys, read, remove, useSavedPrinter, write } from "@/lib/client/storage";
 import { cn } from "@/lib/cn";
 import { evaluateCondition, factsFromPrinter } from "@/lib/engine/conditions";
 import { visibleSteps } from "@/lib/guide-steps";
-import type { Guide, PrinterModel, SafetyNotice } from "@/lib/schema";
+import type { Guide, PrinterModel, SafetyNotice, Slicer } from "@/lib/schema";
 import { GuideDiagram } from "./diagrams";
 
 interface Props {
   guide: Guide;
-  printers: Pick<PrinterModel, "slug" | "name" | "specs">[];
+  printers: Pick<PrinterModel, "slug" | "name" | "manufacturer" | "specs">[];
+  slicers: Slicer[];
   printerNames: Record<string, string>;
   safetyNotices: SafetyNotice[];
   flowTitles: Record<string, string>;
   guideTitles: Record<string, string>;
 }
 
-export function GuideRunner({ guide, printers, printerNames, safetyNotices, flowTitles, guideTitles }: Props) {
+export function GuideRunner({ guide, printers, slicers, printerNames, safetyNotices, flowTitles, guideTitles }: Props) {
   const params = useSearchParams();
   const [savedPrinter] = useSavedPrinter();
   const fromFlow = params.get("from");
@@ -31,6 +33,7 @@ export function GuideRunner({ guide, printers, printerNames, safetyNotices, flow
   const urlPrinter = params.get("printer");
   const printerSlug = [urlPrinter, savedPrinter].find((s) => s && printers.some((p) => p.slug === s)) ?? null;
   const printer = printers.find((p) => p.slug === printerSlug) ?? null;
+  const slicerChoice = useSlicerFor(slicers, printers, printerSlug);
   const printerFacts = useMemo(() => factsFromPrinter(printer as PrinterModel | null), [printer]);
 
   const selector = guide.hardwareSelector;
@@ -193,6 +196,13 @@ export function GuideRunner({ guide, printers, printerNames, safetyNotices, flow
                       {step.warning}
                     </Notice>
                   )}
+                  <StepSlicerHint
+                    settingKeys={step.slicerSettings}
+                    slicers={slicers}
+                    slicer={slicerChoice.slicer}
+                    forPrinter={slicerChoice.forPrinter}
+                    onChoose={slicerChoice.setSlicer}
+                  />
                   {step.tip && <p className="mt-3 text-sm text-muted">Tip: {step.tip}</p>}
                   {step.diagram && <GuideDiagram id={step.diagram} />}
                   {!done && <SafetyNotices ids={step.safety.filter((s) => !guide.safety.includes(s))} notices={safetyNotices} className="mt-3" />}

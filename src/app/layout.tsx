@@ -4,6 +4,8 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { getContent } from "@/lib/data/repository";
+import { manufacturerOptions, printerOptions, slicerChoicesByPrinter, slicerOptions } from "@/lib/data/view-models";
 import { publicEnv, SITE_NAME } from "@/lib/env";
 
 export const metadata: Metadata = {
@@ -22,11 +24,13 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const c = await getContent();
+  const setup = { printers: printerOptions(c), manufacturers: manufacturerOptions(c), slicers: slicerOptions(c), slicerChoices: slicerChoicesByPrinter(c) };
   return (
     <html lang="en-GB">
       <body className="flex min-h-dvh flex-col">
-        <SiteHeader />
+        <SiteHeader setup={setup} />
         <main id="main" className="flex-1">
           {children}
         </main>

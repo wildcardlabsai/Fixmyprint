@@ -565,6 +565,7 @@ export const guideInputs: GuideInput[] = [
       },
       {
         id: "factory",
+        slicerSettings: ["flow"],
         title: "Leave factory extruder calibration alone",
         appliesWhen: { fact: "printer.firmware", in: ["prusa", "bambu"] },
         appliesLabel: "Prusa and Bambu Lab printers",
@@ -610,6 +611,7 @@ export const guideInputs: GuideInput[] = [
       { id: "test", title: "Print a retraction test", body: ["Use your slicer's retraction calibration if it has one, or print two thin towers a few centimetres apart."] },
       {
         id: "direct",
+        slicerSettings: ["retraction"],
         title: "Adjust in small steps from a short retraction",
         appliesWhen: { fact: "printer.extruder", in: ["direct"] },
         appliesLabel: "Direct drive",
@@ -620,6 +622,7 @@ export const guideInputs: GuideInput[] = [
       },
       {
         id: "bowden",
+        slicerSettings: ["retraction"],
         title: "Adjust in small steps from a longer retraction",
         appliesWhen: { fact: "printer.extruder", in: ["bowden"] },
         appliesLabel: "Bowden",
@@ -631,6 +634,7 @@ export const guideInputs: GuideInput[] = [
       { id: "one-change", title: "Change one setting at a time", body: ["Adjust distance first, then speed. Changing several settings together makes it impossible to see what helped."] },
       {
         id: "other",
+        slicerSettings: ["avoid-crossing", "wipe"],
         title: "Use temperature and travel settings too",
         body: [
           "Lower the nozzle temperature in 5 °C steps, staying within the filament's range.",
@@ -639,8 +643,8 @@ export const guideInputs: GuideInput[] = [
       },
     ],
     settings: [
-      { name: "Retraction distance (direct drive)", value: "0.5–2 mm", note: "General starting range. Your printer's profile takes priority." },
-      { name: "Retraction distance (Bowden)", value: "4–7 mm", note: "General starting range. Your printer's profile takes priority." },
+      { name: "Retraction distance (direct drive)", key: "retraction", value: "0.5–2 mm", note: "General starting range. Your printer's profile takes priority." },
+      { name: "Retraction distance (Bowden)", key: "retraction", value: "4–7 mm", note: "General starting range. Your printer's profile takes priority." },
     ],
     expectedResult: "Few or no strings between the test towers, without under-extrusion after travel moves.",
     verificationSteps: ["Print the test again with the chosen settings.", "Print a real part with several separate features."],
@@ -716,7 +720,7 @@ export const guideInputs: GuideInput[] = [
     },
     steps: [
       { id: "first-layer", title: "Make sure the first layer is right", body: ["Clean the plate and check the first layer height first. A part that is only lightly attached will lift at the first sign of shrinkage."] },
-      { id: "brim", title: "Add a brim", body: ["Add a 5–10 mm brim to parts with large flat bases or sharp corners. It spreads the pull over a larger area."] },
+      { id: "brim", title: "Add a brim", slicerSettings: ["brim"], body: ["Add a 5–10 mm brim to parts with large flat bases or sharp corners. It spreads the pull over a larger area."] },
       { id: "cooling", title: "Reduce cooling", body: ["Turn the part cooling fan off for the first few layers. For ABS, ASA, nylon and PC, keep it low throughout."] },
       {
         id: "open",

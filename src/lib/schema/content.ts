@@ -56,6 +56,8 @@ export const guideStepSchema = z.object({
   tip: z.string().optional(),
   safety: z.array(safetyIdSchema).default([]),
   diagram: z.enum(["first-layer-height", "bowden-coupler"]).optional(),
+  /** Slicer settings this step changes, shown inline with the name in the person's slicer. */
+  slicerSettings: z.array(slicerSettingKeySchema).default([]),
 });
 export type GuideStep = z.infer<typeof guideStepSchema>;
 
@@ -85,7 +87,7 @@ export const guideSchema = z.object({
   safety: z.array(safetyIdSchema).default([]),
   hardwareSelector: hardwareSelectorSchema.optional(),
   steps: z.array(guideStepSchema).min(1),
-  settings: z.array(z.object({ name: z.string(), value: z.string(), note: z.string().optional() })).default([]),
+  settings: z.array(z.object({ name: z.string(), value: z.string(), note: z.string().optional(), key: slicerSettingKeySchema.optional() })).default([]),
   /** Slicer settings this guide adjusts. Shown with each slicer's own names. */
   slicerSettings: z.array(slicerSettingKeySchema).default([]),
   expectedResult: z.string().min(1),

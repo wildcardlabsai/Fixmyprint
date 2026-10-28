@@ -91,9 +91,13 @@ Diagnostic flows are data, not components. A flow is a set of questions; each an
 
 No AI model is involved, and nothing depends on an API key.
 
+### My setup
+
+People can save their printer and slicer once from the header ("My setup"). Guides, diagnoses and slicer setting names then use it on every page; a `?printer=` link still takes priority for that page. If no slicer is chosen, the printer manufacturer's own slicer is used. Guide steps that change a slicer setting name it inline ("In PrusaSlicer: Retraction length · Printer Settings › Extruder 1 › Retraction"), or ask which slicer is in use.
+
 ### Persistence
 
-Without accounts, the browser's local storage holds the saved printer, in-progress diagnoses (keyed by flow and version, so content updates do not replay stale answers), guide progress and repair results. Nothing in local storage is sent to the server. The database schema already includes per-user tables for when sign-in is added.
+Without accounts, the browser's local storage holds the saved printer and slicer, in-progress diagnoses (keyed by flow and version, so content updates do not replay stale answers), guide progress and repair results. Nothing in local storage is sent to the server. The database schema already includes per-user tables for when sign-in is added.
 
 ### Security
 

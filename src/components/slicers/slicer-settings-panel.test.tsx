@@ -24,7 +24,7 @@ describe("SlicerSettingsPanel", () => {
 
   it("asks for a slicer when the printer is unknown, and remembers the choice", async () => {
     renderPanel(null);
-    expect(screen.getByText(/Choose the slicer you use/)).toBeInTheDocument();
+    expect(screen.getByText(/Choose your slicer to see/)).toBeInTheDocument();
     await userEvent.selectOptions(screen.getByLabelText("Slicer"), "ultimaker-cura");
     expect(screen.getByText("Retraction Distance")).toBeInTheDocument();
     expect(window.localStorage.getItem(keys.slicer)).toBe("ultimaker-cura");
@@ -34,8 +34,24 @@ describe("SlicerSettingsPanel", () => {
     renderPanel("bambu-lab-a1");
     expect(screen.getByText("Flow ratio")).toBeInTheDocument();
     // Bambu Studio does not document retraction; the PrusaSlicer name is shown and flagged.
-    expect(screen.getByText(/Not confirmed for Bambu Studio/)).toBeInTheDocument();
+    expect(screen.getByText(/Bambu Lab doesn.t publish names for some of these/)).toHaveTextContent("come from PrusaSlicer");
+    expect(screen.getAllByText("not confirmed", { selector: "span.rounded" })).toHaveLength(1);
     await userEvent.selectOptions(screen.getByLabelText("Slicer"), "creality-print");
     expect(screen.getAllByText(/Not documented by Creality/)).toHaveLength(2);
+  });
+
+  it("shows a guide's general values beside the slicer's name for the same setting", () => {
+    render(
+      <SlicerSettingsPanel
+        settingKeys={[]}
+        values={[{ name: "Retraction distance (Bowden)", key: "retraction", value: "4–7 mm" }, { name: "Fan", value: "Off" }]}
+        slicers={seed.slicers}
+        printers={seed.printers}
+        printerSlug="prusa-mini-plus"
+      />,
+    );
+    expect(screen.getByText("Retraction length")).toBeInTheDocument();
+    expect(screen.getByText("4–7 mm")).toBeInTheDocument();
+    expect(screen.getByText("Off")).toBeInTheDocument();
   });
 });

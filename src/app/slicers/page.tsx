@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, PageHeader } from "@/components/ui/layout";
 import { getContent } from "@/lib/data/repository";
-import { findManufacturer } from "@/lib/data/selectors";
+import { SlicerCompare } from "@/components/slicers/slicer-compare";
+import { findManufacturer, manufacturersWithCounts } from "@/lib/data/selectors";
 import { SLICER_SETTING_LABELS, slicerSettingKeySchema } from "@/lib/schema";
 import { openSourceLabel } from "@/lib/slicer-labels";
 import { findSlicer } from "@/lib/slicers";
@@ -18,6 +19,15 @@ export default async function SlicersPage() {
   const slicers = [...c.slicers].sort((a, b) => a.name.localeCompare(b.name));
   const documented = slicers.filter((s) => Object.keys(s.settings).length > 0);
   const keys = slicerSettingKeySchema.options.filter((k) => documented.some((s) => s.settings[k]));
+  const makers = manufacturersWithCounts(c)
+    .filter((m) => m.modelCount > 0)
+    .map((maker) => {
+      const named = (relation: "official" | "supported") =>
+        slicers.filter((s) => s.usedBy.some((l) => l.manufacturer === maker.slug && l.relation === relation));
+      const official = named("official");
+      return { maker, official, supported: named("supported").filter((s) => !official.includes(s)) };
+    })
+    .sort((a, b) => a.maker.name.localeCompare(b.maker.name));
 
   return (
     <>
@@ -26,11 +36,48 @@ export default async function SlicersPage() {
         description="Which slicer each manufacturer makes or names for its printers, how the slicers are related, and what the settings our guides mention are called in each one."
       />
       <Container className="space-y-10 py-8">
+        <section aria-labelledby="brand-heading">
+          <h2 id="brand-heading" className="text-lg font-semibold">
+            Find your printer brand&apos;s slicer
+          </h2>
+          <p className="mt-1 text-sm text-muted">From each manufacturer&apos;s own pages. Some only name a slicer for certain models; the slicer page lists which.</p>
+          <ul className="mt-3 divide-y divide-line rounded-lg border border-line bg-surface">
+            {makers.map(({ maker, official, supported }) => (
+              <li key={maker.slug} className="grid gap-1 px-4 py-3 sm:grid-cols-[180px_1fr] sm:gap-4">
+                <span className="font-medium">{maker.name}</span>
+                <span className="text-[15px]">
+                  {official.length === 0 && supported.length === 0 && <span className="text-muted">No slicer named in the sources we checked</span>}
+                  {official.map((s, i) => (
+                    <span key={s.slug}>
+                      {i > 0 && ", "}
+                      <Link href={`/slicers/${s.slug}`} className="font-medium">
+                        {s.name}
+                      </Link>
+                    </span>
+                  ))}
+                  {official.length > 0 && <span className="text-muted"> (own slicer)</span>}
+                  {supported.length > 0 && (
+                    <span className="text-muted">
+                      {official.length > 0 ? " · also named: " : "Named: "}
+                      {supported.map((s, i) => (
+                        <span key={s.slug}>
+                          {i > 0 && ", "}
+                          <Link href={`/slicers/${s.slug}`}>{s.name}</Link>
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section aria-labelledby="all-heading">
-          <h2 id="all-heading" className="sr-only">
+          <h2 id="all-heading" className="text-lg font-semibold">
             All slicers
           </h2>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {slicers.map((s) => {
               const parent = findSlicer(c, s.basedOn);
               const makers = [...new Set(s.usedBy.map((l) => l.manufacturer))].map((m) => findManufacturer(c, m)?.name ?? m);
@@ -78,36 +125,11 @@ export default async function SlicersPage() {
           <p className="mt-1 text-sm text-muted">
             Only names given in each developer&apos;s own documentation. Slicers with no published settings reference are left out. Locations can move between versions.
           </p>
-          <div className="mt-3 overflow-x-auto rounded-lg border border-line bg-surface">
-            <table className="w-full min-w-[760px] text-left text-sm">
-              <caption className="sr-only">Setting names by slicer</caption>
-              <thead className="border-b border-line bg-page/60">
-                <tr>
-                  <th scope="col" className="px-3 py-2.5 font-semibold">
-                    Setting
-                  </th>
-                  {documented.map((s) => (
-                    <th key={s.slug} scope="col" className="px-3 py-2.5 font-semibold">
-                      <Link href={`/slicers/${s.slug}`}>{s.name}</Link>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {keys.map((k) => (
-                  <tr key={k}>
-                    <th scope="row" className="px-3 py-2.5 align-top font-medium">
-                      {SLICER_SETTING_LABELS[k].label}
-                    </th>
-                    {documented.map((s) => (
-                      <td key={s.slug} className="px-3 py-2.5 align-top">
-                        {s.settings[k] ? s.settings[k].name : <span className="text-muted">Not documented</span>}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="mt-3">
+            <SlicerCompare
+              slicers={documented.map((s) => ({ slug: s.slug, name: s.name, names: Object.fromEntries(Object.entries(s.settings).map(([k, v]) => [k, v.name])) }))}
+              rows={keys.map((k) => ({ key: k, label: SLICER_SETTING_LABELS[k].label }))}
+            />
           </div>
         </section>
 

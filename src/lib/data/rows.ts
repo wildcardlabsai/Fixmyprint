@@ -187,7 +187,7 @@ export function contentToRows(c: SeedContent): TableRows {
       ...toV(g.verification),
     });
     g.steps.forEach((s, position) =>
-      rows.repair_steps.push({ guide_slug: g.slug, key: s.id, position, title: s.title, body: s.body, applies_when: n(s.appliesWhen), applies_label: n(s.appliesLabel), warning: n(s.warning), tip: n(s.tip), safety: s.safety, diagram: n(s.diagram) }),
+      rows.repair_steps.push({ guide_slug: g.slug, key: s.id, position, title: s.title, body: s.body, applies_when: n(s.appliesWhen), applies_label: n(s.appliesLabel), warning: n(s.warning), tip: n(s.tip), safety: s.safety, diagram: n(s.diagram), slicer_settings: s.slicerSettings }),
     );
     g.symptomSlugs.forEach((symptom_slug) => rows.guide_symptoms.push({ guide_slug: g.slug, symptom_slug }));
     g.printerSlugs.forEach((printer_slug) => rows.guide_printers.push({ guide_slug: g.slug, printer_slug }));
@@ -470,6 +470,7 @@ export function rowsToContent(r: TableRows): RawContent {
       tip: u(s.tip),
       safety: s.safety,
       diagram: u(s.diagram),
+      slicerSettings: s.slicer_settings ?? [],
     })),
     settings: g.settings,
     slicerSettings: g.slicer_settings ?? [],

@@ -7,11 +7,12 @@ import { GuideRunner } from "./guide-runner";
 
 const guide = seed.guides.find((g) => g.slug === "level-the-bed")!;
 
-function renderGuide() {
+function renderGuide(g = guide) {
   return render(
     <GuideRunner
-      guide={guide}
+      guide={g}
       printers={seed.printers}
+      slicers={seed.slicers}
       printerNames={Object.fromEntries(seed.printers.map((p) => [p.slug, p.name]))}
       safetyNotices={seed.safetyNotices}
       flowTitles={Object.fromEntries(seed.flows.map((f) => [f.id, f.title]))}
@@ -21,7 +22,26 @@ function renderGuide() {
 }
 
 describe("GuideRunner", () => {
-  beforeEach(() => setParams(""));
+  beforeEach(() => {
+    setParams("");
+    window.localStorage.clear();
+  });
+
+  it("names the setting in the printer maker's slicer inside the step that changes it", async () => {
+    setParams("printer=prusa-mk4");
+    renderGuide(seed.guides.find((g) => g.slug === "tune-retraction")!);
+    // The MK4 is direct drive, so only the direct-drive retraction step is shown.
+    expect(await screen.findByText("Retraction length")).toBeInTheDocument();
+    expect(screen.getByText("Wipe while retracting")).toBeInTheDocument();
+    expect(screen.getAllByText(/Printer Settings › Extruder 1 › Retraction/)).toHaveLength(2);
+  });
+
+  it("asks which slicer to use inside the step when it cannot tell", async () => {
+    renderGuide(seed.guides.find((g) => g.slug === "tune-retraction")!);
+    const [select] = await screen.findAllByLabelText("Which slicer do you use?");
+    await userEvent.selectOptions(select!, "ultimaker-cura");
+    expect(screen.getAllByText("Retraction Distance").length).toBeGreaterThan(0);
+  });
 
   it("shows every hardware variant, labelled, when the printer is unknown", async () => {
     renderGuide();

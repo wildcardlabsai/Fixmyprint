@@ -23,8 +23,8 @@ export default async function HomePage() {
   return (
     <>
       <section className="border-b border-line bg-surface">
-        <Container className="py-12 sm:py-16">
-          <div className="max-w-2xl">
+        <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:items-center lg:gap-12 lg:py-14">
+          <div className="max-w-xl">
             <h1 className="text-[34px] leading-[1.15] font-semibold sm:text-[44px]">Let&apos;s get your printer working again.</h1>
             <p className="mt-4 text-[17px] leading-relaxed text-muted sm:text-lg">
               Find the cause of a printing problem and follow the steps to fix it. Choose your printer, describe what is happening, and we&apos;ll help you work through it.
@@ -34,54 +34,54 @@ export default async function HomePage() {
                 Diagnose a problem
                 <ArrowRight aria-hidden />
               </LinkButton>
-              <LinkButton href="#find-printer" variant="secondary" size="lg">
-                Find my printer
+              <LinkButton href="#symptoms" variant="secondary" size="lg">
+                Start from a symptom
               </LinkButton>
             </div>
             <p className="mt-5 text-sm text-muted">Free to use, with no account needed. Your answers stay on your device.</p>
           </div>
-        </Container>
-      </section>
-
-      <section aria-labelledby="start-heading" className="py-10 sm:py-12">
-        <Container>
-          <h2 id="start-heading" className="sr-only">
-            Start troubleshooting
-          </h2>
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div id="find-printer" className="min-w-0 scroll-mt-24 rounded-lg border border-line bg-surface p-4 shadow-sm sm:p-5">
-              <h3 className="text-lg font-semibold">Find your printer</h3>
-              <p className="mt-1 mb-4 text-sm text-muted">Advice is tailored to your printer&apos;s levelling system, extruder and enclosure.</p>
-              <HomePrinterFinder printers={printerOptions(c)} manufacturers={manufacturerOptions(c)} />
-            </div>
-            <div className="min-w-0 rounded-lg border border-line bg-surface p-4 shadow-sm sm:p-5">
-              <h3 className="text-lg font-semibold">Start with a symptom</h3>
-              <p className="mt-1 mb-4 text-sm text-muted">Not sure of your model? Start here. We&apos;ll ask about your hardware only when it changes the answer.</p>
-              <CategoryList categories={c.categories} />
-            </div>
+          <div id="find-printer" className="min-w-0 scroll-mt-24 rounded-lg border border-line bg-surface p-4 shadow-sm sm:p-5">
+            <h2 className="text-lg font-semibold">Find your printer</h2>
+            <p className="mt-1 mb-4 text-sm text-muted">Advice is tailored to your printer&apos;s levelling system, extruder and enclosure.</p>
+            <HomePrinterFinder printers={printerOptions(c)} manufacturers={manufacturerOptions(c)} />
           </div>
         </Container>
       </section>
 
-      <section aria-labelledby="common-heading" className="py-10">
-        <Container>
-          <SectionHeading id="common-heading" title="Common problems" description="Go straight to the questions for the problems people run into most." action={{ href: "/diagnose", label: "All problems" }} />
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {common.map((s) => (
-              <li key={s.slug}>
-                <Link
-                  href={s.flowId ? `/diagnose/${s.flowId}` : `/problems/${s.category}`}
-                  className="group flex h-full items-start gap-3 rounded-lg border border-line bg-surface p-4 text-ink no-underline transition-colors hover:border-line-strong"
-                >
-                  <span className="flex-1">
-                    <span className="block font-medium">{s.title}</span>
-                    <span className="mt-1 block text-sm text-muted">{s.description}</span>
-                  </span>
-                  <ChevronRight className="mt-0.5 size-4 shrink-0 text-muted group-hover:text-ink" aria-hidden />
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <section id="symptoms" aria-labelledby="symptoms-heading" className="scroll-mt-20 py-10 sm:py-12">
+        <Container className="grid gap-6 lg:grid-cols-2">
+          <div className="min-w-0">
+            <h2 id="symptoms-heading" className="text-xl font-semibold sm:text-[22px]">
+              What is going wrong?
+            </h2>
+            <p className="mt-1 mb-4 text-sm text-muted">Not sure of your model? Start here. We&apos;ll ask about your hardware only when it changes the answer.</p>
+            <CategoryList categories={c.categories} />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="text-xl font-semibold sm:text-[22px]">Common problems</h2>
+              <Link href="/diagnose" className="text-sm font-medium whitespace-nowrap">
+                All problems
+              </Link>
+            </div>
+            <p className="mt-1 mb-4 text-sm text-muted">Go straight to the questions for the problems people run into most.</p>
+            <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+              {common.map((s) => (
+                <li key={s.slug}>
+                  <Link
+                    href={s.flowId ? `/diagnose/${s.flowId}` : `/problems/${s.category}`}
+                    className="group flex items-center gap-3 px-3.5 py-3 text-ink no-underline transition-colors hover:bg-page"
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[15px] font-medium">{s.title}</span>
+                      <span className="block truncate text-sm text-muted">{s.description}</span>
+                    </span>
+                    <ChevronRight className="size-4 shrink-0 text-muted group-hover:text-ink" aria-hidden />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </Container>
       </section>
 

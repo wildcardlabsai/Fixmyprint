@@ -232,7 +232,7 @@ export function ResultView(p: Props) {
                         ))}
                       </ol>
                     </div>
-                    <SlicerSettingsPanel settingKeys={r.outcome.slicerSettings} slicers={p.slicers} printers={p.printers} printerSlug={p.printerSlug} compact />
+                    <SlicerSettingsPanel settingKeys={r.outcome.slicerSettings} slicers={p.slicers} printers={p.printers} printerSlug={p.printerSlug} />
                     {r.outcome.escalation && <p className="text-sm text-muted">{r.outcome.escalation}</p>}
                     <SafetyNotices ids={r.outcome.safety} notices={p.safetyNotices} />
                     {guidesFor(r).length > 0 && (

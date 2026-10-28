@@ -71,7 +71,8 @@ export default async function GuidePage({ params }: { params: Promise<Params> })
           <Suspense fallback={<div className="h-96 animate-pulse rounded-lg border border-line bg-surface" aria-hidden />}>
             <GuideRunner
               guide={guide}
-              printers={c.printers.map((p) => ({ slug: p.slug, name: p.name, specs: p.specs }))}
+              printers={c.printers.map((p) => ({ slug: p.slug, name: p.name, manufacturer: p.manufacturer, specs: p.specs }))}
+              slicers={c.slicers}
               printerNames={Object.fromEntries(c.printers.map((p) => [p.slug, printerDisplayName(c, p)]))}
               safetyNotices={c.safetyNotices}
               flowTitles={Object.fromEntries(c.flows.map((f) => [f.id, f.title]))}
@@ -121,27 +122,12 @@ export default async function GuidePage({ params }: { params: Promise<Params> })
             </section>
           )}
 
-          {guide.settings.length > 0 && (
-            <section aria-labelledby="settings-heading" className="rounded-lg border border-line bg-surface p-4">
-              <h2 id="settings-heading" className="font-semibold">
-                Relevant settings
-              </h2>
-              <dl className="mt-2 space-y-2 text-sm">
-                {guide.settings.map((s) => (
-                  <div key={s.name}>
-                    <dt className="text-muted">{s.name}</dt>
-                    <dd className="font-medium">{s.value}</dd>
-                    {s.note && <dd className="text-xs text-muted">{s.note}</dd>}
-                  </div>
-                ))}
-              </dl>
-            </section>
-          )}
-
-          {guide.slicerSettings.length > 0 && (
+          {(guide.slicerSettings.length > 0 || guide.settings.length > 0) && (
             <Suspense fallback={null}>
               <SlicerSettingsPanel
+                title="Settings"
                 settingKeys={guide.slicerSettings}
+                values={guide.settings}
                 slicers={c.slicers}
                 printers={c.printers.map((p) => ({ slug: p.slug, manufacturer: p.manufacturer }))}
               />
