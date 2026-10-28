@@ -15,6 +15,7 @@ export const levellingSchema = z.enum([
   "manual", // adjustment knobs or screws, no sensor
   "probe-offset", // separate probe (inductive, BLTouch-style) with a user-set Z offset
   "nozzle-sensing", // the nozzle itself touches the bed (load cell, strain gauge, force sensor)
+  "automatic", // levels itself, but the manufacturer does not publish how
 ]);
 export type Levelling = z.infer<typeof levellingSchema>;
 
@@ -99,6 +100,10 @@ export const printerModelSchema = z.object({
   troubleshootingNotes: z.array(printerNoteSchema).default([]),
   documentation: z.array(linkSchema).default([]),
   sourceIds: z.array(slugSchema).min(1),
+  /** The manufacturer pages the specifications were taken from. */
+  specSources: z
+    .array(z.object({ label: z.string().min(1), url: z.url(), accessed: isoDateSchema }))
+    .default([]),
   confidenceNotes: z.string().min(1),
   lastVerified: isoDateSchema.nullable(),
   verification: verificationSchema,

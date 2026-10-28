@@ -9,6 +9,7 @@ import { ReviewBadge, ReviewDetails } from "@/components/ui/review-status";
 import { SourceList } from "@/components/ui/source-list";
 import { getContent } from "@/lib/data/repository";
 import { errorCodesForFirmware, findManufacturer, findPrinter, guidesForPrinter, guidesFor, printerDisplayName } from "@/lib/data/selectors";
+import { evaluateCondition, factsFromPrinter } from "@/lib/engine/conditions";
 import { specRows, UNKNOWN } from "@/lib/printer-labels";
 
 type Params = { slug: string };
@@ -38,6 +39,8 @@ export default async function PrinterPage({ params }: { params: Promise<Params> 
   const maker = findManufacturer(c, p.manufacturer);
   const name = printerDisplayName(c, p);
   const rows = specRows(p, (s) => c.filaments.find((f) => f.slug === s)?.name ?? s);
+  const facts = factsFromPrinter(p);
+  const fits = (g: { appliesWhen?: Parameters<typeof evaluateCondition>[0] }) => !g.appliesWhen || evaluateCondition(g.appliesWhen, { facts, answers: {} }) !== false;
   const { specific, general } = guidesForPrinter(c, p.slug);
   const noteGuides = guidesFor(c, [...new Set(p.troubleshootingNotes.flatMap((n) => n.guideSlugs))]);
   const errors = errorCodesForFirmware(c, p.specs.firmwareFamily);
@@ -80,6 +83,23 @@ export default async function PrinterPage({ params }: { params: Promise<Params> 
               ))}
             </dl>
             <p className="mt-2 text-sm text-muted">{p.confidenceNotes}</p>
+            {p.specSources.length > 0 && (
+              <div className="mt-3 text-sm">
+                <p className="font-medium">Where these figures come from</p>
+                <ul className="mt-1 space-y-1">
+                  {p.specSources.map((s) => (
+                    <li key={s.url}>
+                      <a href={s.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1">
+                        {s.label}
+                        <ExternalLink className="size-3.5" aria-hidden />
+                        <span className="sr-only">(opens in a new tab)</span>
+                      </a>
+                      <span className="text-muted"> · accessed {s.accessed}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </section>
 
           {p.variants.length > 0 && (
@@ -132,6 +152,7 @@ export default async function PrinterPage({ params }: { params: Promise<Params> 
             </p>
             <ul className="mt-3 divide-y divide-line rounded-lg border border-line bg-surface">
               {[...specific, ...general.filter((g) => !specific.includes(g))]
+                .filter(fits)
                 .sort((a, b) => Number(noteGuides.includes(b)) - Number(noteGuides.includes(a)))
                 .map((g) => (
                   <li key={g.slug}>

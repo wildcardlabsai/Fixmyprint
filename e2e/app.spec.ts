@@ -6,7 +6,7 @@ test.describe("landing page", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Let's get your printer working again.");
     const finder = page.locator("#find-printer");
     await finder.getByLabel("Search by manufacturer or model").fill("ender3 v2");
-    await finder.getByRole("button", { name: /Creality Ender-3 V2/ }).click();
+    await finder.getByRole("button", { name: /^Creality Ender-3 V2 Bed-slinger/ }).click();
     await finder.getByRole("link", { name: "Diagnose a problem" }).click();
     await expect(page).toHaveURL(/\/diagnose\?printer=creality-ender-3-v2/);
     await expect(page.getByText("Creality Ender-3 V2").first()).toBeVisible();

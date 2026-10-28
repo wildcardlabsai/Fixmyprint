@@ -1,4 +1,14 @@
-import type { DiagnosticFlowInput } from "@/lib/schema";
+import type { Condition, DiagnosticFlowInput } from "@/lib/schema";
+
+/** Hardware conditions for advice that only applies to some levelling systems. */
+export const levelling = {
+  manual: { fact: "printer.levelling", in: ["manual"] } as Condition,
+  /** A Z offset the user sets: separate probes, and automatic systems that may expose one. */
+  adjustableOffset: { fact: "printer.levelling", in: ["probe-offset", "automatic"] } as Condition,
+  nozzleSensing: { fact: "printer.levelling", in: ["nozzle-sensing"] } as Condition,
+  selfLevelling: { fact: "printer.levelling", in: ["probe-offset", "nozzle-sensing", "automatic"] } as Condition,
+  automatic: { fact: "printer.levelling", in: ["automatic"] } as Condition,
+};
 
 type QuestionInput = DiagnosticFlowInput["questions"][number];
 
@@ -9,16 +19,17 @@ type QuestionInput = DiagnosticFlowInput["questions"][number];
 export const levellingQuestion: QuestionInput = {
   id: "levelling",
   prompt: "How does your printer set the nozzle height?",
-  why: "The fix is different for manual knobs, a separate probe and a nozzle that senses the bed itself.",
+  why: "The fix is different for manual knobs, a separate probe, and printers that level themselves.",
   help: "If you choose your printer, we can fill this in from its specifications.",
   autoAnswer: {
     fact: "printer.levelling",
-    map: { manual: "manual", "probe-offset": "probe-offset", "nozzle-sensing": "nozzle-sensing" },
+    map: { manual: "manual", "probe-offset": "probe-offset", "nozzle-sensing": "nozzle-sensing", automatic: "automatic" },
   },
   options: [
     { id: "manual", label: "Knobs or screws under the bed", detail: "Manual levelling, no sensor.", next: "result", facts: { "printer.levelling": "manual" } },
     { id: "probe-offset", label: "A separate probe beside the nozzle", detail: "For example BLTouch, CR Touch or an inductive probe such as SuperPINDA.", next: "result", facts: { "printer.levelling": "probe-offset" } },
     { id: "nozzle-sensing", label: "The nozzle touches the bed itself", detail: "Load cell, strain gauge or force sensing. Common on recent Bambu Lab, Prusa MK4 and Klipper machines.", next: "result", facts: { "printer.levelling": "nozzle-sensing" } },
+    { id: "automatic", label: "It levels itself, but I'm not sure how", detail: "It runs a levelling routine on its own before or during printing.", next: "result", facts: { "printer.levelling": "automatic" } },
     { id: "unsure", label: "I'm not sure", next: "result", uncertain: true },
   ],
 };

@@ -21,6 +21,7 @@ export const guideInputs: GuideInput[] = [
         { value: "manual", label: "Knobs or screws under the bed", detail: "Manual levelling" },
         { value: "probe-offset", label: "A separate probe beside the nozzle", detail: "BLTouch, CR Touch, inductive probe" },
         { value: "nozzle-sensing", label: "The nozzle touches the bed itself", detail: "Load cell, strain gauge, force sensing" },
+        { value: "automatic", label: "It levels itself, but I'm not sure how", detail: "The manufacturer does not say which sensor it uses" },
       ],
     },
     steps: [
@@ -147,6 +148,27 @@ export const guideInputs: GuideInput[] = [
         ],
       },
       {
+        id: "auto-clean",
+        title: "Clean the nozzle and the area the sensor measures",
+        appliesWhen: { fact: "printer.levelling", in: ["automatic"] },
+        appliesLabel: "Printers that level themselves",
+        body: [
+          "Remove plastic from the nozzle tip and wipe the build plate. Whether your printer measures with a probe or with the nozzle itself, debris on either gives false readings.",
+          "Check the build plate is seated flat against its locating pins or edges.",
+        ],
+        safety: ["hot-surfaces"],
+      },
+      {
+        id: "auto-run",
+        title: "Run the printer's levelling routine",
+        appliesWhen: { fact: "printer.levelling", in: ["automatic"] },
+        appliesLabel: "Printers that level themselves",
+        body: [
+          "Start bed levelling or calibration from the printer's menu, or enable levelling in the print settings, with the bed at printing temperature.",
+          "Adjust a Z offset only if your printer's manual describes one. Some printers set it automatically and have no user setting.",
+        ],
+      },
+      {
         id: "test",
         title: "Print a first-layer test",
         body: [
@@ -176,7 +198,8 @@ export const guideInputs: GuideInput[] = [
     problem: "If the whole first layer is equally too close or too far, or problems started after changing a nozzle or sheet, the Z offset needs setting.",
     category: "first-layer-and-bed-adhesion",
     symptomSlugs: ["first-layer-not-sticking", "rough-or-gappy-first-layer", "elephants-foot"],
-    appliesNote: "Printers with a separate probe, such as BLTouch, CR Touch or SuperPINDA. Most nozzle-sensing printers measure this automatically.",
+    appliesNote: "Printers with a separate probe, such as BLTouch, CR Touch or SuperPINDA, and self-levelling printers whose manual describes a Z offset setting. Not for manually levelled beds, or for printers where the nozzle senses the bed itself.",
+    appliesWhen: { fact: "printer.levelling", in: ["probe-offset", "automatic"] },
     difficulty: "beginner",
     timeMinutes: { min: 10, max: 25 },
     tools: [],

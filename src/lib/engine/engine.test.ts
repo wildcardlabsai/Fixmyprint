@@ -33,9 +33,10 @@ describe("conditions", () => {
   });
 
   it("derives facts only from known specifications", () => {
-    const facts = factsFromPrinter(printer("flashforge-adventurer-5m"));
-    expect(facts["printer.extruder"]).toBe("direct");
-    expect(facts["printer.levelling"]).toBeUndefined();
+    const facts = factsFromPrinter(printer("creality-ender-3-v2"));
+    expect(facts["printer.levelling"]).toBe("manual");
+    expect(facts["printer.extruder"]).toBeUndefined();
+    expect(factsFromPrinter(printer("elegoo-neptune-4-pro"))["printer.extruder"]).toBe("direct");
     expect(factsFromPrinter(null)).toEqual({});
   });
 
@@ -48,9 +49,11 @@ describe("conditions", () => {
     expect(applicableChecks(outcome.checks, {})).toHaveLength(outcome.checks.length);
   });
 
-  it("treats optional add-on multi-material systems as unknown", () => {
-    expect(factsFromPrinter(printer("bambu-lab-p1s"))["printer.multiMaterial"]).toBeUndefined();
-    expect(factsFromPrinter(printer("creality-ender-3-v2"))["printer.multiMaterial"]).toBe("no");
+  it("never treats an unrecorded multi-material system as absent", () => {
+    for (const p of seed.printers) {
+      const builtIn = p.specs.multiMaterial.some((m) => m.kind === "built-in");
+      expect(factsFromPrinter(p)["printer.multiMaterial"], p.slug).toBe(builtIn ? "yes" : undefined);
+    }
   });
 });
 

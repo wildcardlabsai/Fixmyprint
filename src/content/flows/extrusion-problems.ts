@@ -1,6 +1,6 @@
 import type { DiagnosticFlowInput } from "@/lib/schema";
 import { seedVerification } from "../shared";
-import { materialQuestion, withNext } from "./common-questions";
+import { levelling, materialQuestion, withNext } from "./common-questions";
 
 export const extrusionProblems: DiagnosticFlowInput = {
   id: "extrusion-problems",
@@ -230,8 +230,9 @@ export const extrusionProblems: DiagnosticFlowInput = {
       summary: "The extruder clicks because the bed is blocking the nozzle, not because of a blockage.",
       explanation: "If the nozzle is too close to the bed, the plastic has nowhere to go and the extruder slips. Once the first layer is finished the clicking stops, because the nozzle is then far enough from the bed.",
       checks: [
-        "Raise the Z offset or Live Adjust Z in small steps while printing the first layer.",
-        "Re-level the bed if it is manual.",
+        { text: "Raise the Z offset or Live Adjust Z in small steps while printing the first layer.", when: levelling.adjustableOffset },
+        { text: "Manual levelling: re-level each corner with a slightly larger gap.", when: levelling.manual },
+        { text: "Nozzle-sensing printers: clean the nozzle tip, check the plate is seated flat, and rerun the automatic calibration.", when: levelling.nozzleSensing },
       ],
       guideSlugs: ["set-the-z-offset"],
       escalation: "Continue with the “First layer will not stick” diagnosis if adjusting the height does not help.",

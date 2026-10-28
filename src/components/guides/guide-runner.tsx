@@ -9,7 +9,7 @@ import { Button, LinkButton } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { addHistory, guideProgressSchema, keys, read, remove, useSavedPrinter, write } from "@/lib/client/storage";
 import { cn } from "@/lib/cn";
-import { factsFromPrinter } from "@/lib/engine/conditions";
+import { evaluateCondition, factsFromPrinter } from "@/lib/engine/conditions";
 import { visibleSteps } from "@/lib/guide-steps";
 import type { Guide, PrinterModel, SafetyNotice } from "@/lib/schema";
 import { GuideDiagram } from "./diagrams";
@@ -89,8 +89,16 @@ export function GuideRunner({ guide, printers, printerNames, safetyNotices, flow
     return null;
   })();
 
+  const guideFits = !guide.appliesWhen || evaluateCondition(guide.appliesWhen, { facts: printerFacts, answers: {} }) !== false;
+
   return (
     <div className="space-y-5">
+      {printer && !guideFits && (
+        <Notice tone="warning" title={`This guide does not apply to the ${printerNames[printer.slug]}`}>
+          {guide.appliesNote}{" "}
+          {guide.ifFails.guideSlugs[0] && <Link href={`/guides/${guide.ifFails.guideSlugs[0]}?printer=${printer.slug}`}>Go to the guide that fits this printer</Link>}
+        </Notice>
+      )}
       {printer && (
         <p className="text-sm text-muted">
           Showing steps for the <span className="font-medium text-ink">{printerNames[printer.slug]}</span>

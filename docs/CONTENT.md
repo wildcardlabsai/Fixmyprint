@@ -32,11 +32,14 @@ When reviewing, record any limitations in `knownLimitations`. In the database, e
 
 ## Adding a printer
 
-Add a record to `src/content/printers.ts`. The fields that drive the diagnostic engine are `levelling`, `extruder`, `enclosure`, `motionSystem`, `linearMotion`, `firmwareFamily`, `bed.surfaceKind` and `multiMaterial`. Getting `levelling` right matters most, because it changes the questions, checks and guide steps people see:
+Add a record to the manufacturer's file in `src/content/printers/`. The fields that drive the diagnostic engine are `levelling`, `extruder`, `enclosure`, `motionSystem`, `linearMotion`, `firmwareFamily`, `bed.surfaceKind` and `multiMaterial`. Getting `levelling` right matters most, because it changes the questions, checks and guide steps people see:
 
 - `manual`: knobs or screws, no sensor.
 - `probe-offset`: a separate probe (inductive, BLTouch-style) with a user-set Z offset.
 - `nozzle-sensing`: the nozzle itself detects the bed (load cell, strain gauge, force sensing).
+- `automatic`: the printer levels itself, but the manufacturer does not publish how. Use this rather than guessing a sensor type.
+
+Printer records live in `src/content/printers/`, one file per manufacturer, built with the `printer()` helper. List every manufacturer page you took figures from in `sources`; they are shown on the printer page with the date they were read. Put any conflicts or gaps in the manufacturer's own figures in `gaps` and leave the field blank.
 
 Hardware revisions that change behaviour (for example different mainboards needing different firmware) go in `variants`.
 

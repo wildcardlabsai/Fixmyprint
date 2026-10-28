@@ -4,7 +4,7 @@ import { levellingQuestion } from "./common-questions";
 
 const notProbe: Condition = { fact: "printer.levelling", in: ["manual", "nozzle-sensing"] };
 const notNozzleSensing: Condition = { fact: "printer.levelling", in: ["manual", "probe-offset"] };
-const notManual: Condition = { fact: "printer.levelling", in: ["probe-offset", "nozzle-sensing"] };
+const notManual: Condition = { fact: "printer.levelling", in: ["probe-offset", "nozzle-sensing", "automatic"] };
 
 export const bedLevellingAndProbe: DiagnosticFlowInput = {
   id: "bed-levelling-and-probe",
@@ -216,7 +216,7 @@ export const bedLevellingAndProbe: DiagnosticFlowInput = {
       explanation: "The probe measures the bed; the Z offset tells the printer how far the nozzle is from the point where the probe triggers. If the whole first layer is equally too close or too far, or the nozzle has been changed, this value is the likely cause.",
       checks: ["Adjust the Z offset in small steps while printing a first layer test."],
       guideSlugs: ["set-the-z-offset"],
-      notApplicableWhen: { fact: "printer.levelling", in: ["manual"] },
+      notApplicableWhen: { fact: "printer.levelling", in: ["manual", "nozzle-sensing"] },
     },
     {
       id: "nozzle-debris",
@@ -281,7 +281,7 @@ export const bedLevellingAndProbe: DiagnosticFlowInput = {
       summary: "A dip or bow in the bed puts some areas closer to the nozzle than others.",
       explanation: "No bed is perfectly flat. Probes compensate with a mesh; manual beds cannot. If the same areas are always wrong, the shape of the bed is the cause.",
       checks: [
-        { text: "Probe or nozzle-sensing printers: use a mesh with enough points to cover the bed.", when: { fact: "printer.levelling", in: ["probe-offset", "nozzle-sensing"] } },
+        { text: "Printers that level themselves: use a mesh with enough points to cover the bed.", when: { fact: "printer.levelling", in: ["probe-offset", "nozzle-sensing", "automatic"] } },
         { text: "Manual beds: level using the centre and corners, and avoid printing large parts over the worst area.", when: { fact: "printer.levelling", in: ["manual"] } },
         "If a plate is visibly bent, contact the manufacturer about a replacement.",
       ],

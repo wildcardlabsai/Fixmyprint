@@ -23,10 +23,10 @@ export default async function PartsPage() {
   const c = await getContent();
   return (
     <>
-      <PageHeader title="Parts" description="Common replacement parts and which printers they fit. This directory is at an early stage." />
+      <PageHeader title="Parts" description="Spare parts sold by printer manufacturers, and which printers they fit. This directory is at an early stage." />
       <Container className="space-y-5 py-8">
         <Notice title="Check before you buy">
-          Compatibility shown here has not yet been verified against manufacturer parts listings. Confirm the exact part with your printer&apos;s manufacturer. FixMyPrint does not sell parts and links only to manufacturer sites.
+          Each part is sold by the printer&apos;s manufacturer, and the printers listed are the ones named in that manufacturer&apos;s listing. Check the listing for your exact model and revision before ordering. FixMyPrint does not sell parts and links only to manufacturers&apos; own stores.
         </Notice>
         <ul className="space-y-3">
           {c.parts.map((part) => (

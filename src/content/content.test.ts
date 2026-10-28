@@ -19,9 +19,11 @@ describe("seed content", () => {
   });
 
   it("does not invent specifications: unknown printer fields stay null", () => {
-    const af5m = seed.printers.find((p) => p.slug === "flashforge-adventurer-5m")!;
-    expect(af5m.specs.levelling).toBeNull();
-    expect(af5m.specs.bed).toBeNull();
+    // Creality's own pages disagree on the Ender-3 V2's temperatures, so they stay blank.
+    const e3v2 = seed.printers.find((p) => p.slug === "creality-ender-3-v2")!;
+    expect(e3v2.specs.hotendMaxTempC).toBeNull();
+    expect(e3v2.specs.bed?.maxTempC).toBeNull();
+    expect(e3v2.verification.knownLimitations.join(" ")).toMatch(/250 °C, 255 °C and 260 °C/);
   });
 });
 

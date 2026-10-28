@@ -31,7 +31,7 @@ export default async function DiagnoseFlowPage({ params }: { params: Promise<Par
   const flow = findFlow(c, flowId);
   if (!flow) notFound();
   const category = c.categories.find((x) => x.slug === flow.category);
-  const guides = c.guides.map((g) => ({ slug: g.slug, title: g.title, summary: g.summary }));
+  const guides = c.guides.map((g) => ({ slug: g.slug, title: g.title, summary: g.summary, appliesWhen: g.appliesWhen }));
 
   return (
     <Container className="py-6 sm:py-8">

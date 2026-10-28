@@ -65,10 +65,9 @@ export function factsFromPrinter(printer: PrinterModel | null | undefined): Fact
   if (s.firmwareFamily) facts["printer.firmware"] = s.firmwareFamily;
   if (s.linearMotion) facts["printer.linearMotion"] = s.linearMotion;
   if (s.bed?.surfaceKind) facts["printer.bedSurface"] = s.bed.surfaceKind;
-  // Only a built-in system is a certain fact; an optional add-on may or may not be fitted.
-  const builtIn = s.multiMaterial.find((m) => m.kind === "built-in");
-  if (builtIn) facts["printer.multiMaterial"] = "yes";
-  else if (s.multiMaterial.length === 0) facts["printer.multiMaterial"] = "no";
+  // Only a built-in system is a certain fact. An optional add-on may or may not be
+  // fitted, and an empty list means none has been recorded, not that none exists.
+  if (s.multiMaterial.some((m) => m.kind === "built-in")) facts["printer.multiMaterial"] = "yes";
   return facts;
 }
 

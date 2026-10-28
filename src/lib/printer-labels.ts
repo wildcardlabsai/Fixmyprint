@@ -4,6 +4,7 @@ export const LEVELLING_LABEL: Record<NonNullable<PrinterSpecs["levelling"]>, str
   manual: "Manual (knobs or screws)",
   "probe-offset": "Separate probe with Z offset",
   "nozzle-sensing": "Automatic, nozzle senses the bed",
+  automatic: "Automatic (sensor type not published)",
 };
 export const EXTRUDER_LABEL: Record<NonNullable<PrinterSpecs["extruder"]>, string> = { direct: "Direct drive", bowden: "Bowden" };
 export const ENCLOSURE_LABEL: Record<NonNullable<PrinterSpecs["enclosure"]>, string> = { open: "Open frame", enclosed: "Enclosed", optional: "Optional enclosure" };

@@ -7,15 +7,16 @@ import { FeedbackForm } from "@/components/feedback/feedback-form";
 import { SafetyNotices } from "@/components/safety/safety-notices";
 import { Button, LinkButton } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
-import { applicableChecks } from "@/lib/engine/conditions";
+import { applicableChecks, evaluateCondition } from "@/lib/engine/conditions";
 import type { Contribution, Evaluation, RankedOutcome } from "@/lib/engine/engine";
-import type { DiagnosticFlow, SafetyNotice } from "@/lib/schema";
+import type { Condition, DiagnosticFlow, SafetyNotice } from "@/lib/schema";
 import { CONFIDENCE, ConfidenceBadge } from "./confidence";
 
 export interface GuideSummary {
   slug: string;
   title: string;
   summary: string;
+  appliesWhen?: Condition;
 }
 
 interface Props {
@@ -54,7 +55,12 @@ export function ResultView(p: Props) {
   const [reporting, setReporting] = useState(false);
   const top = p.evaluation.ranking[0];
   const others = p.evaluation.ranking.slice(1);
-  const guidesFor = (r: RankedOutcome) => r.outcome.guideSlugs.map((s) => p.guides.find((g) => g.slug === s)).filter((g): g is GuideSummary => Boolean(g));
+  // Guides that definitely do not fit this printer's hardware are left out.
+  const guidesFor = (r: RankedOutcome) =>
+    r.outcome.guideSlugs
+      .map((s) => p.guides.find((g) => g.slug === s))
+      .filter((g): g is GuideSummary => Boolean(g))
+      .filter((g) => !g.appliesWhen || evaluateCondition(g.appliesWhen, { facts: p.evaluation.facts, answers: {} }) !== false);
 
   useEffect(() => {
     heading.current?.focus();

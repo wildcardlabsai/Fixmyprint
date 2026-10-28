@@ -1,6 +1,6 @@
 import type { DiagnosticFlowInput } from "@/lib/schema";
 import { seedVerification } from "../shared";
-import { materialQuestion } from "./common-questions";
+import { levelling, materialQuestion } from "./common-questions";
 
 export const warpingAndDimensions: DiagnosticFlowInput = {
   id: "warping-and-dimensions",
@@ -158,7 +158,9 @@ export const warpingAndDimensions: DiagnosticFlowInput = {
       summary: "The nozzle is slightly too close on the first layer, so it spreads wider than the walls above it.",
       explanation: "A little squish helps adhesion. Too much spreads the first layer outwards, giving a flared base.",
       checks: [
-        "Raise the Z offset slightly (0.02–0.05 mm at a time).",
+        { text: "Raise the Z offset slightly (0.02–0.05 mm at a time).", when: levelling.adjustableOffset },
+        { text: "Manual levelling: re-level with a slightly larger gap at each corner.", when: levelling.manual },
+        { text: "Nozzle-sensing printers: clean the nozzle tip and rerun the automatic calibration; the slicer's compensation setting handles any remaining flare.", when: levelling.nozzleSensing },
         "Use the slicer's elephant's foot compensation setting if it has one.",
       ],
       guideSlugs: ["set-the-z-offset"],

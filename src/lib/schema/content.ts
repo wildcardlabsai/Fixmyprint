@@ -75,6 +75,8 @@ export const guideSchema = z.object({
   /** Empty means the guide is general and applies to most FDM printers, subject to step conditions. */
   printerSlugs: z.array(slugSchema).default([]),
   appliesNote: z.string().min(1),
+  /** Hardware the whole guide applies to. Hidden from recommendations when definitely false. */
+  appliesWhen: conditionSchema.optional(),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
   timeMinutes: rangeSchema.nullable(),
   tools: z.array(z.string()).default([]),

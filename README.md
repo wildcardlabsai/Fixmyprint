@@ -112,11 +112,12 @@ See [docs/CONTENT.md](docs/CONTENT.md) for how to add printers, flows and guides
 
 ### What is in the first release
 
-- 10 printer models across 5 manufacturers, with unconfirmed specifications left blank. 11 manufacturers in total; those without records are listed as not yet documented.
+- 58 printer models from 11 manufacturers: Bambu Lab, Prusa Research, Creality, Anycubic, Elegoo, QIDI Tech, Sovol, Flashforge, Artillery, Raise3D and UltiMaker. Each record lists the manufacturer pages its specifications came from and the date they were read. Values the manufacturer does not publish, or publishes inconsistently, are left blank with the reason given (for example, Creality's own pages give three different hotend maximums for the Ender-3 V2).
+- Levelling is recorded as manual, separate probe, nozzle-sensing, or automatic where the manufacturer does not say which sensor it uses. Advice, guide steps and guide recommendations are filtered by it, and a test walks every diagnostic path for every printer to make sure manual-levelling advice never reaches a self-levelling printer and vice versa.
 - 10 diagnostic flows covering every symptom category (77 questions, 100 possible causes).
-- 11 repair guides, 8 filament profiles, 12 maintenance tasks, 4 parts and 13 firmware error messages.
+- 11 repair guides, 8 filament profiles, 12 maintenance tasks, 12 manufacturer-sold spare parts with links to the manufacturers' stores, and 13 firmware error messages.
 
-All of it is marked **not yet reviewed**. It was written from manufacturer and firmware documentation and established practice, but has not been checked by a second person. Printer specifications in particular should be confirmed against the linked manufacturer pages before being promoted.
+All of it is marked **not yet reviewed**: no second person has checked it yet. Printer specifications were gathered from the manufacturers' own sites on 28 October 2026 and should be re-checked against those pages before being promoted.
 
 ## Not included yet
 

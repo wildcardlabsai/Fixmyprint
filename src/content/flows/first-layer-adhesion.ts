@@ -1,6 +1,6 @@
 import type { DiagnosticFlowInput } from "@/lib/schema";
 import { seedVerification } from "../shared";
-import { levellingQuestion, materialQuestion } from "./common-questions";
+import { levelling, levellingQuestion, materialQuestion } from "./common-questions";
 
 export const firstLayerAdhesion: DiagnosticFlowInput = {
   id: "first-layer-adhesion",
@@ -202,6 +202,7 @@ export const firstLayerAdhesion: DiagnosticFlowInput = {
         { text: "Manual levelling: re-level with the bed and nozzle at printing temperature.", when: { fact: "printer.levelling", in: ["manual"] } },
         { text: "Separate probe: lower the Z offset in small steps (0.02–0.05 mm) while the first layer prints.", when: { fact: "printer.levelling", in: ["probe-offset"] } },
         { text: "Nozzle-sensing printers: clean the nozzle tip and rerun the automatic calibration before changing any offset.", when: { fact: "printer.levelling", in: ["nozzle-sensing"] } },
+        { text: "Printers that level themselves: clean the nozzle and the sensor area, rerun the levelling routine with the bed at temperature, then adjust the Z offset only if your printer's manual describes it.", when: levelling.automatic },
       ],
       guideSlugs: ["level-the-bed", "set-the-z-offset"],
     },
@@ -211,7 +212,8 @@ export const firstLayerAdhesion: DiagnosticFlowInput = {
       summary: "There is not enough room for the plastic to flow, so lines come out thin, rough or not at all.",
       explanation: "When the gap is smaller than the first layer height, the nozzle squeezes plastic out sideways or blocks it. Lines become thin or translucent, ridges build up between them, and the extruder may click as pressure builds. It can also mark the build surface.",
       checks: [
-        "Raise the nozzle in small steps (0.02–0.05 mm) with the Z offset or Live Adjust Z while the first layer prints.",
+        { text: "Raise the nozzle in small steps (0.02–0.05 mm) with the Z offset or Live Adjust Z while the first layer prints.", when: levelling.adjustableOffset },
+        { text: "Nozzle-sensing printers: clean the nozzle tip, make sure the plate is seated flat, and rerun the automatic calibration. If it is still too close, check the manufacturer's guidance before changing any offset.", when: levelling.nozzleSensing },
         { text: "Manual levelling: re-level each corner with a slightly larger gap.", when: { fact: "printer.levelling", in: ["manual"] } },
         "Check the build surface for marks left by the nozzle.",
       ],
@@ -251,7 +253,7 @@ export const firstLayerAdhesion: DiagnosticFlowInput = {
       checks: [
         "Print a first-layer test that covers the whole bed and note where it is too close and too far.",
         { text: "Manual levelling: re-level at printing temperature, working around the corners twice.", when: { fact: "printer.levelling", in: ["manual"] } },
-        { text: "Probe or nozzle-sensing printers: clean the nozzle and probe, then run a fresh bed mesh with the bed at printing temperature.", when: { fact: "printer.levelling", in: ["probe-offset", "nozzle-sensing"] } },
+        { text: "Printers that level themselves: clean the nozzle and the probe or sensor, then run a fresh bed mesh with the bed at printing temperature.", when: levelling.selfLevelling },
         "Check the build plate sits flat on its base with nothing trapped underneath.",
       ],
       guideSlugs: ["level-the-bed"],
